@@ -368,13 +368,19 @@
   }
 
   // ───────── Âlimler ─────────
-  const alimArama = { q: "" };
+  const alimArama = { q: "", alan: "Tümü" };
+  const AEK = (id) => (window.ALIM_EK || {})[id] || {};
+  const ALAN_GRUP = { "Fıkıh": /Fıkıh|Kazâ|Menâsik|Fetva|Hukuk/, "Usul": /Usul|Makâsıd|Kavâid/, "Hadis": /Hadis/, "Tefsir": /Tefsir|Kıraat/, "Kelâm": /Kelâm|Akide/, "Tasavvuf": /Tasavvuf|Zühd|Ahlâk/, "Tarih ve düşünce": /Tarih|Siyer|Düşünce|Sosyoloji|Siyaset|Felsefe/ };
+  const alanda = (a, g) => g === "Tümü" || (AEK(a.id).alan || []).some((x) => ALAN_GRUP[g].test(x));
+  const alimSekme = (on) => `<div class="tabs"><a href="#/alimler" class="${on === "zaman" ? "on" : ""}">Zaman çizgisi</a><a href="#/ekoller" class="${on === "ekol" ? "on" : ""}">Ekoller ve gelenekler</a></div>`;
   function alimler() {
     const q = alimArama.q.toLocaleLowerCase("tr");
-    const list = window.ALIMLER.filter((a) => !q || [a.ad, a.ekol, a.sehir, a.eserler.join(" ")].join(" ").toLocaleLowerCase("tr").includes(q));
+    const list = window.ALIMLER.filter((a) => alanda(a, alimArama.alan) && (!q || [a.ad, a.ekol, a.sehir, a.eserler.join(" ")].join(" ").toLocaleLowerCase("tr").includes(q)));
     const asirlar = [...new Set(list.map((a) => a.y))].sort((a, b) => a - b);
     const html = `
       <h1>Âlimler</h1>
+      ${alimSekme("zaman")}
+      <div class="chips alan-chips">${["Tümü", ...Object.keys(ALAN_GRUP)].map((g) => `<a href="javascript:void 0" class="achip ${alimArama.alan === g ? "on" : ""}" data-alan="${g}">${g}${g !== "Tümü" ? ` <small>${window.ALIMLER.filter((a) => alanda(a, g)).length}</small>` : ""}</a>`).join("")}</div>
       <input id="aara" class="search" type="search" placeholder="Âlim, ekol, şehir veya eser ara…" value="${esc(alimArama.q)}">
       <div class="zaman">${asirlar.map((y) => `<section class="asir">
         <h2><span>Hicrî ${y}. asır</span></h2>
@@ -386,14 +392,27 @@
     const bind = () => {
       const i = document.getElementById("aara");
       i.oninput = () => { alimArama.q = i.value; const p = i.selectionStart; U().render(); const n = document.getElementById("aara"); n.focus(); n.setSelectionRange(p, p); };
+      document.querySelectorAll("[data-alan]").forEach((a) => a.onclick = (e) => { e.preventDefault(); alimArama.alan = a.dataset.alan; U().render(); });
     };
     return { html, bind };
+  }
+
+  function ekoller() {
+    const A = AL();
+    const html = `
+      <h1>Âlimler</h1>
+      ${alimSekme("ekol")}
+      ${(window.EKOLLER || []).map((e) => `<section class="ekol">
+        <h2>${esc(e.ad)}</h2><p class="muted">${esc(e.alt)}</p>
+        <ol class="ekol-zincir">${e.ids.filter((id) => A[id]).map((id) => `<li><a href="#/alim/${id}"><b>${esc(A[id].ad)}</b><small>ö. ${esc(A[id].olum)}</small></a></li>`).join("")}</ol>
+      </section>`).join("")}`;
+    return { html };
   }
 
   function alim(id) {
     const A = AL(), a = A[id];
     if (!a) return alimler();
-    const key = "alim:" + a.id;
+    const key = "alim:" + a.id, E = AEK(a.id);
     // Silsile: kendi kayıtları + diğer âlimlerin kayıtlarından ters ilişki
     const hocalar = [...a.hocalar], talebeler = [...a.talebeler];
     window.ALIMLER.forEach((b) => {
@@ -412,8 +431,12 @@
           <div><h1>${esc(a.ad)}</h1><small class="muted">ö. ${esc(a.olum)} · ${esc(a.sehir)}</small><p class="tag klasik">${esc(a.ekol)}</p></div>
           ${a.ar ? `<div class="alim-ar" lang="ar">${a.ar}</div>` : ""}
         </header>
+        ${E.alan ? `<div class="chips">${E.alan.map((x) => `<span class="achip plain">${esc(x)}</span>`).join("")}</div>` : ""}
         <p class="lead">${a.ozet}</p>
+        ${E.hayat ? `<h2>Hayatı</h2><ol class="seyir">${E.hayat.map(([t, o]) => `<li><b>${esc(t)}</b><p>${esc(o)}</p></li>`).join("")}</ol>` : ""}
         <h2>İlmî yöntemi</h2><p>${a.metod}</p>
+        ${E.etki ? `<h2>Etkisi ve hakkındaki tartışmalar</h2><p>${esc(E.etki)}</p>` : ""}
+        ${E.okuma ? `<div class="ornek-kutu"><small>Okumaya nereden başlamalı?</small><p>${esc(E.okuma)}</p></div>` : ""}
 
         <h2>Silsile</h2>
         <div class="silsile">
@@ -425,6 +448,8 @@
         </div>
 
         <h2>Eserleri</h2><ul>${a.eserler.map((e) => `<li>${esc(e)}</li>`).join("")}</ul>
+        ${(() => { const ek = (window.EKOLLER || []).filter((e) => e.ids.includes(a.id)); return ek.length ? `<h2>Yer aldığı gelenekler</h2><div class="chips">${ek.map((e) => `<a class="achip" href="#/ekoller"><b>${esc(e.ad)}</b></a>`).join("")}</div>` : ""; })()}
+        ${(() => { const c = window.ALIMLER.filter((b) => b.y === a.y && b.id !== a.id); return c.length ? `<h2>Aynı asrın âlimleri</h2><div class="chips">${c.map((b) => alimChip(b.id)).join("")}</div>` : ""; })()}
 
         ${goruslerde.length ? `<h2>Meselelerdeki görüşleri</h2><ul class="gorus-list">${goruslerde.map(({ m, g }) => `<li><a href="#/mesele/${m.id}"><b>${esc(m.baslik)}</b></a> <small class="muted">${esc(g.ekol)}</small><p>${g.hukum}</p></li>`).join("")}</ul>` : ""}
         ${surelerde.length ? `<h2>Tefsir notları</h2><ul class="gorus-list">${surelerde.map(({ s, n }) => `<li><a href="#/sure/${s.no}"><b>${esc(s.ad)} Sûresi</b></a><p>${arw(n.metin)}</p></li>`).join("")}</ul>` : ""}
@@ -680,5 +705,5 @@
     return { html, bind };
   }
 
-  Object.assign(window.Views, { anaSayfa, kuran, sure, meseleler, mesele, alimler, alim, yollar, yol, defter, derinles, kavramlar, kavram, konular, konu, sozler, rehberler, rehber });
+  Object.assign(window.Views, { anaSayfa, kuran, sure, meseleler, mesele, alimler, alim, yollar, yol, defter, derinles, kavramlar, kavram, konular, konu, sozler, rehberler, rehber, ekoller });
 })();

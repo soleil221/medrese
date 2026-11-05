@@ -691,3 +691,18 @@ table.rapor { border-collapse: collapse; width: 100%; max-width: 480px; }
 .sss details { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: var(--surface); }
 .sss summary { cursor: pointer; font-weight: 600; }
 .sss details p { margin: 8px 0 0; }
+
+/* ───── Âlimlerde derinleşme ───── */
+.alan-chips { margin-bottom: 12px; }
+.alan-chips .achip.on { background: var(--klasik); border-color: var(--klasik); color: var(--surface); }
+.alan-chips .achip.on small { color: var(--surface); }
+.ekol { margin-bottom: 22px; }
+.ekol h2 { margin-bottom: 2px; }
+.ekol-zincir { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; }
+.ekol-zincir li { display: flex; align-items: center; gap: 4px; }
+.ekol-zincir li + li::before { content: "→"; color: var(--muted); }
+.ekol-zincir a { display: inline-flex; flex-direction: column; padding: 4px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font-family: system-ui, sans-serif; font-size: .82rem; }
+.ekol-zincir a small { color: var(--muted); font-size: .72rem; }
+.ekol-zincir a:hover { text-decoration: none; border-color: var(--gold); }
+.alim-bas > div:first-child { min-width: 0; }
+@media (max-width: 620px) { .alim-bas { flex-wrap: wrap; } .alim-ar { font-size: 1.6rem; } }

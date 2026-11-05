@@ -310,7 +310,7 @@
 
     const NAV = { ana: "ana", panel: "ana", kuran: "kuran", sure: "kuran", tahlil: "kuran", meseleler: "meseleler", mesele: "meseleler",
       alimler: "alimler", alim: "alimler", yollar: "yollar", yol: "yollar", defter: "defter",
-      konular: "kuran", konu: "kuran", sozler: "meseleler", kavramlar: "kavramlar", kavram: "kavramlar", rehberler: "rehberler", rehber: "rehberler" };
+      konular: "kuran", konu: "kuran", ekoller: "alimler", sozler: "meseleler", kavramlar: "kavramlar", kavram: "kavramlar", rehberler: "rehberler", rehber: "rehberler" };
     const navKey = NAV[route] || "derinles";
     document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === navKey));
 
@@ -342,7 +342,8 @@
       route === "konu" ? V.konu(parts[1]) :
       route === "sozler" ? V.sozler() :
       route === "rehberler" ? V.rehberler() :
-      route === "rehber" ? V.rehber(parts[1]) : null;
+      route === "rehber" ? V.rehber(parts[1]) :
+      route === "ekoller" ? V.ekoller() : null;
     if (special) {
       app.innerHTML = special.html;
       if (special.bind) special.bind();
