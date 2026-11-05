@@ -22,7 +22,8 @@
   const courseStatus = (c) => {
     const p = courseProgress(c);
     if (p >= 1) return 2;
-    return c.texts.some((t) => S.textStatus(c.id, t.id) > 0) ? 1 : 0;
+    const anyLesson = (window.DERSLER[c.id] || []).some((l) => S.lessonDone(`${c.id}/${l.id}`));
+    return c.texts.some((t) => S.textStatus(c.id, t.id) > 0) || anyLesson ? 1 : 0;
   };
   const avg = (list) => (list.length ? list.reduce((a, c) => a + courseProgress(c), 0) / list.length : 0);
   const pct = (x) => Math.round(x * 100) + "%";
@@ -87,7 +88,8 @@
         </div>
       </section>
 
-      <section class="grid3">
+      <section class="grid4">
+        ${window.Views.haftaOzet()}
         <a class="card stat link" href="#/tekrar">
           <small>Ezber kartları</small>
           <b>${S.dueCards().length} <span>kart bekliyor</span></b>
@@ -207,7 +209,9 @@
         <div>
           ${window.Views.lessonsBlock(c)}
           ${c.id === "k-sarf" ? `<p class="btns"><a class="btn alt" href="#/cekim">Çekim Aracı'nı aç →</a><a class="btn ghost" href="#/metin/emsile">Emsile metni →</a></p>` : ""}
-          ${c.id === "k-hadis" || c.id === "k-nahiv" ? `<p class="btns"><a class="btn alt" href="#/metin/kirk-hadis">Kırk Hadis'ten seçmeler →</a></p>` : ""}
+          ${c.id === "k-hadis" || c.id === "k-nahiv" ? `<p class="btns"><a class="btn alt" href="#/metin/kirk-hadis">Kırk Hadis →</a></p>` : ""}
+          ${c.id === "k-kelam" || c.id === "k-akaid1" ? `<p class="btns"><a class="btn alt" href="#/metin/akaid-nesefi">el-Akāidü'n-Nesefiyye metni →</a></p>` : ""}
+          ${c.id === "k-tefsir" || c.id === "m-tefsirusul" ? `<p class="btns"><a class="btn alt" href="#/tahlil">Amme cüzü tahlili →</a></p>` : ""}
           <h2>Metinler ve kaynaklar <small class="muted">${pct(p)}</small></h2>
           ${bar(p, c.track)}
           <ol class="texts">
@@ -311,7 +315,7 @@
     const parts = (location.hash.replace(/^#\/?/, "") || "").split("/").map((x) => { try { return decodeURIComponent(x); } catch (e) { return x; } });
     const route = parts[0] || "panel";
 
-    const navKey = route === "ders" || route === "sinav" || route === "cekim" ? "mufredat" : route === "metin" ? "metinler" : route;
+    const navKey = route === "ders" || route === "sinav" || route === "cekim" ? "mufredat" : route === "metin" || route === "tahlil" ? "metinler" : route === "hafta" ? "panel" : route;
     document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === navKey));
 
     const V = window.Views;
@@ -322,7 +326,9 @@
       route === "hifz" ? V.hifz() :
       route === "cekim" ? V.cekim(parts[1], parts[2]) :
       route === "metinler" ? V.metinler() :
-      route === "metin" ? V.metin(parts[1]) : null;
+      route === "metin" ? V.metin(parts[1]) :
+      route === "tahlil" ? (parts[1] ? V.tahlil(parts[1]) : V.tahlilList()) :
+      route === "hafta" ? V.hafta(parts[1]) : null;
     if (special) {
       app.innerHTML = special.html;
       if (special.bind) special.bind();

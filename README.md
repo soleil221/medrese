@@ -35,10 +35,18 @@ Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğ
 - **Mantık** — Îsâgûcî sırasıyla: delâlet, lafızlar, külliyât, tarif, kazıyyeler, tenâkuz ve aks, kıyas, sınaât-ı hams
 - **Fıkıh** — Nûru'l-Îzâh sırasıyla Hanefî ibadet fıkhı: taharet, abdest-mesh, gusül-teyemmüm, namaz (vakit, farz, vacip,
   sünnet, bozanlar, sehiv), cuma-bayram-sefer-cenaze, oruç, zekât, hac
+- **Kelam** — el-Akāidü'n-Nesefiyye sırasıyla 10 ders; her derste metnin ilgili bölümü Arapça-Türkçe
+- **Usûl-i Fıkıh** — Menâr sırasıyla: lafzın taksimleri (hâs-âm, zuhur-hafâ, dört delâlet), emir-nehiy,
+  Sünnet, icmâ-kıyas-istihsân, hüküm-ehliyet-avârız
+- **Amme cüzü tahlili** — âyet âyet meal, kelime kelime i'râb ve sarf, belâgat notları, kârîden dinleme;
+  hazır sureler: Asr, Kevser, Nasr, İhlâs, Felak, Nâs, Kureyş, Fîl
+- **Haftalık hedef ve rapor** — süre, gün, ders, yeni ezber, hıfz tekrarı, kart tekrarı ve serbest hedefler;
+  otomatik ilerleme, günlük grafik, ders bazında süre, metin olarak kopyalanabilen rapor
 - **Tecvid sesleri** — her kural için örnek âyetler; kârî okuyuşu (everyayah.com, internet gerekir) ve kendi okuyuşunu
   kaydedip karşılaştırma (kayıtlar yalnızca cihazda, IndexedDB)
 - **Metinler** — Arapça ve Türkçe yan yana; tercümeyi veya harekeleri gizleme; kelime notlarından çekim aracına geçiş.
-  Emsile metni ve İmam Nevevî'nin Kırk Hadis'inin tamamı (42 hadis; tekrar kartı olarak da eklenebilir)
+  Emsile metni, İmam Nevevî'nin Kırk Hadis'inin tamamı (42 hadis) ve el-Akāidü'n-Nesefiyye (hilâfet bahsine kadar);
+  tekrar kartı olarak da eklenebilir
 - **Hıfz** — 604 sayfalık mushaf haritası (zayıf/orta/sağlam), günlük plan: yeni ezber + yakın tekrar
   (son ezberlenen sayfalar) + uzak tekrar (sayfa usulü: en eski ve zayıf sayfalar önce; cüz usulü: her gün sıradaki cüz);
   sure adları, sure veya cüz bazında toplu işaretleme; baştan veya 30. cüzden geriye ezber sırası
@@ -78,6 +86,8 @@ js/data/sureler.js  114 surenin Medine mushafındaki başlangıç sayfaları
 js/store.js         İlerleme, notlar, günlük, kartlar, hıfz (localStorage)
 js/sarf.js          Çekim (tasrîf) motoru
 js/ses.js           Kârî sesi ve kullanıcı ses kaydı
+js/views-hafta-tahlil.js  Amme tahlili ve haftalık hedef/rapor ekranları
+js/data/akaid-nesefi.js, dersler-kelam.js, dersler-usul.js, tahlil-amme.js
 js/data/dersler-belagat.js, dersler-mantik.js, dersler-fikih.js, tecvid-ayetler.js
 js/features.js      Ders, sınav, tekrar, hıfz ve çekim ekranları
 js/app.js           Panel, müfredat, günlük, ayarlar ve yönlendirme

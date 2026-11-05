@@ -6,7 +6,10 @@
     lessons: {},   // "kursId/dersId": tamamlanma tarihi
     quiz: {},      // "kursId/dersId": en iyi yüzde
     cards: {},     // "kursId/dersId/i": { box, due }
-    hifz: { pages: {}, newPerDay: 1, nearCount: 10, farPerDay: 20, order: "bastan" }
+    hifz: { pages: {}, newPerDay: 1, nearCount: 10, farPerDay: 20, order: "bastan" },
+    goals: {},      // "YYYY-MM-DD" (haftanın pazartesisi): [{ id, tur, hedef, ders, metin, bitti }]
+    reviewLog: {},  // tarih: tekrar edilen kart sayısı
+    hifzLog: {}     // tarih: { yeni, tekrar }
   });
   const INTERVALS = [0, 1, 3, 7, 16, 35]; // Leitner kutusu → gün
 
@@ -83,6 +86,7 @@
     dueCards() { const t = todayStr(); return Object.keys(state.cards).filter((k) => state.cards[k].due <= t); },
     gradeCard(key, ok) {
       const c = state.cards[key]; if (!c) return;
+      const t = todayStr(); state.reviewLog[t] = (state.reviewLog[t] || 0) + 1;
       c.box = ok ? Math.min(5, c.box + 1) : 1;
       const d = new Date(); d.setDate(d.getDate() + (ok ? INTERVALS[c.box] : 1));
       c.due = todayStr(d);
@@ -93,6 +97,14 @@
     page(n) { return state.hifz.pages[n]; },
     setPage(n, data) { if (data) state.hifz.pages[n] = data; else delete state.hifz.pages[n]; save(); },
     setHifz(opts) { Object.assign(state.hifz, opts); save(); },
+    logHifz(kind) { const t = todayStr(), d = state.hifzLog[t] || (state.hifzLog[t] = { yeni: 0, tekrar: 0 }); d[kind]++; save(); },
+
+    // ── Haftalık hedefler ──
+    weekKey(d = new Date()) { const x = new Date(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return todayStr(x); },
+    goals(week) { return state.goals[week] || []; },
+    addGoal(week, g) { (state.goals[week] = state.goals[week] || []).push(Object.assign({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }, g)); save(); },
+    updateGoal(week, id, patch) { const g = this.goals(week).find((x) => x.id === id); if (g) { Object.assign(g, patch); save(); } },
+    removeGoal(week, id) { state.goals[week] = this.goals(week).filter((x) => x.id !== id); save(); },
 
     exportJSON() { return JSON.stringify(state, null, 2); },
     importJSON(text) {

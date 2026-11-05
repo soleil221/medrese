@@ -10,6 +10,11 @@
   const cardKeys = (cid, l) => l.cards.map((_, i) => `${cid}/${l.id}/${i}`);
   const cardByKey = (key) => {
     const [cid, lid, i] = key.split("/");
+    if (cid === "tahlil") {
+      const t = (window.TAHLIL || {})[+lid], a = t && t.ayetler.find((x) => String(x.n) === i);
+      const ad = ((window.AMME || []).find((s) => s.no === +lid) || {}).ad;
+      return a ? { cid, lid, metin: true, lesson: { title: `${ad} ${a.n}` }, front: `<span lang="ar">${a.ar}</span>`, back: a.tr } : null;
+    }
     if (cid === "metin") {
       const t = (window.METINLER || []).find((x) => x.id === lid);
       const r = t && t.satirlar && t.satirlar.find((x) => String(x.no) === i);
@@ -42,8 +47,17 @@
     return `<div class="tbl-wrap"><table class="cekim emsile"><tbody>${rows.map((x) =>
       `<tr><td><b>${x.ad}</b>${x.tr ? `<small class="muted">${x.tr}</small>` : ""}</td><td lang="ar">${x.ar}</td></tr>`).join("")}</tbody></table></div>`;
   }
-  const renderTokens = (html) => html.replace(/\{\{(tablo|emsile):([^:}]+):(\d)\}\}/g,
-    (_, kind, root, bab) => (kind === "emsile" ? emsileTable(root, +bab) : miniTable(root, +bab)));
+  function metinBlock(id, key) {
+    const t = (window.METINLER || []).find((x) => x.id === id);
+    if (!t) return "";
+    const rows = t.satirlar.filter((r) => r.ders === key);
+    return `<div class="metin metin-inline">${rows.map((r) => `<div class="mrow">
+      <div class="mhead"><a href="#/metin/${id}"><b>${U().esc(t.title)}</b></a> <small class="muted">§${r.no} · ${U().esc(r.baslik)}</small></div>
+      <div class="mar" lang="ar">${r.ar}</div><div class="mtr">${U().esc(r.tr)}</div></div>`).join("")}</div>`;
+  }
+  const renderTokens = (html) => html
+    .replace(/\{\{(tablo|emsile):([^:}]+):(\d)\}\}/g, (_, kind, root, bab) => (kind === "emsile" ? emsileTable(root, +bab) : miniTable(root, +bab)))
+    .replace(/\{\{metin:([^:}]+):([^:}]+)\}\}/g, (_, id, key) => metinBlock(id, key));
 
   function exercisesBlock(l) {
     if (!l.exercises) return "";
@@ -456,8 +470,8 @@
 
     const bind = () => {
       const markOld = (pages) => { pages.forEach((p) => { if (!h.pages[p]) S.setPage(p, { s: 2, m: OLD, r: today }); }); makePlan(); U().render(); };
-      document.querySelectorAll("[data-mem]").forEach((b) => b.onclick = () => { S.setPage(+b.dataset.mem, { s: 2, m: today, r: today }); U().render(); });
-      document.querySelectorAll("[data-rev]").forEach((b) => b.onclick = () => { const p = +b.dataset.rev; S.setPage(p, Object.assign({}, h.pages[p], { s: +b.dataset.s, r: today })); U().render(); });
+      document.querySelectorAll("[data-mem]").forEach((b) => b.onclick = () => { S.setPage(+b.dataset.mem, { s: 2, m: today, r: today }); S.logHifz("yeni"); U().render(); });
+      document.querySelectorAll("[data-rev]").forEach((b) => b.onclick = () => { const p = +b.dataset.rev; S.setPage(p, Object.assign({}, h.pages[p], { s: +b.dataset.s, r: today })); S.logHifz("tekrar"); U().render(); });
       document.querySelectorAll(".cells i").forEach((c) => c.onclick = () => { selPage = +c.dataset.p; U().render(); });
       document.querySelectorAll("[data-set]").forEach((b) => b.onclick = () => {
         const s = +b.dataset.set, old = h.pages[selPage];
@@ -618,7 +632,11 @@
         <div class="cc-top"><small>${esc(t.tur)}</small></div>
         <div class="cc-title"><b>${esc(t.title)}</b></div>
         <p>${esc(t.aciklama)}</p>
-        <div class="cc-foot"><small>${t.satirlar ? t.satirlar.length + " hadis" : "Çekim motoruyla üretilir"}</small></div></a>`).join("")}</div>`;
+        <div class="cc-foot"><small>${t.satirlar ? t.satirlar.length + (t.tur === "Hadis" ? " hadis" : " bölüm") : "Çekim motoruyla üretilir"}</small></div></a>`).join("")}
+        <a class="ccard" href="#/tahlil"><div class="cc-top"><small>Tefsir</small></div>
+          <div class="cc-title"><b>Amme Cüzü Tahlili</b><span lang="ar">جزء عمّ</span></div>
+          <p>Kısa surelerin kelime kelime i'râbı, sarfı ve belâgat notları; âyetleri kârîden dinleme.</p>
+          <div class="cc-foot"><small>${Object.keys(window.TAHLIL || {}).length} / 37 sure hazır</small></div></a></div>`;
     return { html };
   }
 
@@ -633,7 +651,7 @@
       rows = Sf.emsile(Sf.analyze(t.uretilen.kok), Sf.BABS[t.uretilen.bab - 1]).map((x) => ({ ar: x.ar, tr: `<b>${x.ad}</b>${x.tr ? " — " + x.tr : ""}` }));
     } else {
       rows = t.satirlar.map((r) => ({
-        head: `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}`,
+        head: r.baslik ? `<b>${r.no}. ${esc(r.baslik)}</b>` : `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}`,
         ar: r.ar, tr: esc(r.tr),
         kelimeler: r.kelimeler
       }));
