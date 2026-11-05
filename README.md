@@ -139,3 +139,8 @@ Yeni bir konu anlatımı eklemek için `js/data/dersler.js` içinde ilgili ders 
 
 > Kaynak listeleri öneri niteliğindedir; müellif nispetleri ve baskı bilgileri doğrulanmalıdır.
 > Klasik geleneğe uygun olarak metinlerin bir hoca rehberliğinde okunması tavsiye edilir.
+
+
+## Kur'an metni ve meal
+
+Surelerin Arapça metni (Uthmani) Noble Qur'an Encyclopedia (quranenc.com), Türkçe meal Diyanet İşleri Başkanlığı (tanzil.net) kaynaklıdır; `quran-json` paketi aracılığıyla alınmıştır ve CC BY-SA 4.0 lisanslıdır (`data/kuran/`).

@@ -311,8 +311,10 @@
     const NAV = { ana: "ana", panel: "ana", kuran: "kuran", sure: "kuran", tahlil: "kuran", meseleler: "meseleler", mesele: "meseleler",
       alimler: "alimler", alim: "alimler", yollar: "yollar", yol: "yollar", defter: "defter",
       konular: "kuran", konu: "kuran", ekoller: "alimler", sozler: "meseleler", kavramlar: "kavramlar", kavram: "kavramlar", rehberler: "rehberler", rehber: "rehberler" };
-    const navKey = NAV[route] || "derinles";
+    const navKey = NAV[route] || "";
     document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === navKey));
+    const grp = { panel: "ana", sure: "kuran", konu: "konular", mesele: "meseleler", alim: "alimler", kavram: "kavramlar", rehber: "rehberler", yol: "yollar", ders: "mufredat", sinav: "mufredat", metin: "metinler" }[route] || route;
+    document.querySelectorAll(".cekmece [data-r]").forEach((a) => a.classList.toggle("on", a.dataset.r === grp));
 
     const V = window.Views;
     const special =

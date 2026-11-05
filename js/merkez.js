@@ -184,50 +184,80 @@
   }
 
   // ───────── Kur'an ─────────
+  const LST = () => window.SURE_LISTE || [];
+  const kuranState = { f: "Tümü", q: "" };
+  const KURAN_SUZ = { "Tümü": () => true, "Anlam rehberi": (l) => !!SURE(l[0]), "Mekkî": (l) => l[3] === "Mekkî", "Medenî": (l) => l[3] === "Medenî" };
   function kuran() {
-    const list = [...window.SURE_ANLAM].sort((a, b) => a.no - b.no);
+    const q = kuranState.q.toLocaleLowerCase("tr").trim();
+    const list = LST().filter((l) => KURAN_SUZ[kuranState.f](l) && (!q || String(l[0]) === q || l[1].toLocaleLowerCase("tr").includes(q)));
     const html = `
       <h1>Kur'an'ı Anlamak</h1>
       <div class="tabs"><a class="on" href="#/kuran">Sureler</a><a href="#/konular">Konular</a></div>
-      <div class="sgrid">${list.map((s) => `<a class="skart" href="#/sure/${s.no}">
-        <div class="sk-ust"><span class="sno">${s.no}</span><span lang="ar">${s.ar}</span></div>
-        <b>${esc(s.ad)}</b><small class="muted">${esc(s.inis.split(" ")[0])} · ${s.sayi} âyet${S.ziyaretEdildi("sure:" + s.no) ? " · okundu" : ""}</small>
-        <p>${esc(s.mesaj.slice(0, 130))}…</p></a>`).join("")}</div>`;
-    return { html };
+      <div class="chips alan-chips">${Object.keys(KURAN_SUZ).map((f) => `<a href="javascript:void 0" class="achip ${kuranState.f === f ? "on" : ""}" data-ksuz="${f}">${f} <small>${LST().filter(KURAN_SUZ[f]).length}</small></a>`).join("")}</div>
+      <input id="kara" class="search" type="search" placeholder="Sure adı veya numarası…" value="${esc(kuranState.q)}">
+      <div class="sgrid">${list.map((l) => { const s = SURE(l[0]); return `<a class="skart ${s ? "rehberli" : ""}" href="#/sure/${l[0]}">
+        <div class="sk-ust"><span class="sno">${l[0]}</span><span lang="ar">${esc(l[2])}</span></div>
+        <b>${esc(l[1])}</b><small class="muted">${l[3]} · ${l[4]} âyet${S.ziyaretEdildi("sure:" + l[0]) ? " · okundu" : ""}</small>
+        ${s ? `<p>${esc(s.mesaj.slice(0, 120))}…</p>` : `<p class="muted">Mushafta ${l[5]}. sayfa</p>`}</a>`; }).join("") || `<p class="empty">Sonuç yok.</p>`}</div>`;
+    const bind = () => {
+      document.querySelectorAll("[data-ksuz]").forEach((a) => a.onclick = (e) => { e.preventDefault(); kuranState.f = a.dataset.ksuz; U().render(); });
+      const i = document.getElementById("kara");
+      i.oninput = () => { kuranState.q = i.value; const p = i.selectionStart; U().render(); const n = document.getElementById("kara"); n.focus(); n.setSelectionRange(p, p); };
+    };
+    return { html, bind };
   }
 
   const sureState = { gizliMeal: false };
+  const metinCache = {};
+  function metinYukle(no) {
+    if (metinCache[no] !== undefined) return;
+    metinCache[no] = "yukleniyor";
+    fetch(`data/kuran/${String(no).padStart(3, "0")}.json`).then((r) => { if (!r.ok) throw 0; return r.json(); })
+      .then((d) => { metinCache[no] = d.ayetler; })
+      .catch(() => { metinCache[no] = null; })
+      .then(() => { if (location.hash === "#/sure/" + no) U().render(); });
+  }
   function sure(no) {
-    const s = SURE(no);
-    if (!s) return kuran();
-    const ayetler = sureAyetleri(s), key = "sure:" + s.no, AL_ = AL(), M = MS();
-    const tahlilVar = !!(window.TAHLIL || {})[s.no];
-    const list = [...window.SURE_ANLAM].sort((a, b) => a.no - b.no), i = list.indexOf(s);
+    const L = LST().find((l) => l[0] === +no);
+    if (!L) return kuran();
+    const s = SURE(no), n = L[0], key = "sure:" + n, AL_ = AL(), M = MS(), list = LST(), i = n - 1;
+    const yerel = s ? sureAyetleri(s) : [];
+    let ayetler = yerel, durum = "";
+    if (!yerel.length) {
+      const c = metinCache[n];
+      if (Array.isArray(c)) ayetler = c;
+      else durum = c === null ? "hata" : "yukleniyor";
+    }
+    const tahlilVar = !!(window.TAHLIL || {})[n];
+    const ayetHtml = durum === "yukleniyor" ? `<p class="muted yukleniyor">Âyetler yükleniyor…</p>`
+      : durum === "hata" ? `<p class="notice">Âyetler şu anda yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.</p>`
+      : `<ol class="ayet-liste">${ayetler.map((a) => `<li>
+          <div class="al-ar" lang="ar">${a.ar} <span class="ayet-no">${a.n}</span></div>
+          <div class="al-tr ${sureState.gizliMeal ? "hid" : ""}">${esc(a.tr)}</div>
+          <div class="al-arac"><button class="ghost sm" data-ayet="${a.n}" aria-label="${a.n}. âyeti dinle">▶</button><small data-amsg="${a.n}"></small></div>
+        </li>`).join("")}</ol>
+        ${!yerel.length ? `<p class="kaynak-not muted">Meal: Diyanet İşleri Başkanlığı. Metin ve meal kaynağı: Tanzil ve Kur'an Ansiklopedisi (quranenc.com).</p>` : ""}`;
     const html = `
       <a class="back" href="#/kuran">← Kur'an</a>
       ${yolBandi(key)}
       <header class="sure-bas">
-        <div><h1>${esc(s.ad)} Sûresi</h1><small class="muted">${s.no}. sure · ${esc(s.inis)} · ${s.sayi} âyet</small></div>
-        <div class="sure-ar" lang="ar">${s.ar}</div>
+        <div><h1>${esc(L[1])} Sûresi</h1><small class="muted">${n}. sure · ${esc(s ? s.inis : L[3])} · ${L[4]} âyet · Mushafta ${L[5]}. sayfa</small></div>
+        <div class="sure-ar" lang="ar">${esc(L[2])}</div>
       </header>
-      ${s.isimler ? `<p class="muted"><b>İsimleri:</b> ${esc(s.isimler)}</p>` : ""}
+      ${s && s.isimler ? `<p class="muted"><b>İsimleri:</b> ${esc(s.isimler)}</p>` : ""}
 
-      <section class="okuma">
+      ${s ? `<section class="okuma">
         <h2>Ana mesaj</h2><p class="lead">${esc(s.mesaj)}</p>
         <h3>İniş ortamı</h3><p>${esc(s.ortam)}</p>
-      </section>
+      </section>` : ""}
 
       <section class="okuma">
         <div class="row-head"><h2>Âyetler</h2><label class="check"><input type="checkbox" id="gMeal" ${sureState.gizliMeal ? "checked" : ""}> Meali gizle</label></div>
-        <ol class="ayet-liste">${ayetler.map((a) => `<li>
-          <div class="al-ar" lang="ar">${a.ar} <span class="ayet-no">${a.n}</span></div>
-          <div class="al-tr ${sureState.gizliMeal ? "hid" : ""}">${esc(a.tr)}</div>
-          <div class="al-arac"><button class="ghost sm" data-ayet="${a.n}">▶</button><small data-amsg="${a.n}"></small></div>
-        </li>`).join("")}</ol>
-        ${tahlilVar ? `<p><a href="#/tahlil/${s.no}">Kelime kelime i'râb ve sarf tahlili →</a></p>` : ""}
+        ${ayetHtml}
+        ${tahlilVar ? `<p><a href="#/tahlil/${n}">Kelime kelime i'râb ve sarf tahlili →</a></p>` : ""}
       </section>
 
-      <section class="okuma">
+      ${s ? `<section class="okuma">
         <h2>Akış</h2>
         <ol class="akis">${s.akis.map((x) => `<li><span class="akis-ayet">${esc(x.ayet)}</span><div><b>${esc(x.baslik)}</b><p>${esc(x.aciklama)}</p></div></li>`).join("")}</ol>
       </section>
@@ -238,24 +268,25 @@
       </section>
 
       ${s.notlar && s.notlar.length ? `<section class="okuma"><h2>Âlimlerden notlar</h2>
-        ${s.notlar.map((n) => `<blockquote class="alim-not">${arw(n.metin)}${n.alim && AL_[n.alim] ? `<footer>— <a href="#/alim/${n.alim}">${esc(AL_[n.alim].ad)}</a></footer>` : ""}</blockquote>`).join("")}</section>` : ""}
+        ${s.notlar.map((x) => `<blockquote class="alim-not">${arw(x.metin)}${x.alim && AL_[x.alim] ? `<footer>— <a href="#/alim/${x.alim}">${esc(AL_[x.alim].ad)}</a></footer>` : ""}</blockquote>`).join("")}</section>` : ""}
 
       <section class="okuma tefekkur"><h2>Tefekkür</h2><p>${esc(s.tefekkur)}</p></section>
 
-      ${s.meseleler && s.meseleler.length ? `<section><h3>İlgili meseleler</h3><div class="mgrid">${s.meseleler.filter((id) => M[id]).map((id) => meseleKart(M[id])).join("")}</div></section>` : ""}
+      ${s.meseleler && s.meseleler.length ? `<section><h3>İlgili meseleler</h3><div class="mgrid">${s.meseleler.filter((id) => M[id]).map((id) => meseleKart(M[id])).join("")}</div></section>` : ""}` : ""}
 
-      ${defterKutusu(key, "sure", `${s.ad} Sûresi`, `#/sure/${s.no}`)}
-      <div class="sayfa-alt">${onayKutusu(key)}</div>
+      ${defterKutusu(key, "sure", `${L[1]} Sûresi`, `#/sure/${n}`)}
+      ${s ? `<div class="sayfa-alt">${onayKutusu(key)}</div>` : ""}
       <nav class="pager">
-        ${list[i - 1] ? `<a href="#/sure/${list[i - 1].no}">← ${esc(list[i - 1].ad)}</a>` : "<span></span>"}
-        ${list[i + 1] ? `<a href="#/sure/${list[i + 1].no}">${esc(list[i + 1].ad)} →</a>` : "<span></span>"}
+        ${list[i - 1] ? `<a href="#/sure/${list[i - 1][0]}">← ${esc(list[i - 1][1])}</a>` : "<span></span>"}
+        ${list[i + 1] ? `<a href="#/sure/${list[i + 1][0]}">${esc(list[i + 1][1])} →</a>` : "<span></span>"}
       </nav>`;
     const bind = () => {
-      ziyaret(key, `${s.ad} Sûresi`, `#/sure/${s.no}`);
+      if (durum === "yukleniyor") metinYukle(n);
+      ziyaret(key, `${L[1]} Sûresi`, `#/sure/${n}`);
       bindYolBandi(); bindDefterKutusu(); bindOnay();
       document.getElementById("gMeal").onchange = (e) => { sureState.gizliMeal = e.target.checked; U().render(); };
       document.querySelectorAll(".al-tr.hid").forEach((el) => el.onclick = () => el.classList.remove("hid"));
-      document.querySelectorAll("[data-ayet]").forEach((b) => b.onclick = () => playAyet(s.no, +b.dataset.ayet, document.querySelector(`[data-amsg="${b.dataset.ayet}"]`)));
+      document.querySelectorAll("[data-ayet]").forEach((b) => b.onclick = () => playAyet(n, +b.dataset.ayet, document.querySelector(`[data-amsg="${b.dataset.ayet}"]`)));
     };
     return { html, bind };
   }
