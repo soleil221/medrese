@@ -210,6 +210,7 @@
           ${window.Views.lessonsBlock(c)}
           ${c.id === "k-sarf" ? `<p class="btns"><a class="btn alt" href="#/cekim">Çekim Aracı'nı aç →</a><a class="btn ghost" href="#/metin/emsile">Emsile metni →</a></p>` : ""}
           ${c.id === "k-hadis" || c.id === "k-nahiv" ? `<p class="btns"><a class="btn alt" href="#/metin/kirk-hadis">Kırk Hadis →</a></p>` : ""}
+          ${c.id === "k-tasavvuf" ? `<p class="btns"><a class="btn alt" href="#/metin/eyyuhel-veled">Eyyühe'l-Veled metni →</a></p>` : ""}
           ${c.id === "k-kelam" || c.id === "k-akaid1" ? `<p class="btns"><a class="btn alt" href="#/metin/akaid-nesefi">el-Akāidü'n-Nesefiyye metni →</a></p>` : ""}
           ${c.id === "k-tefsir" || c.id === "m-tefsirusul" ? `<p class="btns"><a class="btn alt" href="#/tahlil">Amme cüzü tahlili →</a></p>` : ""}
           <h2>Metinler ve kaynaklar <small class="muted">${pct(p)}</small></h2>

@@ -52,7 +52,7 @@
     if (!t) return "";
     const rows = t.satirlar.filter((r) => r.ders === key);
     return `<div class="metin metin-inline">${rows.map((r) => `<div class="mrow">
-      <div class="mhead"><a href="#/metin/${id}"><b>${U().esc(t.title)}</b></a> <small class="muted">§${t.satirlar.indexOf(r) + 1} · ${U().esc(r.baslik)}</small></div>
+      <div class="mhead"><a href="#/metin/${id}"><b>${U().esc(t.title)}</b></a> <small class="muted">§${t.satirlar.indexOf(r) + 1} · ${U().esc(r.baslik)}${r.ozet ? " · özet" : ""}</small></div>
       <div class="mar" lang="ar">${r.ar}</div><div class="mtr">${U().esc(r.tr)}</div></div>`).join("")}</div>`;
   }
   const renderTokens = (html) => html
@@ -651,7 +651,7 @@
       rows = Sf.emsile(Sf.analyze(t.uretilen.kok), Sf.BABS[t.uretilen.bab - 1]).map((x) => ({ ar: x.ar, tr: `<b>${x.ad}</b>${x.tr ? " — " + x.tr : ""}` }));
     } else {
       rows = t.satirlar.map((r, i) => ({
-        head: r.baslik ? `<b>${i + 1}. ${esc(r.baslik)}</b>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}` : `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}`,
+        head: r.baslik ? `<b>${i + 1}. ${esc(r.baslik)}</b>${r.ozet ? ` <span class="tag">özet</span>` : ""}${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}` : `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}`,
         ar: r.ar, tr: esc(r.tr),
         kelimeler: r.kelimeler
       }));

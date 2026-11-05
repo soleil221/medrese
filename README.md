@@ -39,6 +39,9 @@ Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğ
 - **Usûl-i Hadis** — Nuhbetü'l-Fiker sırasıyla: haberin yolları, makbul haber, senedde düşme, râvide kusur,
   isnad, tahammül-edâ ve cerh-ta'dîl
 - **Siyer** — Nûru'l-Yakîn sırasıyla 10 dönem: doğumdan vefata
+- **Usûl-i Tefsir** — İtkān ve el-Fevzü'l-Kebîr çizgisinde: nüzul ve Mekkî-Medenî, esbâbü'n-nüzûl, nesih (Dihlevî'nin beş örneği),
+  muhkem-müteşâbih, kıraatler (yedi imam ve râvileri), tefsirin kaynakları
+- **Tasavvuf ve Ahlâk** — Eyyühe'l-Veled üzerinden üç ders
 - **Usûl-i Fıkıh** — Menâr sırasıyla: lafzın taksimleri (hâs-âm, zuhur-hafâ, dört delâlet), emir-nehiy,
   Sünnet, icmâ-kıyas-istihsân, hüküm-ehliyet-avârız
 - **Amme cüzü tahlili** — âyet âyet meal, kelime kelime i'râb ve sarf, belâgat notları, kârîden dinleme;
@@ -48,7 +51,7 @@ Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğ
 - **Tecvid sesleri** — her kural için örnek âyetler; kârî okuyuşu (everyayah.com, internet gerekir) ve kendi okuyuşunu
   kaydedip karşılaştırma (kayıtlar yalnızca cihazda, IndexedDB)
 - **Metinler** — Arapça ve Türkçe yan yana; tercümeyi veya harekeleri gizleme; kelime notlarından çekim aracına geçiş.
-  Emsile metni, İmam Nevevî'nin Kırk Hadis'inin tamamı (42 hadis) ve el-Akāidü'n-Nesefiyye'nin tamamı (25 bölüm);
+  Emsile metni, İmam Nevevî'nin Kırk Hadis'inin tamamı (42 hadis) ve el-Akāidü'n-Nesefiyye'nin tamamı (25 bölüm), Eyyühe'l-Veled'den seçmeler (13 bölüm);
   tekrar kartı olarak da eklenebilir
 - **Hıfz** — 604 sayfalık mushaf haritası (zayıf/orta/sağlam), günlük plan: yeni ezber + yakın tekrar
   (son ezberlenen sayfalar) + uzak tekrar (sayfa usulü: en eski ve zayıf sayfalar önce; cüz usulü: her gün sıradaki cüz);

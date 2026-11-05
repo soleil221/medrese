@@ -1,6 +1,6 @@
 // Basit çevrimdışı önbellek: önce ağ, olmazsa önbellek.
-const CACHE = "medrese-v7";
-const ASSETS = ["./", "index.html", "css/style.css", "js/store.js", "js/app.js", "js/data/klasik.js", "js/data/modern.js", "js/data/dersler.js", "js/data/dersler-sarf-nahiv.js", "js/data/dersler-kafiye.js", "js/data/dersler-belagat.js", "js/data/dersler-mantik.js", "js/data/dersler-fikih.js", "js/data/tecvid-ayetler.js", "js/ses.js", "js/data/akaid-nesefi.js", "js/data/akaid-nesefi-2.js", "js/data/dersler-kelam-2.js", "js/data/dersler-hadisusul.js", "js/data/dersler-siyer.js", "js/data/tahlil-amme.js", "js/data/dersler-kelam.js", "js/data/dersler-usul.js", "js/views-hafta-tahlil.js", "js/data/metinler.js", "js/data/sureler.js", "js/sarf.js", "js/features.js", "manifest.json", "icons/icon.svg"];
+const CACHE = "medrese-v8";
+const ASSETS = ["./", "index.html", "css/style.css", "js/store.js", "js/app.js", "js/data/klasik.js", "js/data/modern.js", "js/data/dersler.js", "js/data/dersler-sarf-nahiv.js", "js/data/dersler-kafiye.js", "js/data/dersler-belagat.js", "js/data/dersler-mantik.js", "js/data/dersler-fikih.js", "js/data/tecvid-ayetler.js", "js/ses.js", "js/data/akaid-nesefi.js", "js/data/akaid-nesefi-2.js", "js/data/dersler-kelam-2.js", "js/data/dersler-hadisusul.js", "js/data/dersler-siyer.js", "js/data/eyyuhel-veled.js", "js/data/dersler-tefsir.js", "js/data/dersler-tasavvuf.js", "js/data/tahlil-amme.js", "js/data/dersler-kelam.js", "js/data/dersler-usul.js", "js/views-hafta-tahlil.js", "js/data/metinler.js", "js/data/sureler.js", "js/sarf.js", "js/features.js", "manifest.json", "icons/icon.svg"];
 
 self.addEventListener("install", (e) => e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS))));
 self.addEventListener("activate", (e) => e.waitUntil(
