@@ -293,7 +293,7 @@
     if (id === "ihtilaf") return ihtilafSayfasi();
     const m = MS()[id];
     if (!m) return meseleler();
-    const key = "mesele:" + m.id, M = MS();
+    const key = "mesele:" + m.id, M = MS(), D = (window.DERINLIK || {})[m.id];
     const html = `
       <a class="back" href="#/meseleler">← Meseleler</a>
       ${yolBandi(key)}
@@ -302,7 +302,7 @@
         <h1>${esc(m.baslik)}</h1>
         <p class="soru">${esc(m.soru)}</p>
         <p class="lead">${esc(m.ozet)}</p>
-        <nav class="bolum-nav"><a href="#nas">Naslar</a><a href="#gorus">Görüşler</a><a href="#kok">İhtilafın kökü</a><a href="#bugun">Bugün</a><a href="#durum">Özet tablo</a><a href="#kaynak">Kaynaklar</a></nav>
+        <nav class="bolum-nav"><a href="#nas">Naslar</a><a href="#gorus">Görüşler</a>${D ? `<a href="#munakasa">Tartışma</a>` : ""}<a href="#kok">İhtilafın kökü</a>${D ? `<a href="#seyir">Seyir</a><a href="#tercih">Tercihler</a>` : ""}<a href="#bugun">Bugün</a><a href="#durum">Özet tablo</a>${D ? `<a href="#sorular">Sorular</a>` : ""}<a href="#kaynak">Kaynaklar</a></nav>
 
         <h2 id="nas">Âyetler</h2>
         ${m.ayetler.map(([ref, ar, tr]) => `<div class="nas"><div class="nas-ar" lang="ar">${ar}</div><p>${esc(tr)}</p><small class="muted">${esc(ref)}</small></div>`).join("")}
@@ -318,8 +318,23 @@
           ${g.alimler && g.alimler.length ? `<div class="chips">${g.alimler.map(alimChip).join("")}</div>` : ""}
         </section>`).join("")}</div>
 
+        ${D ? `<h2 id="munakasa">Delillerin tartışması</h2>
+        <div class="munakasa">${D.munakasa.map((x) => `<section class="mnk">
+          <h3>${esc(x.taraf)}</h3>
+          <div class="mnk-adim delil"><small>Delil</small><p>${esc(x.delil)}</p></div>
+          <div class="mnk-adim itiraz"><small>İtiraz</small><p>${esc(x.itiraz)}</p></div>
+          <div class="mnk-adim cevap"><small>Cevap</small><p>${esc(x.cevap)}</p></div>
+        </section>`).join("")}</div>` : ""}
+
         <h2 id="kok">İhtilafın kökü</h2>
         <div>${m.koken}</div>
+        ${D && D.usul && D.usul.length ? `<div class="usul-dugum"><small class="muted">Usul düğümleri</small>${refChips(D.usul)}</div>` : ""}
+
+        ${D ? `<h2 id="seyir">Tarihî seyir</h2>
+        <ol class="seyir">${D.seyir.map(([d, t]) => `<li><b>${esc(d)}</b><p>${esc(t)}</p></li>`).join("")}</ol>
+
+        <h2 id="tercih">Muhakkiklerin tercihleri</h2>
+        <div class="tercihler">${D.tercih.map((x) => { const a = AL()[x.alim]; return `<blockquote class="alim-not"><p>${esc(x.metin)}</p>${a ? `<footer>— <a href="#/alim/${a.id}">${esc(a.ad)}</a></footer>` : ""}</blockquote>`; }).join("")}</div>` : ""}
 
         <h2 id="bugun">Bugün</h2>
         <div>${m.cagdas}</div>
@@ -330,6 +345,8 @@
           <div class="d-cogunluk"><h4>Çoğunluk görüşü</h4><ul>${m.durum.cogunluk.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
           <div class="d-tartismali"><h4>Tartışmalı</h4><ul>${m.durum.tartismali.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
         </div>
+
+        ${D && D.sorular ? `<section class="okuma tefekkur" id="sorular"><h2>Kendini sına</h2><ol>${D.sorular.map((s) => `<li>${esc(s)}</li>`).join("")}</ol></section>` : ""}
 
         <h2>Âlimler</h2>
         <div class="chips">${m.alimler.map(alimChip).join("")}</div>
@@ -411,6 +428,8 @@
 
         ${goruslerde.length ? `<h2>Meselelerdeki görüşleri</h2><ul class="gorus-list">${goruslerde.map(({ m, g }) => `<li><a href="#/mesele/${m.id}"><b>${esc(m.baslik)}</b></a> <small class="muted">${esc(g.ekol)}</small><p>${g.hukum}</p></li>`).join("")}</ul>` : ""}
         ${surelerde.length ? `<h2>Tefsir notları</h2><ul class="gorus-list">${surelerde.map(({ s, n }) => `<li><a href="#/sure/${s.no}"><b>${esc(s.ad)} Sûresi</b></a><p>${arw(n.metin)}</p></li>`).join("")}</ul>` : ""}
+        ${(() => { const t = []; Object.entries(window.DERINLIK || {}).forEach(([mid, d]) => (d.tercih || []).forEach((x) => { if (x.alim === a.id && MS()[mid]) t.push({ m: MS()[mid], x }); }));
+          return t.length ? `<h2>Meselelerdeki tercihleri</h2><ul class="gorus-list">${t.map(({ m, x }) => `<li><a href="#/mesele/${m.id}"><b>${esc(m.baslik)}</b></a><p>${esc(x.metin)}</p></li>`).join("")}</ul>` : ""; })()}
         ${(() => { const r = atiflar("alim:" + a.id); return r.length ? `<h2>Geçtiği kavram ve konular</h2>${refChips(r)}` : ""; })()}
       </article>
       ${defterKutusu(key, "alim", a.ad, `#/alim/${a.id}`)}
