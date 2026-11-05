@@ -59,6 +59,12 @@ Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğ
 - **Yedekleme** — JSON olarak dışa/içe aktarma
 - **Çevrimdışı çalışma (PWA)** — telefona "Ana ekrana ekle" ile uygulama gibi kurulabilir; açık/koyu tema
 
+## Yayın (GitHub Pages)
+
+Uygulama statik dosyalardan oluştuğu için GitHub Pages ile doğrudan yayınlanır:
+Settings → Pages → Build and deployment → Source: **Deploy from a branch**, Branch: bu dal, klasör: **/ (root)**.
+Adres: `https://soleil221.github.io/medrese/`
+
 ## Çalıştırma
 
 Derleme veya kurulum gerekmez. Herhangi bir statik sunucu yeterli:
