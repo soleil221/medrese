@@ -25,11 +25,18 @@ Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğ
     ve hemzeli birleşimler (أَتَى، جَاءَ، أَمَّ)
   - Sülâsî mezîd 8 bab: if'âl, tef'îl, mufâale, ifti'âl (ibdâl/idğam dahil), infi'âl, tefa''ul, tefâul, istif'âl —
     sâlim, mehmûz (آمَنَ), muzâaf (أَحَبَّ), misâl (أَوْجَدَ، اِتَّصَلَ), ecvef (أَقَامَ، اِخْتَارَ), nâkıs (أَعْطَى، تَلَقَّى) ve lefîf (اِتَّقَى)
+  - Rubâî: mücerred (دَحْرَجَ), tefa'lül (تَدَحْرَجَ), if'inlâl (اِحْرَنْجَمَ), if'illâl (اِقْشَعَرَّ، اِطْمَأَنَّ)
   - Emsile-i muhtelife (sâlim kökler); “ezber modu” ile hücreleri gizleyip kendini sınama
   - `#/cekim/KÖK/BAB` bağlantısıyla doğrudan açılır (ör. `#/cekim/قول/1`, `#/cekim/خرج/istifal`)
 - **Sarf ve Nahiv dersleri** — Emsile, mehmûz-muzâaf, misâl-ecvef, nâkıs (motorla üretilen tablolar);
   isim/fiil cümlesi, harf-i cerler, kâne ve inne grupları, muzâriyi nasb/cezm edenler;
   Kâfiye seviyesi: mef'ûller, hâl ve temyîz, istisnâ, tâbi'ler, münâdâ; **i'râb alıştırmaları**
+- **Belâgat** — Telhîs sırasıyla: fesâhat, haber-inşâ, kasr-îcâz-ıtnâb, teşbih çeşitleri, mecaz-istiâre-kinâye, bedî' (Kur'an örnekleriyle)
+- **Mantık** — Îsâgûcî sırasıyla: delâlet, lafızlar, külliyât, tarif, kazıyyeler, tenâkuz ve aks, kıyas, sınaât-ı hams
+- **Fıkıh** — Nûru'l-Îzâh sırasıyla Hanefî ibadet fıkhı: taharet, abdest-mesh, gusül-teyemmüm, namaz (vakit, farz, vacip,
+  sünnet, bozanlar, sehiv), cuma-bayram-sefer-cenaze, oruç, zekât, hac
+- **Tecvid sesleri** — her kural için örnek âyetler; kârî okuyuşu (everyayah.com, internet gerekir) ve kendi okuyuşunu
+  kaydedip karşılaştırma (kayıtlar yalnızca cihazda, IndexedDB)
 - **Metinler** — Arapça ve Türkçe yan yana; tercümeyi veya harekeleri gizleme; kelime notlarından çekim aracına geçiş.
   Emsile metni ve İmam Nevevî'nin Kırk Hadis'inin tamamı (42 hadis; tekrar kartı olarak da eklenebilir)
 - **Hıfz** — 604 sayfalık mushaf haritası (zayıf/orta/sağlam), günlük plan: yeni ezber + yakın tekrar
@@ -54,7 +61,7 @@ Ardından `http://localhost:8000` adresini açın. (GitHub Pages ile de doğruda
 node tests/sarf.test.js
 ```
 
-Çekim motorunu bilinen ~340 çekime karşı doğrular.
+Çekim motorunu bilinen ~380 çekime karşı doğrular.
 
 ## Yapı
 
@@ -70,6 +77,8 @@ js/data/metinler.js Okuma metinleri (Emsile, Kırk Hadis'in tamamı)
 js/data/sureler.js  114 surenin Medine mushafındaki başlangıç sayfaları
 js/store.js         İlerleme, notlar, günlük, kartlar, hıfz (localStorage)
 js/sarf.js          Çekim (tasrîf) motoru
+js/ses.js           Kârî sesi ve kullanıcı ses kaydı
+js/data/dersler-belagat.js, dersler-mantik.js, dersler-fikih.js, tecvid-ayetler.js
 js/features.js      Ders, sınav, tekrar, hıfz ve çekim ekranları
 js/app.js           Panel, müfredat, günlük, ayarlar ve yönlendirme
 sw.js               Çevrimdışı önbellek

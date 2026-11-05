@@ -72,6 +72,79 @@
     });
   }
 
+  // ═════════════ TECVİD: ÖRNEK ÂYETLER VE SES ═════════════
+  function ayetBlock(cid, l) {
+    if (!l.ayetler || !window.Ses) return "";
+    const Ses = window.Ses, kari = Ses.getKari();
+    return `<section class="card ayetler">
+      <div class="row-head"><h3>Örnek âyetler: dinle ve oku</h3>
+        <label class="kari">Kârî <select id="kari">${Ses.KARILER.map((k) => `<option value="${k.id}" ${k.id === kari ? "selected" : ""}>${k.ad}</option>`).join("")}</select></label></div>
+      <p class="muted tiny">Önce kârîyi dinle, sonra kendi okuyuşunu kaydedip karşılaştır. Kârî sesleri internetten (everyayah.com) gelir; kayıtların yalnızca bu cihazda saklanır.</p>
+      <ul>${l.ayetler.map(([kural, ar, sure, ayet, sad], i) => `
+        <li data-i="${i}">
+          <div class="ay-top"><b>${U().esc(kural)}</b> <small class="muted">${sad} ${ayet} (${sure}:${ayet})</small></div>
+          <div class="ay-ar" lang="ar">${ar}</div>
+          <div class="btns">
+            <button class="sm" data-dinle="${i}">▶ Kârîyi dinle</button>
+            <button class="sm alt" data-kaydet="${i}">● Kaydet</button>
+            <button class="sm ghost" data-benim="${i}" disabled>▶ Kaydımı dinle</button>
+            <button class="sm ghost" data-sil="${i}" hidden>Kaydı sil</button>
+            <small class="ay-msg muted"></small>
+          </div>
+        </li>`).join("")}</ul>
+    </section>`;
+  }
+  function bindAyetler(cid, l) {
+    if (!l.ayetler || !window.Ses) return;
+    const Ses = window.Ses, key = (i) => `${cid}/${l.id}/${i}`;
+    const msg = (i, t) => { const e = document.querySelector(`li[data-i="${i}"] .ay-msg`); if (e) e.textContent = t; };
+    const refresh = async (i) => {
+      const has = !!(await Ses.get(key(i)));
+      const b = document.querySelector(`[data-benim="${i}"]`), d = document.querySelector(`[data-sil="${i}"]`);
+      if (b) b.disabled = !has;
+      if (d) d.hidden = !has;
+    };
+    l.ayetler.forEach((_, i) => refresh(i));
+    const sel = document.getElementById("kari");
+    if (sel) sel.onchange = () => Ses.setKari(sel.value);
+    document.querySelectorAll("[data-dinle]").forEach((b) => b.onclick = () => {
+      const i = +b.dataset.dinle, [, , sure, ayet] = l.ayetler[i];
+      msg(i, "Yükleniyor…");
+      Ses.play(Ses.url(Ses.getKari(), sure, ayet), () => msg(i, ""))
+        .then(() => msg(i, "Çalıyor…"))
+        .catch(() => msg(i, "Ses yüklenemedi. İnternet bağlantını kontrol et veya başka bir kârî seç."));
+    });
+    if (!Ses.supported()) document.querySelectorAll("[data-kaydet]").forEach((b) => { b.disabled = true; b.title = "Bu tarayıcı ses kaydını desteklemiyor"; });
+    let rec = null;
+    document.querySelectorAll("[data-kaydet]").forEach((b) => b.onclick = async () => {
+      const i = +b.dataset.kaydet;
+      if (rec) {
+        const r = rec; rec = null;
+        await r.stop();
+        b.textContent = "● Kaydet"; b.classList.remove("danger");
+        msg(i, "Kaydedildi.");
+        refresh(i);
+        return;
+      }
+      try {
+        Ses.stop();
+        rec = await Ses.startRecording(key(i));
+        b.textContent = "■ Durdur"; b.classList.add("danger");
+        msg(i, "Kaydediliyor… okumayı bitirince Durdur'a bas.");
+      } catch (e) { msg(i, "Mikrofona erişilemedi: izin vermen gerekiyor."); }
+    });
+    document.querySelectorAll("[data-benim]").forEach((b) => b.onclick = async () => {
+      const i = +b.dataset.benim, blob = await Ses.get(key(i));
+      if (!blob) return;
+      const u = URL.createObjectURL(blob);
+      Ses.play(u, () => { URL.revokeObjectURL(u); msg(i, ""); }).then(() => msg(i, "Kaydın çalıyor…"));
+    });
+    document.querySelectorAll("[data-sil]").forEach((b) => b.onclick = async () => {
+      const i = +b.dataset.sil;
+      await Ses.del(key(i)); msg(i, "Kayıt silindi."); refresh(i);
+    });
+  }
+
   // ═════════════ DERS İÇERİĞİ ═════════════
   function lessonsBlock(c) {
     const ls = D[c.id];
@@ -99,6 +172,7 @@
       <article class="lesson">
         <header><small class="muted">${idx + 1}. ders / ${ls.length}</small><h1>${U().esc(l.title)}</h1></header>
         <div class="prose">${renderTokens(l.body)}</div>
+        ${ayetBlock(cid, l)}
         ${exercisesBlock(l)}
 
         <section class="card">
@@ -121,6 +195,7 @@
 
     const bind = () => {
       bindExercises(l);
+      bindAyetler(cid, l);
       const add = document.getElementById("add-deck"), rm = document.getElementById("rm-deck");
       if (add) add.onclick = () => { S.addCards(keys); U().render(); };
       if (rm) rm.onclick = () => { S.removeCards(key); U().render(); };
@@ -407,7 +482,8 @@
   }
 
   // ═════════════ ÇEKİM ARACI ═════════════
-  const cekimState = { root: "نصر", mode: "mucerred", bab: 1, mezid: "ifal", hide: false, applied: "" };
+  const cekimState = { root: "نصر", mode: "mucerred", bab: 1, mezid: "ifal", rubai: "rubai", hide: false, applied: "" };
+  const RUBAI_ORNEK = [["دحرج", "rubai"], ["زلزل", "rubai"], ["ترجم", "rubai"], ["وسوس", "rubai"], ["دحرج", "tefallul"], ["حرجم", "ifinlal"], ["قشعر", "ifillal"], ["طمأن", "ifillal"]];
   const ORNEKLER = [
     ["Sâlim", [["كتب", 1], ["جلس", 2], ["ذهب", 3], ["شرب", 4], ["كرم", 5]]],
     ["Mehmûz", [["أكل", 1], ["سأل", 3], ["قرأ", 3]]],
@@ -436,12 +512,13 @@
     cekimState.root = root;
     if (/^\d$/.test(b)) { cekimState.bab = +b; cekimState.mode = "mucerred"; }
     else if (window.Sarf.MEZID.some((m) => m.k === b)) { cekimState.mezid = b; cekimState.mode = "mezid"; }
+    else if (window.Sarf.RUBAI.some((m) => m.k === b)) { cekimState.rubai = b; cekimState.mode = "rubai"; }
   }
 
   function cekim(root, b) {
     applyParams(root, b);
     const Sf = window.Sarf, st = cekimState, esc = U().esc;
-    const an = Sf.analyze(st.root);
+    const an = st.mode === "rubai" ? Sf.analyzeRubai(st.root) : Sf.analyze(st.root);
     const cell = (t) => `<td lang="ar" class="${st.hide ? "hid" : ""}">${t == null ? "—" : t}</td>`;
 
     let out = null, content = "";
@@ -452,7 +529,7 @@
         `<tr><td><b>${x.ad}</b>${x.tr ? `<small class="muted">${x.tr}</small>` : ""}</td>${cell(x.ar)}</tr>`).join("")}</tbody></table></div>`
         : `<div class="notice">Emsile-i muhtelife şimdilik yalnız sâlim kökler için üretilir. Bu kök: ${an.label}.</div>`;
     } else {
-      out = st.mode === "mezid" ? Sf.mezid(an, st.mezid) : Sf.conjugate(an, Sf.BABS[st.bab - 1]);
+      out = st.mode === "mezid" ? Sf.mezid(an, st.mezid) : st.mode === "rubai" ? Sf.rubai(an, st.rubai) : Sf.conjugate(an, Sf.BABS[st.bab - 1]);
       if (out.error) content = `<div class="notice">${out.error}</div>`;
       else {
         const r = out.r;
@@ -475,11 +552,15 @@
       }
     }
 
-    const babButtons = st.mode === "mezid"
+    const babButtons = st.mode === "rubai"
+      ? Sf.RUBAI.map((m) => `<button class="${m.k === st.rubai ? "" : "ghost"}" data-rb="${m.k}" title="${esc(m.anlam)}"><small>${m.ad}</small> <span lang="ar">${m.mazi.replace(/F/g, "ف").replace(/A/g, "ع").replace(/L/g, "ل").replace(/M/g, "ل")}${"\u064E"}</span></button>`).join("")
+      : st.mode === "mezid"
       ? Sf.MEZID.map((m) => `<button class="${m.k === st.mezid ? "" : "ghost"}" data-mz="${m.k}" title="${esc(m.anlam)}"><small>${m.ad}</small> <span lang="ar">${m.mazi.replace(/F/g, "ف").replace(/A/g, "ع").replace(/L/g, "ل").replace(/T/g, "ت")}${"َ"}</span></button>`).join("")
       : Sf.BABS.map((x) => `<button class="${x.n === st.bab ? "" : "ghost"}" data-bab="${x.n}"><small>${x.n}. bab</small> <span lang="ar">${x.ad}</span></button>`).join("");
-    const mz = Sf.MEZID.find((m) => m.k === st.mezid);
-    const examples = st.mode === "mezid"
+    const mz = st.mode === "rubai" ? Sf.RUBAI.find((m) => m.k === st.rubai) : Sf.MEZID.find((m) => m.k === st.mezid);
+    const examples = st.mode === "rubai"
+      ? RUBAI_ORNEK.map(([k, rk]) => `<button class="ghost sm" data-ex="${k}" data-rbk="${rk}"><span lang="ar">${k}</span> <small>${Sf.RUBAI.find((m) => m.k === rk).ad}</small></button>`).join("")
+      : st.mode === "mezid"
       ? MEZID_ORNEK.map(([grp, xs]) => `<span class="exg"><small class="muted">${grp}:</small> ${(xs || Sf.MEZID.map((m) => [m.ornek, m.k]))
           .map(([k, mk]) => `<button class="ghost sm" data-ex="${k}" data-mzk="${mk}"><span lang="ar">${k}</span> <small>${xs ? Sf.MEZID.find((m) => m.k === mk).ad : ""}</small></button>`).join("")}</span>`).join("")
       : ORNEKLER.map(([grp, xs]) => `<span class="exg"><small class="muted">${grp}:</small> ${xs.map(([k, n]) => `<button class="ghost sm" data-ex="${k}" data-b="${n}" lang="ar">${k}</button>`).join("")}</span>`).join("");
@@ -487,12 +568,12 @@
     const html = `
       <a class="back" href="#/ders/k-sarf">← Sarf</a>
       <h1>Çekim Aracı <span lang="ar" class="muted">تصريف</span></h1>
-      <p class="muted intro">Üç harfli kökü gir. İlletli fiillerde kökün aslını yaz: <span lang="ar">قال</span> → <span lang="ar">قول</span>, <span lang="ar">دعا</span> → <span lang="ar">دعو</span>. Sâlim, mehmûz, muzâaf, misâl, ecvef, nâkıs ve lefîf fiiller hem sülâsî mücerredde hem 8 mezîd babında çekilir.</p>
-      <div class="tabs">${[["mucerred", "Sülâsî mücerred"], ["mezid", "Sülâsî mezîd"], ["emsile", "Emsile-i muhtelife"]].map(([k, t]) => `<a href="javascript:void 0" data-mode="${k}" class="${st.mode === k ? "on" : ""}">${t}</a>`).join("")}</div>
+      <p class="muted intro">Üç harfli kökü gir. İlletli fiillerde kökün aslını yaz: <span lang="ar">قال</span> → <span lang="ar">قول</span>, <span lang="ar">دعا</span> → <span lang="ar">دعو</span>. Sâlim, mehmûz, muzâaf, misâl, ecvef, nâkıs ve lefîf fiiller hem sülâsî mücerredde hem 8 mezîd babında; dört harfli fiiller de “Rubâî” sekmesinde 4 babta çekilir.</p>
+      <div class="tabs">${[["mucerred", "Sülâsî mücerred"], ["mezid", "Sülâsî mezîd"], ["rubai", "Rubâî"], ["emsile", "Emsile-i muhtelife"]].map(([k, t]) => `<a href="javascript:void 0" data-mode="${k}" class="${st.mode === k ? "on" : ""}">${t}</a>`).join("")}</div>
       <div class="card cekim-form">
-        <div class="root-row"><label>Kök (3 harf)<input id="root" lang="ar" dir="rtl" value="${esc(st.root)}" maxlength="12" autocomplete="off"></label>
+        <div class="root-row"><label>Kök (${st.mode === "rubai" ? 4 : 3} harf)<input id="root" lang="ar" dir="rtl" value="${esc(st.root)}" maxlength="12" autocomplete="off"></label>
           ${an.error ? "" : `<span class="tag klasik">${an.label}</span>`}
-          ${st.mode === "mezid" && mz ? `<small class="muted">${mz.ad}: ${esc(mz.anlam)}</small>` : ""}</div>
+          ${(st.mode === "mezid" || st.mode === "rubai") && mz ? `<small class="muted">${mz.ad}: ${esc(mz.anlam)}</small>` : ""}</div>
         <div class="babs">${babButtons}</div>
         <div class="btns exs"><small class="muted">Örnekler:</small> ${examples}</div>
         <label class="check"><input type="checkbox" id="hide" ${st.hide ? "checked" : ""}> Ezber modu (hücreleri gizle, tıklayınca açılır)</label>
@@ -502,12 +583,20 @@
     const bind = () => {
       const rootEl = document.getElementById("root");
       rootEl.oninput = () => { st.root = rootEl.value; const pos = rootEl.selectionStart; U().render(); const n = document.getElementById("root"); n.focus(); n.setSelectionRange(pos, pos); };
-      document.querySelectorAll("[data-mode]").forEach((a) => a.onclick = (e) => { e.preventDefault(); st.mode = a.dataset.mode; U().render(); });
+      document.querySelectorAll("[data-mode]").forEach((a) => a.onclick = (e) => {
+        e.preventDefault();
+        st.mode = a.dataset.mode;
+        const n = [...st.root.replace(/[\u064B-\u0652\s]/g, "")].length;
+        if (st.mode === "rubai" && n !== 4) st.root = "دحرج";
+        if (st.mode !== "rubai" && n === 4) st.root = "نصر";
+        U().render();
+      });
       document.querySelectorAll("[data-bab]").forEach((x) => x.onclick = () => { st.bab = +x.dataset.bab; U().render(); });
       document.querySelectorAll("[data-mz]").forEach((x) => x.onclick = () => { st.mezid = x.dataset.mz; U().render(); });
+      document.querySelectorAll("[data-rb]").forEach((x) => x.onclick = () => { st.rubai = x.dataset.rb; U().render(); });
       document.querySelectorAll("[data-ex]").forEach((x) => x.onclick = () => {
         st.root = x.dataset.ex;
-        if (x.dataset.mzk) st.mezid = x.dataset.mzk; else st.bab = +x.dataset.b;
+        if (x.dataset.rbk) st.rubai = x.dataset.rbk; else if (x.dataset.mzk) st.mezid = x.dataset.mzk; else st.bab = +x.dataset.b;
         U().render();
       });
       document.getElementById("hide").onchange = (e) => { st.hide = e.target.checked; U().render(); };

@@ -71,6 +71,18 @@ mz('كسر','infial','maziMalum',0,'اِنْكَسَرَ'); mz('كسر','infial'
 mz('كلم','tefaul_','maziMalum',0,'تَكَلَّمَ'); mz('كلم','tefaul_','muzariMalum',0,'يَتَكَلَّمُ'); mz('كلم','tefaul_','masdar',null,'تَكَلُّمٌ'); mz('كلم','tefaul_','nehy',0,'لَا تَتَكَلَّمْ');
 mz('بعد','tefaul','maziMalum',0,'تَبَاعَدَ'); mz('بعد','tefaul','muzariMalum',0,'يَتَبَاعَدُ');
 mz('خرج','istifal','maziMalum',0,'اِسْتَخْرَجَ'); mz('خرج','istifal','muzariMalum',0,'يَسْتَخْرِجُ'); mz('خرج','istifal','muzariMechul',0,'يُسْتَخْرَجُ'); mz('خرج','istifal','masdar',null,'اِسْتِخْرَاجٌ'); mz('خرج','istifal','ismiFail',null,'مُسْتَخْرِجٌ');
+// rubâî
+function rb(root, key, field, idx, exp) {
+  const out = S.rubai(S.analyzeRubai(root), key);
+  const got = idx == null ? out.r[field] : out.r[field][idx];
+  if (got !== exp.normalize("NFC")) { console.log(`✗ ${root} ${key} ${field}[${idx}] got ${got} exp ${exp}`); fail++; } else pass++;
+}
+[['maziMalum',0,'دَحْرَجَ'],['maziMalum',12,'دَحْرَجْتُ'],['maziMechul',0,'دُحْرِجَ'],['muzariMalum',0,'يُدَحْرِجُ'],['muzariMalum',12,'أُدَحْرِجُ'],['muzariMechul',0,'يُدَحْرَجُ'],['emir',0,'دَحْرِجْ'],['nehy',0,'لَا تُدَحْرِجْ'],['ismiFail',null,'مُدَحْرِجٌ'],['ismiMeful',null,'مُدَحْرَجٌ'],['masdar',null,'دَحْرَجَةٌ / دِحْرَاجٌ']].forEach(([f,i,e]) => rb('دحرج','rubai',f,i,e));
+rb('زلزل','rubai','maziMalum',0,'زَلْزَلَ'); rb('ترجم','rubai','muzariMalum',0,'يُتَرْجِمُ'); rb('وسوس','rubai','muzariMalum',0,'يُوَسْوِسُ');
+[['maziMalum',0,'تَدَحْرَجَ'],['muzariMalum',0,'يَتَدَحْرَجُ'],['emir',0,'تَدَحْرَجْ'],['masdar',null,'تَدَحْرُجٌ'],['ismiFail',null,'مُتَدَحْرِجٌ']].forEach(([f,i,e]) => rb('دحرج','tefallul',f,i,e));
+[['maziMalum',0,'اِحْرَنْجَمَ'],['muzariMalum',0,'يَحْرَنْجِمُ'],['masdar',null,'اِحْرِنْجَامٌ'],['ismiFail',null,'مُحْرَنْجِمٌ']].forEach(([f,i,e]) => rb('حرجم','ifinlal',f,i,e));
+[['maziMalum',0,'اِقْشَعَرَّ'],['maziMalum',12,'اِقْشَعْرَرْتُ'],['muzariMalum',0,'يَقْشَعِرُّ'],['emir',0,'اِقْشَعْرِرْ'],['emir',1,'اِقْشَعِرَّا'],['masdar',null,'اِقْشِعْرَارٌ'],['ismiFail',null,'مُقْشَعِرٌّ']].forEach(([f,i,e]) => rb('قشعر','ifillal',f,i,e));
+[['maziMalum',0,'اِطْمَأَنَّ'],['muzariMalum',0,'يَطْمَئِنُّ'],['ismiFail',null,'مُطْمَئِنٌّ'],['masdar',null,'اِطْمِئْنَانٌ']].forEach(([f,i,e]) => rb('طمأن','ifillal',f,i,e));
 // emsile
 const e = S.emsile(S.analyze('نصر'), S.BABS[0]); console.log(e.map(x => x.ar).join(' | '));
 console.log(S.emsile(S.analyze('جلس'), S.BABS[1]).find(x=>x.k==='zarf').ar);

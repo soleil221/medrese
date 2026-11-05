@@ -63,12 +63,13 @@
       .replace(/أَأْ/g, "آ").replace(/أَا/g, "آ").replace(/أُؤْ/g, "أُو").replace(/إِئْ/g, "إِي")
       .replace(/اُؤْ/g, "اُو").replace(/اِئْ/g, "اِي");
   }
-  const seat = (s) => s.split(" ").map(seatWord).join(" ");
+  const seat = (s) => (s == null ? s : s.split(" ").map(seatWord).join(" "));
 
   // ───────── Kök çözümleme ─────────
   const STRIP = /[ً-ٰٟـ\s]/g;
   function analyze(input) {
     let letters = [...String(input).replace(STRIP, "")].map((c) => ("أإؤئآ".includes(c) ? "ء" : c === "ى" ? "ي" : c));
+    if (letters.length === 4) return { error: "Dört harfli kök: “Rubâî” sekmesini kullan." };
     if (letters.length !== 3) return { error: "Kök tam olarak üç harf olmalı (ör. ك ت ب)." };
     if (!letters.every((c) => /[ء-ي]/.test(c))) return { error: "Lütfen Arapça harfler gir." };
     if (letters.includes("ا")) return { error: "Kökte elif bulunmaz; kökün aslını yaz (قال → قول، باع → بيع، دعا → دعو)." };
@@ -412,6 +413,48 @@
     return { r, notes, bab: b };
   }
 
+  // ───────── Rubâî (dört harfli) fiiller ─────────
+  // Şablonlarda F, A, L, M dört kök harfidir.
+  const RUBAI = [
+    { k: "rubai", ad: "Rubâî mücerred", mazi: "FَAْLَM", mech: "FُAْLِM", pv: DA, body: "FَAْLِM", mbody: "FَAْLَM", emir: "FَAْLِM", fail: "مُFَAْLِMٌ", meful: "مُFَAْLَMٌ", masdar: "FَAْLَMَةٌ / FِAْLَاMٌ", ornek: "دحرج", anlam: "Dört harfli kök fiil" },
+    { k: "tefallul", ad: "Tefa'lül", mazi: "تَFَAْLَM", mech: null, pv: FA, body: "تَFَAْLَM", mbody: null, emir: "تَFَAْLَM", fail: "مُتَFَAْLِMٌ", meful: null, masdar: "تَFَAْLُMٌ", ornek: "دحرج", anlam: "Rubâî mücerredin mutâvaatı; lâzımdır" },
+    { k: "ifinlal", ad: "İf'inlâl", mazi: "اِFْAَنْLَM", mech: null, pv: FA, body: "FْAَنْLِM", mbody: null, emir: "اِFْAَنْLِM", fail: "مُFْAَنْLِMٌ", meful: null, masdar: "اِFْAِنْLَاMٌ", ornek: "حرجم", anlam: "Toplanma, mübalağa; lâzımdır" },
+    { k: "ifillal", ad: "İf'illâl", mazi: "اِFْAَLْMَM", mech: null, pv: FA, body: "FْAَLْMِM", mbody: null, emir: "اِFْAَLْMِM", fail: "مُFْAَLْMِMٌ", meful: null, masdar: "اِFْAِLْMَاMٌ", ornek: "قشعر", anlam: "Mübalağa (ürperme, yatışma); lâzımdır" }
+  ];
+
+  function analyzeRubai(input) {
+    const letters = [...String(input).replace(STRIP, "")].map((c) => ("أإؤئآ".includes(c) ? "ء" : c));
+    if (letters.length !== 4) return { error: "Rubâî kök tam olarak dört harf olmalı (ör. د ح ر ج)." };
+    if (!letters.every((c) => /[ء-ي]/.test(c))) return { error: "Lütfen Arapça harfler gir." };
+    if (letters.includes("ا") || letters.includes("ى") || letters.includes("ة")) return { error: "Kökte elif / tâ-i merbûta bulunmaz." };
+    const [f, a, l, m] = letters;
+    const label = f === l && a === m ? "Rubâî muzâaf (tekrarlı)" : letters.includes("ء") ? "Rubâî mehmûz" : "Rubâî sâlim";
+    return { root: letters, rubai: true, hamza: letters.includes("ء"), label };
+  }
+
+  function rubai(an, key) {
+    const b = RUBAI.find((x) => x.k === key);
+    const [f, a, l, m] = an.root;
+    const fill = (t) => t && t.split("F").join(f).split("A").join(a).split("L").join(l).split("M").join(m);
+    const r = {
+      maziMalum: MAZI_EK.map((e) => fill(b.mazi) + e),
+      maziMechul: b.mech ? MAZI_EK.map((e) => fill(b.mech) + e) : null,
+      muzariMalum: MUZ_ON.map((p, i) => p + b.pv + fill(b.body) + MUZ_EK[i]),
+      muzariMechul: b.mbody ? MUZ_ON.map((p, i) => p + DA + fill(b.mbody) + MUZ_EK[i]) : null,
+      emir: CEZM_EK.map((e) => fill(b.emir) + e),
+      nehy: CEZM_EK.map((e) => "لَا ت" + b.pv + fill(b.body) + e),
+      ismiFail: fill(b.fail), ismiMeful: fill(b.meful), masdar: fill(b.masdar)
+    };
+    const notes = [];
+    if (b.k === "ifillal") {
+      mapAll(r, (w) => idgam(w, m));
+      notes.push("İf'illâlde son iki harf idğam edilir (اِقْشَعْرَرَ → اِقْشَعَرَّ); sâkin ekte çözülür (اِقْشَعْرَرْتُ).");
+    }
+    if (!b.mech) notes.push(b.ad + " babı lâzım olduğu için meçhul ve ism-i mef'ûl kullanılmaz.");
+    if (an.hamza) mapAll(r, seat);
+    return norm({ r, notes, bab: b });
+  }
+
   // ───────── Emsile-i muhtelife (sülâsî sâlim) ─────────
   const MASDAR = { "نصر": "نَصْرًا", "ضرب": "ضَرْبًا", "فتح": "فَتْحًا", "علم": "عِلْمًا", "حسن": "حُسْنًا", "كتب": "كِتَابَةً", "دخل": "دُخُولًا", "جلس": "جُلُوسًا", "ذهب": "ذَهَابًا", "شرب": "شُرْبًا", "كرم": "كَرَمًا" };
   const NASR_TR = {
@@ -451,5 +494,5 @@
   // Geriye dönük uyumluluk: eski API
   function parseRoot(input) { const a = analyze(input); return a.error ? a : { root: a.root, analysis: a }; }
 
-  window.Sarf = { BABS, SIGA, MEZID, analyze, parseRoot, conjugate, mezid, emsile, seat };
+  window.Sarf = { BABS, SIGA, MEZID, RUBAI, analyzeRubai, rubai, analyze, parseRoot, conjugate, mezid, emsile, seat };
 })();

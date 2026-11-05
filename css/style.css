@@ -396,3 +396,19 @@ a.kchip:hover { border-color: var(--klasik); text-decoration: none; }
 @media (max-width: 620px) {
   .nav a { font-size: .7rem; padding: 6px 4px; }
 }
+
+/* ───── 5. tur: tecvid sesleri ───── */
+.ayetler ul { list-style: none; padding: 0; margin: 0; }
+.ayetler li { border-top: 1px solid var(--line); padding: 12px 0; }
+.ayetler li:first-child { border-top: 0; }
+.ay-top { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.ay-ar { font-size: 1.6rem; line-height: 2.1; text-align: right; margin: 4px 0 8px; }
+.ayetler .btns { align-items: center; }
+.ay-msg { font-size: .8rem; }
+.kari { display: flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--muted); }
+.kari select { width: auto; max-width: 260px; padding: .3em .5em; }
+button.alt { background: var(--modern); }
+[hidden] { display: none !important; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.ayetler .row-head { flex-wrap: wrap; gap: 8px; }
+@media (max-width: 620px) { .kari select { max-width: 100%; } .kari { width: 100%; } }
