@@ -1,0 +1,10 @@
+{
+  "name": "Medrese — İslami İlimler Takibi",
+  "short_name": "Medrese",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f3ec",
+  "theme_color": "#1f5f4a",
+  "lang": "tr",
+  "icons": [{ "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
