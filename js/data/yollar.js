@@ -45,8 +45,13 @@ window.YOLLAR = [
       { t: "alim", id: "esari", not: "Mu'tezile'den Ehl-i sünnete" },
       { t: "alim", id: "maturidi", not: "Semerkant'tan gelen ses" },
       { t: "mesele", id: "kader", not: "İrade ve yaratma" },
+      { t: "kavram", id: "kesb", not: "Kesb ve cüz'î irade: iki ekolün anahtar kavramı" },
       { t: "sure", id: 112, not: "Tevhidin dört âyeti" },
+      { t: "kavram", id: "tenzih", not: "İki aşırılık arasında" },
+      { t: "mesele", id: "sifatlar", not: "Tefvîz, te'vîl ve isbât" },
       { t: "mesele", id: "kabir", not: "Berzah âlemi" },
+      { t: "mesele", id: "sefaat", not: "Büyük günah ve ilâhî rahmet" },
+      { t: "mesele", id: "mehdi", not: "Rivayet tenkidi ve tarih" },
       { t: "link", href: "#/metin/akaid-nesefi", baslik: "el-Akāidü'n-Nesefiyye", not: "Ehl-i sünnet akaidinin özlü metni: 10. ve 12. bölümler" },
       { t: "alim", id: "gazali", not: "Akıl, kalp ve iman" },
       { t: "alim", id: "ibnteymiyye", not: "Selefin anlayışına dönüş çağrısı" }
@@ -65,9 +70,49 @@ window.YOLLAR = [
       { t: "mesele", id: "uctalak", not: "Azınlık görüşünün kanunlaşması" },
       { t: "mesele", id: "musiki", not: "Haramlığın illeti nedir?" },
       { t: "mesele", id: "corap", not: "Ruhsatların genişliği" },
+      { t: "kavram", id: "makasid", not: "Şeriatın gayeleri" },
+      { t: "mesele", id: "kripto", not: "Mal, para ve garar kavramları yeni bir varlık karşısında" },
+      { t: "mesele", id: "sigorta", not: "Mübadele mi, dayanışma mı?" },
+      { t: "mesele", id: "otanazi", not: "Öldürmek ile ölmeye bırakmak" },
+      { t: "alim", id: "zerka", not: "Klasik fıkıhtan genel teoriler" },
       { t: "alim", id: "ibnabidin", not: "Örf ve fetva" },
       { t: "alim", id: "karadavi", not: "Çağdaş bir fakihin yöntemi ve eleştirileri" }
     ],
     soru: "Çağdaş bir meselede fetva verilirken hangi ilkeler belirleyici oldu? Kolaylaştırmak ile ruhsat avcılığı arasındaki sınırı nerede görüyorsun?"
+  },
+  {
+    id: "kuran-konulari", baslik: "Kur'an'ın Ana Konuları", alt: "Kur'an'ı temalar üzerinden okumak",
+    giris: "Sureleri tek tek okumanın yanında, Kur'an'ın aynı konuyu farklı surelerde nasıl işlediğini görmek, onun bütünlüğünü fark ettirir. Bu yol, kalpten başlayıp ahirete uzanan bir sırayla ana kavramları âyetleri ve âlimlerin yorumlarıyla birlikte ele alır.",
+    adimlar: [
+      { t: "konu", id: "kalp", not: "Anlamanın ve yönelmenin merkezi" },
+      { t: "konu", id: "ilim", not: "Oku: akıl, ilim ve tefekkür" },
+      { t: "konu", id: "takva", not: "Kendini korumak" },
+      { t: "konu", id: "rahmet", not: "Rahmet gazabı geçmiştir" },
+      { t: "konu", id: "tevbe", not: "Dönüşün kapısı" },
+      { t: "konu", id: "sukur", not: "Nimeti tanımak" },
+      { t: "konu", id: "sabir", not: "Aktif direnç" },
+      { t: "konu", id: "tevekkul", not: "Sebep ve sonuç" },
+      { t: "konu", id: "rizik", not: "Rızık ve imtihan" },
+      { t: "konu", id: "adalet", not: "Peygamberlerin gönderiliş amacı" },
+      { t: "konu", id: "emanet", not: "İnsanın yüklendiği yük" },
+      { t: "konu", id: "ahiret", not: "Zerre kadar" }
+    ],
+    soru: "Bu konulardan hangisi senin hayatında en eksik kalan? O konunun âyetlerinden birini bu hafta ezberleyip üzerinde düşünmeye ne dersin?"
+  },
+  {
+    id: "aile", baslik: "Aile Hayatı ve Fıkıh", alt: "Nikâhtan nafakaya, mezheplerin aile hukuku",
+    giris: "Aile hukuku, mezhepler arasındaki farkların hayatı en doğrudan etkilediği alandır. Bu yol, önce pratik rehberle başlar, sonra velî, denklik, nafaka ve boşanma meselelerinde ihtilafın köklerine iner. Osmanlı'nın 1917'de mezhepler arası tercihle hazırladığı aile kanunu, bu meselelerin bir arada okunmasının tarihî örneğidir.",
+    adimlar: [
+      { t: "rehber", id: "evlilik", not: "Pratik çerçeve" },
+      { t: "mesele", id: "velayet", not: "Kadının iradesi ve velînin rolü" },
+      { t: "mesele", id: "kefaet", not: "Örf hukuka ne zaman girer?" },
+      { t: "mesele", id: "nafaka", not: "Bir nitelik farkının zincirleme sonuçları" },
+      { t: "kavram", id: "orf", not: "Örf değişince hüküm değişir mi?" },
+      { t: "mesele", id: "uctalak", not: "Azınlık görüşünün kanunlaşması" },
+      { t: "mesele", id: "sahitlik", not: "Hükmün gerekçesi" },
+      { t: "kavram", id: "telfik", not: "Mezhepler arası tercih" },
+      { t: "rehber", id: "dogum", not: "Ailenin genişlemesi" }
+    ],
+    soru: "Kendi mezhebinin aile hukukundaki görüşleri ile diğer mezheplerin görüşleri arasında, bugünün şartlarında hangisinin daha adil sonuç verdiğini düşünüyorsun? Bunu delilleriyle savunabilir misin?"
   }
 ];

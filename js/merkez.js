@@ -7,20 +7,46 @@
   const MS = () => Object.fromEntries(window.MESELELER.map((m) => [m.id, m]));
   const SURE = (no) => window.SURE_ANLAM.find((s) => s.no === +no);
   const sureAyetleri = (s) => s.ayetler || ((window.TAHLIL || {})[s.no] ? window.TAHLIL[s.no].ayetler.map((a) => ({ n: a.n, ar: a.ar, tr: a.tr })) : []);
+  const KV = () => Object.fromEntries((window.KAVRAMLAR || []).map((k) => [k.id, k]));
+  const KN = () => Object.fromEntries((window.KONULAR || []).map((k) => [k.id, k]));
+  const RH = () => Object.fromEntries((window.REHBERLER || []).map((k) => [k.id, k]));
+  function refBilgi(ref) {
+    const i = ref.indexOf(":"), t = ref.slice(0, i), id = ref.slice(i + 1);
+    if (t === "mesele") { const m = id === "ihtilaf" ? window.IHTILAF : MS()[id]; return m && { t: "Mesele", baslik: m.baslik, href: `#/mesele/${id}` }; }
+    if (t === "alim") { const a = AL()[id]; return a && { t: "Âlim", baslik: a.ad, href: `#/alim/${id}` }; }
+    if (t === "sure") { const s = SURE(id); return s && { t: "Sure", baslik: `${s.ad} Sûresi`, href: `#/sure/${s.no}` }; }
+    if (t === "kavram") { const k = KV()[id]; return k && { t: "Kavram", baslik: k.ad, href: `#/kavram/${id}` }; }
+    if (t === "konu") { const k = KN()[id]; return k && { t: "Konu", baslik: k.ad, href: `#/konu/${id}` }; }
+    if (t === "rehber") { const r = RH()[id]; return r && { t: "Rehber", baslik: r.baslik, href: `#/rehber/${id}` }; }
+    return null;
+  }
+  const refChips = (refs) => {
+    const l = (refs || []).map(refBilgi).filter(Boolean);
+    return l.length ? `<div class="chips">${l.map((r) => `<a class="achip" href="${r.href}"><small>${r.t}</small> <b>${esc(r.baslik)}</b></a>`).join("")}</div>` : "";
+  };
+  // Verilen ref'e atıf yapan kavram, konu, rehber ve sözler
+  function atiflar(ref) {
+    const out = [];
+    (window.KAVRAMLAR || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("kavram:" + k.id));
+    (window.KONULAR || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("konu:" + k.id));
+    (window.REHBERLER || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("rehber:" + k.id));
+    return out;
+  }
   const arw = (t) => esc(t).replace(/([؀-ۿ][؀-ۿً-ْٰ ]*[؀-ۿً-ْٰ]|[؀-ۿ])/g, '<span lang="ar">$&</span>');
 
   // ───────── Yol takibi ─────────
   let aktifYol = null; // { id, i }
   const adimKey = (a) => a.t === "link" ? "link:" + a.href : a.t + ":" + a.id;
-  const adimHref = (a) => ({ yazi: "#/mesele/ihtilaf", mesele: `#/mesele/${a.id}`, sure: `#/sure/${a.id}`, alim: `#/alim/${a.id}`, link: a.href })[a.t];
+  const adimHref = (a) => ({ yazi: "#/mesele/ihtilaf", mesele: `#/mesele/${a.id}`, sure: `#/sure/${a.id}`, alim: `#/alim/${a.id}`, konu: `#/konu/${a.id}`, kavram: `#/kavram/${a.id}`, rehber: `#/rehber/${a.id}`, link: a.href })[a.t];
   const adimBaslik = (a) => {
     if (a.t === "yazi") return window.IHTILAF.baslik;
+    if (["konu", "kavram", "rehber"].includes(a.t)) { const r = refBilgi(a.t + ":" + a.id); return r ? r.baslik : a.id; }
     if (a.t === "mesele") return (MS()[a.id] || {}).baslik || a.id;
     if (a.t === "sure") { const s = SURE(a.id); return s ? `${s.ad} Sûresi` : a.id; }
     if (a.t === "alim") return (AL()[a.id] || {}).ad || a.id;
     return a.baslik || a.href;
   };
-  const adimTur = { yazi: "Yazı", mesele: "Mesele", sure: "Sure", alim: "Âlim", link: "Metin" };
+  const adimTur = { yazi: "Yazı", mesele: "Mesele", sure: "Sure", alim: "Âlim", konu: "Konu", kavram: "Kavram", rehber: "Rehber", link: "Metin" };
   const yolIlerleme = (y) => y.adimlar.filter((a) => S.ziyaretEdildi(adimKey(a))).length;
 
   function yolBandi(key) {
@@ -124,6 +150,16 @@
         <div class="mgrid">${ms.slice(0, 6).map(meseleKart).join("")}</div>
       </section>
 
+      <section>
+        <div class="row-head"><h2>Kur'an'ın konuları</h2><a href="#/konular">Tümü →</a></div>
+        <div class="konu-serit">${(window.KONULAR || []).map((k) => `<a href="#/konu/${k.id}"><span lang="ar">${k.ar}</span><b>${esc(k.ad)}</b></a>`).join("")}</div>
+      </section>
+
+      <section>
+        <div class="row-head"><h2>Hayatın içinden</h2><a href="#/rehberler">Tümü →</a></div>
+        <div class="rgrid">${(window.REHBERLER || []).map((r) => `<a class="rkart" href="#/rehber/${r.id}"><b>${esc(r.baslik)}</b><small class="muted">${esc(r.alt)}</small></a>`).join("")}</div>
+      </section>
+
       <section class="iki-sutun">
         <a class="card alim-gun" href="#/alim/${gunAlim.id}">
           <small class="muted">Âlimlerden</small>
@@ -152,6 +188,7 @@
     const list = [...window.SURE_ANLAM].sort((a, b) => a.no - b.no);
     const html = `
       <h1>Kur'an'ı Anlamak</h1>
+      <div class="tabs"><a class="on" href="#/kuran">Sureler</a><a href="#/konular">Konular</a></div>
       <div class="sgrid">${list.map((s) => `<a class="skart" href="#/sure/${s.no}">
         <div class="sk-ust"><span class="sno">${s.no}</span><span lang="ar">${s.ar}</span></div>
         <b>${esc(s.ad)}</b><small class="muted">${esc(s.inis.split(" ")[0])} · ${s.sayi} âyet${S.ziyaretEdildi("sure:" + s.no) ? " · okundu" : ""}</small>
@@ -232,6 +269,7 @@
     const html = `
       <h1>Meseleler</h1>
       <a class="ihtilaf-kart" href="#/mesele/ihtilaf"><b>${esc(window.IHTILAF.baslik)}</b><span>Âlimler aynı delillerden neden farklı sonuçlara varır?</span></a>
+      <a class="ihtilaf-kart soz-giris" href="#/sozler"><b>Dilden Dile Dolaşan Sözler</b><span>Hz. Peygamber'e nispeti sabit olmayan yaygın sözler ve doğruları</span></a>
       <input id="mara" class="search" type="search" placeholder="Mesele ara…" value="${esc(meseleArama.q)}">
       ${alanlar.map((al) => `<section><h2 class="alan-bas">${esc(al)}</h2><div class="mgrid">${ms.filter((m) => m.alan === al).map(meseleKart).join("")}</div></section>`).join("") || `<p class="empty">Sonuç yok.</p>`}`;
     const bind = () => {
@@ -300,6 +338,7 @@
         <ul class="kaynak">${m.kaynaklar.map((k) => `<li>${esc(k)}</li>`).join("")}</ul>
 
         ${m.ilgili && m.ilgili.length ? `<h2>İlgili meseleler</h2><div class="mgrid">${m.ilgili.filter((x) => M[x]).map((x) => meseleKart(M[x])).join("")}</div>` : ""}
+        ${(() => { const r = atiflar("mesele:" + m.id); return r.length ? `<h2>Kavramlar, konular ve rehberler</h2>${refChips(r)}` : ""; })()}
       </article>
       ${defterKutusu(key, "mesele", m.baslik, `#/mesele/${m.id}`)}
       <div class="sayfa-alt">${onayKutusu(key)}</div>`;
@@ -372,6 +411,7 @@
 
         ${goruslerde.length ? `<h2>Meselelerdeki görüşleri</h2><ul class="gorus-list">${goruslerde.map(({ m, g }) => `<li><a href="#/mesele/${m.id}"><b>${esc(m.baslik)}</b></a> <small class="muted">${esc(g.ekol)}</small><p>${g.hukum}</p></li>`).join("")}</ul>` : ""}
         ${surelerde.length ? `<h2>Tefsir notları</h2><ul class="gorus-list">${surelerde.map(({ s, n }) => `<li><a href="#/sure/${s.no}"><b>${esc(s.ad)} Sûresi</b></a><p>${arw(n.metin)}</p></li>`).join("")}</ul>` : ""}
+        ${(() => { const r = atiflar("alim:" + a.id); return r.length ? `<h2>Geçtiği kavram ve konular</h2>${refChips(r)}` : ""; })()}
       </article>
       ${defterKutusu(key, "alim", a.ad, `#/alim/${a.id}`)}
       <div class="sayfa-alt">${onayKutusu(key)}</div>`;
@@ -413,7 +453,7 @@
   // ───────── İlim defteri ─────────
   const defterState = { tip: "hepsi", q: "" };
   function defter() {
-    const tipler = { hepsi: "Tümü", mesele: "Meseleler", sure: "Sureler", alim: "Âlimler", yazi: "Yazılar", yol: "Yollar", serbest: "Serbest notlar" };
+    const tipler = { hepsi: "Tümü", mesele: "Meseleler", sure: "Sureler", konu: "Konular", kavram: "Kavramlar", rehber: "Rehberler", alim: "Âlimler", yazi: "Yazılar", yol: "Yollar", serbest: "Serbest notlar" };
     const q = defterState.q.toLocaleLowerCase("tr");
     const list = S.state.defter.filter((d) => (defterState.tip === "hepsi" || d.tip === defterState.tip) && (!q || [d.baslik, d.not].join(" ").toLocaleLowerCase("tr").includes(q)));
     const html = `
@@ -469,5 +509,143 @@
     return { html };
   }
 
-  Object.assign(window.Views, { anaSayfa, kuran, sure, meseleler, mesele, alimler, alim, yollar, yol, defter, derinles });
+  // ───────── Ortak: önceki / sonraki ─────────
+  const pager = (list, i, href, ad) => `<nav class="pager">
+      ${list[i - 1] ? `<a href="${href(list[i - 1])}">← ${esc(ad(list[i - 1]))}</a>` : "<span></span>"}
+      ${list[i + 1] ? `<a href="${href(list[i + 1])}">${esc(ad(list[i + 1]))} →</a>` : "<span></span>"}
+    </nav>`;
+  const ilkCumle = (html) => { const t = html.replace(/<[^>]+>/g, ""); const n = t.indexOf(". "); return n > 0 && n < 240 ? t.slice(0, n + 1) : t.slice(0, 200) + "…"; };
+  const sayfaBind = (key, baslik, href) => () => { ziyaret(key, baslik, href); bindYolBandi(); bindDefterKutusu(); bindOnay(); };
+  function aramaBind(id, state) {
+    const i = document.getElementById(id);
+    i.oninput = () => { state.q = i.value; const p = i.selectionStart; U().render(); const n = document.getElementById(id); n.focus(); n.setSelectionRange(p, p); };
+  }
+
+  // ───────── Kavramlar ─────────
+  const kavramArama = { q: "" };
+  function kavramlar() {
+    const q = kavramArama.q.toLocaleLowerCase("tr");
+    const list = window.KAVRAMLAR.filter((k) => !q || [k.ad, k.tanim, k.nuans || "", k.grup].join(" ").toLocaleLowerCase("tr").includes(q));
+    const gruplar = [...new Set(list.map((k) => k.grup))];
+    const html = `
+      <h1>Kavramlar</h1>
+      <input id="kara" class="search" type="search" placeholder="Kavram ara…" value="${esc(kavramArama.q)}">
+      ${gruplar.map((g) => `<section><h2 class="alan-bas">${esc(g)}</h2><div class="mgrid">${list.filter((k) => k.grup === g).map((k) => `<a class="mkart" href="#/kavram/${k.id}">
+        <small class="muted"><span lang="ar">${k.ar}</span>${S.onayli("kavram:" + k.id) ? ' · <span class="ok">✓</span>' : ""}</small>
+        <b>${esc(k.ad)}</b><p>${esc(ilkCumle(k.tanim))}</p></a>`).join("")}</div></section>`).join("") || `<p class="empty">Sonuç yok.</p>`}`;
+    return { html, bind: () => aramaBind("kara", kavramArama) };
+  }
+  function kavram(id) {
+    const list = window.KAVRAMLAR, i = list.findIndex((k) => k.id === id), k = list[i];
+    if (!k) return kavramlar();
+    const key = "kavram:" + k.id, geri = atiflar(key).filter((r) => r !== key);
+    const html = `
+      <a class="back" href="#/kavramlar">← Kavramlar</a>
+      ${yolBandi(key)}
+      <article class="okuma kavram-sayfa">
+        <small class="tag klasik">${esc(k.grup)}</small>
+        <header class="alim-bas"><h1>${esc(k.ad)}</h1><div class="alim-ar" lang="ar">${k.ar}</div></header>
+        <p class="lead">${k.tanim}</p>
+        ${k.nuans ? `<h2>Ekoller ve incelikler</h2><p>${k.nuans}</p>` : ""}
+        ${k.ilgili && k.ilgili.length ? `<h2>Bağlantılar</h2>${refChips(k.ilgili)}` : ""}
+        ${geri.length ? `<h2>Bu kavrama başvuranlar</h2>${refChips(geri)}` : ""}
+      </article>
+      ${defterKutusu(key, "kavram", k.ad, `#/kavram/${k.id}`)}
+      <div class="sayfa-alt">${onayKutusu(key)}</div>
+      ${pager(list, i, (x) => `#/kavram/${x.id}`, (x) => x.ad)}`;
+    return { html, bind: sayfaBind(key, k.ad, `#/kavram/${k.id}`) };
+  }
+
+  // ───────── Kur'an konuları ─────────
+  function konular() {
+    const html = `
+      <h1>Kur'an'ı Anlamak</h1>
+      <div class="tabs"><a href="#/kuran">Sureler</a><a class="on" href="#/konular">Konular</a></div>
+      <div class="sgrid">${window.KONULAR.map((k) => `<a class="skart" href="#/konu/${k.id}">
+        <div class="sk-ust"><b>${esc(k.ad)}</b><span lang="ar">${k.ar}</span></div>
+        <small class="muted">${k.ayetler.length} âyet grubu${S.ziyaretEdildi("konu:" + k.id) ? " · okundu" : ""}</small>
+        <p>${esc(k.ozet.slice(0, 150))}…</p></a>`).join("")}</div>`;
+    return { html };
+  }
+  function konu(id) {
+    const list = window.KONULAR, i = list.findIndex((k) => k.id === id), k = list[i];
+    if (!k) return konular();
+    const key = "konu:" + k.id;
+    const html = `
+      <a class="back" href="#/konular">← Konular</a>
+      ${yolBandi(key)}
+      <article class="okuma">
+        <header class="sure-bas"><div><h1>${esc(k.ad)}</h1></div><div class="sure-ar" lang="ar">${k.ar}</div></header>
+        <p class="lead">${esc(k.ozet)}</p>
+        <h2>Âyetler</h2>
+        ${k.ayetler.map(([ref, ar, tr]) => `<div class="nas"><div class="nas-ar" lang="ar">${ar}</div><p>${esc(tr)}</p><small class="muted">${esc(ref)}</small></div>`).join("")}
+        ${k.boyutlar.map((b) => `<h2>${esc(b.baslik)}</h2><p>${b.metin}</p>`).join("")}
+      </article>
+      <section class="okuma tefekkur"><h2>Tefekkür</h2><p>${esc(k.tefekkur)}</p></section>
+      ${k.ilgili && k.ilgili.length ? `<section><h3>Bağlantılar</h3>${refChips(k.ilgili)}</section>` : ""}
+      ${defterKutusu(key, "konu", k.ad, `#/konu/${k.id}`)}
+      <div class="sayfa-alt">${onayKutusu(key)}</div>
+      ${pager(list, i, (x) => `#/konu/${x.id}`, (x) => x.ad)}`;
+    return { html, bind: sayfaBind(key, k.ad, `#/konu/${k.id}`) };
+  }
+
+  // ───────── Yaygın sözler ─────────
+  const sozArama = { q: "" };
+  function sozler() {
+    const q = sozArama.q.toLocaleLowerCase("tr");
+    const list = window.SOZLER.filter((s) => !q || [s.soz, s.aciklama, s.hukum].join(" ").toLocaleLowerCase("tr").includes(q));
+    const html = `
+      <a class="back" href="#/meseleler">← Meseleler</a>
+      <h1>Dilden Dile Dolaşan Sözler</h1>
+      <input id="sara" class="search" type="search" placeholder="Söz ara…" value="${esc(sozArama.q)}">
+      <div class="soz-liste">${list.map((s) => `<article class="soz-kart" id="soz-${s.id}">
+        <div class="soz-ust"><span class="hukum">${esc(s.hukum)}</span></div>
+        <p class="soz">“${esc(s.soz)}”</p>
+        ${s.ar ? `<div class="nas-ar" lang="ar">${s.ar}</div>` : ""}
+        <p>${s.aciklama}</p>
+        <div class="dogrusu"><small>Sahih olan</small>
+          ${s.dogrusu[0] ? `<div class="nas-ar" lang="ar">${s.dogrusu[0]}</div>` : ""}
+          <p>${esc(s.dogrusu[1])}</p><small class="muted">${esc(s.dogrusu[2])}</small></div>
+        ${refChips(s.ilgili)}
+        <div class="sayfa-alt">${onayKutusu("soz:" + s.id)}</div>
+      </article>`).join("") || `<p class="empty">Sonuç yok.</p>`}</div>`;
+    return { html, bind: () => { aramaBind("sara", sozArama); bindOnay(); ziyaret("sozler", "Dilden Dile Dolaşan Sözler", "#/sozler"); } };
+  }
+
+  // ───────── Hayatın içinden rehberler ─────────
+  function rehberler() {
+    const html = `
+      <h1>Hayatın İçinden</h1>
+      <div class="rgrid buyuk">${window.REHBERLER.map((r) => `<a class="rkart" href="#/rehber/${r.id}">
+        <b>${esc(r.baslik)}</b><small class="muted">${esc(r.alt)}</small><p>${esc(r.giris.slice(0, 160))}…</p></a>`).join("")}</div>`;
+    return { html };
+  }
+  function rehber(id) {
+    const list = window.REHBERLER, i = list.findIndex((r) => r.id === id), r = list[i];
+    if (!r) return rehberler();
+    const key = "rehber:" + r.id;
+    const html = `
+      <a class="back" href="#/rehberler">← Hayatın içinden</a>
+      ${yolBandi(key)}
+      <article class="okuma mesele">
+        <h1>${esc(r.baslik)}</h1>
+        <p class="soru">${esc(r.alt)}</p>
+        <p class="lead">${esc(r.giris)}</p>
+        <nav class="bolum-nav">${r.bolumler.map((b, j) => `<a href="#rb${j}">${esc(b.baslik)}</a>`).join("")}<a href="#rdua">Dualar</a></nav>
+        ${r.bolumler.map((b, j) => `<h2 id="rb${j}">${esc(b.baslik)}</h2>${b.html}`).join("")}
+        <h2 id="rdua">Dualar</h2>
+        ${r.dualar.map(([ar, tr, kaynak]) => `<div class="nas"><div class="nas-ar" lang="ar">${ar}</div><p>${esc(tr)}</p><small class="muted">${esc(kaynak)}</small></div>`).join("")}
+        ${r.ilgili && r.ilgili.length ? `<h2>Bağlantılar</h2>${refChips(r.ilgili)}` : ""}
+      </article>
+      ${defterKutusu(key, "rehber", r.baslik, `#/rehber/${r.id}`)}
+      <div class="sayfa-alt">${onayKutusu(key)}</div>
+      ${pager(list, i, (x) => `#/rehber/${x.id}`, (x) => x.baslik)}`;
+    const bind = () => {
+      sayfaBind(key, r.baslik, `#/rehber/${r.id}`)();
+      document.querySelectorAll(".bolum-nav a").forEach((a) => a.onclick = (e) => { e.preventDefault(); const t = document.getElementById(a.getAttribute("href").slice(1)); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); });
+    };
+    return { html, bind };
+  }
+
+  Object.assign(window.Views, { anaSayfa, kuran, sure, meseleler, mesele, alimler, alim, yollar, yol, defter, derinles, kavramlar, kavram, konular, konu, sozler, rehberler, rehber });
 })();

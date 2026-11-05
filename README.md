@@ -1,4 +1,4 @@
-# Medrese — Kişisel İslami İlimler Takip Uygulaması
+# Dârü'l-İlm (دار العلم) — Kişisel İlim Yuvası
 
 Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğitimi müfredatını
 (ilahiyat fakültesi ders yapısı) tek bir yolda birleştiren, kişisel ilerleme takip uygulaması.
