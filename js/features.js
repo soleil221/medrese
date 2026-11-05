@@ -37,7 +37,7 @@
     return `<div class="tbl-wrap mini">
       <div class="mini-h"><b lang="ar">${r.maziMalum[0]} ${r.muzariMalum[0]}</b>
         <small class="muted">${an.label} · ${babN}. bab</small>
-        <a href="#/cekim/${root}/${babN}">Tam çekim →</a></div>
+        <a href="#/cekim/${root}/${babN}">Tüm çekimler →</a></div>
       <table class="cekim"><thead><tr><th>Sîga</th><th>Mâzî</th><th>Muzâri</th><th>Emir</th></tr></thead>
       <tbody>${Sf.SIGA.map(([ad], i) => `<tr><td><small>${ad}</small></td><td lang="ar">${r.maziMalum[i]}</td><td lang="ar">${r.muzariMalum[i]}</td><td lang="ar">${i >= 6 && i < 12 ? r.emir[i - 6] : ""}</td></tr>`).join("")}</tbody></table></div>`;
   }
@@ -93,7 +93,6 @@
     return `<section class="card ayetler">
       <div class="row-head"><h3>Örnek âyetler: dinle ve oku</h3>
         <label class="kari">Kârî <select id="kari">${Ses.KARILER.map((k) => `<option value="${k.id}" ${k.id === kari ? "selected" : ""}>${k.ad}</option>`).join("")}</select></label></div>
-      <p class="muted tiny">Önce kârîyi dinle, sonra kendi okuyuşunu kaydedip karşılaştır. Kârî sesleri internetten (everyayah.com) gelir; kayıtların yalnızca bu cihazda saklanır.</p>
       <ul>${l.ayetler.map(([kural, ar, sure, ayet, sad], i) => `
         <li data-i="${i}">
           <div class="ay-top"><b>${U().esc(kural)}</b> <small class="muted">${sad} ${ayet} (${sure}:${ayet})</small></div>
@@ -321,7 +320,6 @@
 
     const html = `
       <h1>Tekrar</h1>
-      <p class="muted intro">Kartlar Leitner usulüyle tekrar edilir: bildiğin kart bir üst kutuya geçer ve daha seyrek gelir (1, 3, 7, 16, 35 gün). Bilemediğin kart başa döner.</p>
       ${main}
       <div class="card"><h3>Kutular</h3>
         <div class="boxes">${boxes.map((n, i) => `<div><b>${n}</b><small>${i === 0 ? "Yeni" : i + ". kutu"}</small></div>`).join("")}</div></div>
@@ -404,7 +402,7 @@
           : (d ? `<small>✓ ${STRENGTH[pg.s]}</small>` : `<span class="seg sm">${[1, 2, 3].map((s) => `<button data-rev="${p}" data-s="${s}">${STRENGTH[s]}</button>`).join("")}</span>`)}
       </li>`;
     };
-    const list = (title, desc, arr, kind) => `<div class="card plan"><h3>${title} <small class="muted">${arr.length} sayfa</small></h3><p class="muted tiny">${desc}</p>
+    const list = (title, desc, arr, kind) => `<div class="card plan"><h3>${title} <small class="muted">${arr.length} sayfa</small></h3>${desc ? `<p class="muted tiny">${desc}</p>` : ""}
       ${arr.length ? `<ul>${arr.map((p) => item(p, kind)).join("")}</ul>` : `<p class="empty tiny">—</p>`}</div>`;
 
     const grid = Array.from({ length: 30 }, (_, i) => {
@@ -423,7 +421,7 @@
         <div class="btns">${[0, 1, 2, 3].map((s) => `<button class="${(sp ? sp.s : 0) === s ? "" : "ghost"} sm" data-set="${s}">${s ? STRENGTH[s] : "Ezberlenmedi"}</button>`).join("")}</div></div>` : "";
 
     const farTitle = h.farMode === "cuz" ? `Uzak tekrar${plan.cuz ? ` — ${plan.cuz}. cüz` : ""}` : "Uzak tekrar";
-    const farDesc = h.farMode === "cuz" ? "Cüz usulü: her gün ezberli cüzlerden sıradakinin tamamı okunur." : "En uzun süredir tekrar edilmeyen ve zayıf sayfalar öne alınır.";
+    const farDesc = "";
 
     const html = `
       <h1>Hıfz</h1>
@@ -434,21 +432,19 @@
       </section>
 
       <div class="plan-grid">
-        ${list("Yeni ezber", "Sıradaki sayfa(lar). Ezberleyip hocana/kendine dinlettikten sonra işaretle.", plan.yeni, "yeni")}
-        ${list("Yakın tekrar", `Son ezberlenen ${h.nearCount} sayfa; her gün okunur.`, plan.yakin, "yakin")}
+        ${list("Yeni ezber", "", plan.yeni, "yeni")}
+        ${list("Yakın tekrar", "", plan.yakin, "yakin")}
         ${list(farTitle, farDesc, plan.uzak, "uzak")}
       </div>
       <div class="btns"><button class="ghost sm" id="replan">Planı yenile</button>
         <form id="hlog" class="qlog"><input name="m" type="number" min="1" max="600" value="45"> <span>dk</span><button class="sm">Hıfz çalışmasını günlüğe ekle</button></form></div>
 
       <h2 style="margin-top:28px">Mushaf haritası</h2>
-      <p class="muted tiny">604 sayfalık Medine mushafı düzeni (1. cüz 21, 30. cüz 23, diğerleri 20 sayfa). Altı çizgili hücrelerde yeni bir sure başlar. Daha önce ezberlediğin yerleri işaretlemek için bir sayfaya tıkla ya da toplu işaretlemeyi kullan.</p>
       <div class="card bulk">
         <label>Sure <select id="bulk-sure">${window.SURELER.map((s) => `<option value="${s.no}">${s.no}. ${esc(s.ad)} (s. ${s.sayfa})</option>`).join("")}</select></label>
         <button class="sm" id="bulk-sure-go">Sureyi “Orta” işaretle</button>
         <label>Cüz <select id="bulk-juz">${Array.from({ length: 30 }, (_, i) => `<option>${i + 1}</option>`).join("")}</select></label>
         <button class="sm" id="bulk-juz-go">Cüzü “Orta” işaretle</button>
-        <small class="muted">Yalnızca işaretsiz sayfalar “önceden ezberlendi” olarak eklenir. Sure sınırındaki sayfayı iki sure paylaşabilir.</small>
       </div>
       <div class="legend"><span><i class="s0"></i>Ezberlenmedi</span><span><i class="s1"></i>Zayıf</span><span><i class="s2"></i>Orta</span><span><i class="s3"></i>Sağlam</span></div>
       ${editor}
@@ -581,8 +577,7 @@
 
     const html = `
       <a class="back" href="#/ders/k-sarf">← Sarf</a>
-      <h1>Çekim Aracı <span lang="ar" class="muted">تصريف</span></h1>
-      <p class="muted intro">Üç harfli kökü gir. İlletli fiillerde kökün aslını yaz: <span lang="ar">قال</span> → <span lang="ar">قول</span>, <span lang="ar">دعا</span> → <span lang="ar">دعو</span>. Sâlim, mehmûz, muzâaf, misâl, ecvef, nâkıs ve lefîf fiiller hem sülâsî mücerredde hem 8 mezîd babında; dört harfli fiiller de “Rubâî” sekmesinde 4 babta çekilir.</p>
+      <h1>Sarf Atölyesi <span lang="ar" class="muted">تصريف</span></h1>
       <div class="tabs">${[["mucerred", "Sülâsî mücerred"], ["mezid", "Sülâsî mezîd"], ["rubai", "Rubâî"], ["emsile", "Emsile-i muhtelife"]].map(([k, t]) => `<a href="javascript:void 0" data-mode="${k}" class="${st.mode === k ? "on" : ""}">${t}</a>`).join("")}</div>
       <div class="card cekim-form">
         <div class="root-row"><label>Kök (${st.mode === "rubai" ? 4 : 3} harf)<input id="root" lang="ar" dir="rtl" value="${esc(st.root)}" maxlength="12" autocomplete="off"></label>
@@ -590,7 +585,7 @@
           ${(st.mode === "mezid" || st.mode === "rubai") && mz ? `<small class="muted">${mz.ad}: ${esc(mz.anlam)}</small>` : ""}</div>
         <div class="babs">${babButtons}</div>
         <div class="btns exs"><small class="muted">Örnekler:</small> ${examples}</div>
-        <label class="check"><input type="checkbox" id="hide" ${st.hide ? "checked" : ""}> Ezber modu (hücreleri gizle, tıklayınca açılır)</label>
+        <label class="check"><input type="checkbox" id="hide" ${st.hide ? "checked" : ""}> Ezber modu</label>
       </div>
       ${content}`;
 
@@ -627,12 +622,11 @@
     const esc = U().esc;
     const html = `
       <h1>Metinler</h1>
-      <p class="muted intro">Arapça metinler ve Türkçe tercümeleri yan yana. Tercümeyi veya harekeleri gizleyerek okuma pratiği yapabilirsin.</p>
       <div class="cards">${window.METINLER.map((t) => `<a class="ccard" href="#/metin/${t.id}">
         <div class="cc-top"><small>${esc(t.tur)}</small></div>
         <div class="cc-title"><b>${esc(t.title)}</b></div>
         <p>${esc(t.aciklama)}</p>
-        <div class="cc-foot"><small>${t.satirlar ? t.satirlar.length + (t.tur === "Hadis" ? " hadis" : " bölüm") : "Çekim motoruyla üretilir"}</small></div></a>`).join("")}
+        <div class="cc-foot"><small>${t.satirlar ? t.satirlar.length + (t.tur === "Hadis" ? " hadis" : " bölüm") : "Sarf"}</small></div></a>`).join("")}
         <a class="ccard" href="#/tahlil"><div class="cc-top"><small>Tefsir</small></div>
           <div class="cc-title"><b>Amme Cüzü Tahlili</b><span lang="ar">جزء عمّ</span></div>
           <p>Kısa surelerin kelime kelime i'râbı, sarfı ve belâgat notları; âyetleri kârîden dinleme.</p>

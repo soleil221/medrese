@@ -15,7 +15,7 @@
         <li><b>Emsile-i muttarida:</b> Mâzî, muzâri, emir gibi kalıpların 14 (emirde 6) sîgalık düzenli çekimleri. Önceki derste gördük.</li>
         <li><b>Emsile-i muhtelife:</b> Aynı kökten türeyen <i>farklı</i> kalıplar: masdar, ism-i fâil, ism-i mef'ûl, cahd, nefy, emir, nehiy, ism-i zaman-mekân, ism-i âlet, ism-i tafdîl, fiil-i taaccüb.</li>
       </ul>
-      <p>Aşağıdaki tablo ${AR("نَصَرَ")} kökü için motor tarafından üretilmiştir:</p>
+      <p>${AR("نَصَرَ")} kökünün emsilesi:</p>
       {{emsile:نصر:1}}
       <h4>Kalıpların kısa açıklaması</h4>
       <ul>
@@ -26,7 +26,7 @@
         <li><b>İsm-i zaman ve mekân:</b> Muzârisi esreli olanlarda ${AR("مَفْعِل")} (${AR("مَجْلِسٌ")}), diğerlerinde ${AR("مَفْعَل")} (${AR("مَنْصَرٌ")}).</li>
         <li><b>İsm-i âlet:</b> ${AR("مِفْعَل، مِفْعَلَة، مِفْعَال")} vezinleri.</li>
       </ul>
-      <p class="tip">Kendi kökünle denemek için <a href="#/cekim">Çekim Aracı</a>'nda “Emsile-i muhtelife” sekmesini aç. Ezber için hocanın okuttuğu nüshayı esas al; nüshalar arasında sıra farkları olabilir.</p>`,
+      <p class="tip">Başka köklerle çalışmak için <a href="#/cekim">Sarf atölyesi</a>. Ezber için hocanın okuttuğu nüshayı esas al; nüshalar arasında sıra farkları olabilir.</p>`,
     cards: [
       [AR("نَصْرًا وَمَنْصَرًا") + " ne kalıbı?", "Masdar ve masdar-ı mîmî"],
       [AR("لَمْ يَنْصُرْ"), "Cahd-i mutlak (ma'lûm): yardım etmedi"],

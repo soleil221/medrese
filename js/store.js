@@ -9,7 +9,10 @@
     hifz: { pages: {}, newPerDay: 1, nearCount: 10, farPerDay: 20, order: "bastan" },
     goals: {},      // "YYYY-MM-DD" (haftanın pazartesisi): [{ id, tur, hedef, ders, metin, bitti }]
     reviewLog: {},  // tarih: tekrar edilen kart sayısı
-    hifzLog: {}     // tarih: { yeni, tekrar }
+    hifzLog: {},    // tarih: { yeni, tekrar }
+    defter: [],     // { id, tip, ref, baslik, href, not, tarih }
+    ziyaret: {},    // anahtar: { tarih, baslik, href }
+    onay: {}        // içerik anahtarı: onay tarihi
   });
   const INTERVALS = [0, 1, 3, 7, 16, 35]; // Leitner kutusu → gün
 
@@ -98,6 +101,23 @@
     setPage(n, data) { if (data) state.hifz.pages[n] = data; else delete state.hifz.pages[n]; save(); },
     setHifz(opts) { Object.assign(state.hifz, opts); save(); },
     logHifz(kind) { const t = todayStr(), d = state.hifzLog[t] || (state.hifzLog[t] = { yeni: 0, tekrar: 0 }); d[kind]++; save(); },
+
+    // ── İlim defteri ──
+    defterKaydi(ref) { return state.defter.find((d) => d.ref === ref); },
+    defterKaydet(kayit) {
+      const var_ = kayit.ref && state.defter.find((d) => d.ref === kayit.ref);
+      if (var_) Object.assign(var_, kayit, { guncel: todayStr() });
+      else state.defter.unshift(Object.assign({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), tarih: todayStr() }, kayit));
+      save();
+    },
+    defterSil(id) { state.defter = state.defter.filter((d) => d.id !== id); save(); },
+
+    // ── Ziyaret ve onay ──
+    ziyaretEt(key, baslik, href) { state.ziyaret[key] = { tarih: new Date().toISOString(), baslik, href }; save(); },
+    ziyaretEdildi(key) { return !!state.ziyaret[key]; },
+    sonZiyaret() { const e = Object.values(state.ziyaret).sort((a, b) => b.tarih.localeCompare(a.tarih)); return e[0]; },
+    onayli(key) { return state.onay[key]; },
+    onayla(key, on) { if (on) state.onay[key] = todayStr(); else delete state.onay[key]; save(); },
 
     // ── Haftalık hedefler ──
     weekKey(d = new Date()) { const x = new Date(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return todayStr(x); },

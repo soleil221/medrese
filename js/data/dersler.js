@@ -319,7 +319,7 @@ window.DERSLER = {
           <tr><td>14</td><td>Nefs-i mütekellim maa'l-gayr</td><td>biz</td><td lang="ar">نَصَرْنَا</td><td lang="ar">نَنْصُرُ</td></tr>
         </table>
         <p>Muzâri harfleri: ${AR("أ ت ي ن")} — “<b>enîtü</b>” (${AR("أَنَيْتُ")}).</p>
-        <p class="tip">Bu tabloyu her kökle çekmek için <a href="#/cekim">Çekim Aracı</a>'nı kullan.</p>`,
+        <p class="tip">Başka köklerle çalışmak için <a href="#/cekim">Sarf atölyesi</a>.</p>`,
       cards: [
         ["Kaç sîga vardır?", "On dört"],
         [AR("نَصَرُوا") + " hangi sîga?", "Cem-i müzekker gâib"],

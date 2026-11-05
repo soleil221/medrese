@@ -14,12 +14,11 @@
     const html = `
       <a class="back" href="#/metinler">← Metinler</a>
       <h1>Amme Cüzü Tahlili <span lang="ar" class="muted">جزء عمّ</span></h1>
-      <p class="muted intro">Her âyet için meal, kelime kelime i'râb ve sarf, belâgat notları. Kelimelerdeki ↗ işareti çekim aracına götürür. Hazır olanlar hafızlıkta da ilk ezberlenen kısa sureler; diğerleri sırayla eklenecek.</p>
       <div class="sure-grid">${window.AMME.map((s) => {
         const ok = !!window.TAHLIL[s.no];
         return ok
           ? `<a class="sure-cell on" href="#/tahlil/${s.no}"><small>${s.no}</small><b>${esc(s.ad)}</b><span>${window.TAHLIL[s.no].ayetler.length} âyet</span></a>`
-          : `<div class="sure-cell"><small>${s.no}</small><b>${esc(s.ad)}</b><span>yakında</span></div>`;
+          : `<div class="sure-cell"><small>${s.no}</small><b>${esc(s.ad)}</b><span>—</span></div>`;
       }).join("")}</div>`;
     return { html };
   }
@@ -53,7 +52,7 @@
             <tbody>${a.k.map(([w, irab, sarf, kok, bab]) => `<tr>
               <td lang="ar" class="tw">${w}</td>
               <td class="${st.gizliIrab ? "hid" : ""}">${arw(irab)}</td>
-              <td>${arw(sarf || "")}${kok && bab ? ` <a href="#/cekim/${kok}/${bab}" title="Çekim aracında aç">↗</a>` : ""}</td></tr>`).join("")}</tbody>
+              <td>${arw(sarf || "")}${kok && bab ? ` <a href="#/cekim/${kok}/${bab}" title="Sarf atölyesinde aç">↗</a>` : ""}</td></tr>`).join("")}</tbody>
           </table></div>
           ${a.b && a.b.length ? `<div class="belagat"><b>Belâgat</b><ul>${a.b.map((x) => `<li>${arw(x)}</li>`).join("")}</ul></div>` : ""}
         </article>`).join("")}
@@ -73,7 +72,7 @@
         m.textContent = "Yükleniyor…";
         window.Ses.play(window.Ses.url(window.Ses.getKari(), no, n), () => (m.textContent = ""))
           .then(() => (m.textContent = "Çalıyor…"))
-          .catch(() => (m.textContent = "Ses yüklenemedi (internet gerekir; kârîyi tecvid dersinden değiştirebilirsin)."));
+          .catch(() => (m.textContent = "Ses yüklenemedi."));
       });
     };
     return { html, bind };

@@ -51,5 +51,5 @@
       kelimeler: [["أَشْرَاط", "شرط", "شَرَطٌ'in cemi: alametler"], ["نُزُول", "نزل", "Masdar: inme", 2], ["الْمُجْتَهِد", "جهد", "İfti'âl ism-i fâili: ictihad eden", "iftial"], ["يُخْطِئُ", "خطأ", "İf'âl muzâri (mehmûz): hata eder", "ifal"], ["يُصِيبُ", "صوب", "İf'âl muzâri (ecvef): isabet eder", "ifal"]] }
   );
 
-  t.aciklama = "Ebû Hafs Ömer en-Nesefî'nin (ö. 537/1142) Mâtürîdî akaid metninin tamamı. Kelam dersleri bu bölümlerin sırasını takip eder. Ezber ve ders için basılı bir nüshayla karşılaştır.";
+  t.aciklama = "Ebû Hafs Ömer en-Nesefî'nin (ö. 537/1142) Mâtürîdî akaid metninin tamamı. Kelam dersleri bu bölümlerin sırasını takip eder.";
 })();

@@ -60,10 +60,7 @@
 
     return `
       <section class="hero">
-        <div>
-          <h1>Bismillah.</h1>
-          <p class="muted">Klasik medrese silsilesi ile çağdaş din eğitimini tek bir yolda takip et.</p>
-        </div>
+        <div><h2>Müfredat ilerlemesi</h2></div>
         <div class="rings">
           ${ring(kp, "Klasik")}
           ${ring(mp, "Modern")}
@@ -165,7 +162,6 @@
     return `
       <div class="tabs">${tabs}</div>
       <input id="search" class="search" type="search" placeholder="Ders, kitap veya müellif ara… (ör. Teftâzânî, belâgat)" value="${esc(q)}">
-      ${track === "birlesik" ? `<p class="muted intro">Birleşik yol, her merhalede klasik metinleri çağdaş derslerle yan yana koyar. Klasik taraf “metin ve meleke”yi, çağdaş taraf “tarih, yöntem ve güncel bağlam”ı verir. Köprü ikonu (⇄) birbirini tamamlayan dersleri gösterir.</p>` : ""}
       ${body || `<p class="empty">“${esc(q)}” için sonuç bulunamadı.</p>`}`;
   }
 
@@ -208,7 +204,7 @@
       <div class="ders-grid">
         <div>
           ${window.Views.lessonsBlock(c)}
-          ${c.id === "k-sarf" ? `<p class="btns"><a class="btn alt" href="#/cekim">Çekim Aracı'nı aç →</a><a class="btn ghost" href="#/metin/emsile">Emsile metni →</a></p>` : ""}
+          ${c.id === "k-sarf" ? `<p class="btns"><a class="btn alt" href="#/cekim">Sarf atölyesi →</a><a class="btn ghost" href="#/metin/emsile">Emsile metni →</a></p>` : ""}
           ${c.id === "k-hadis" || c.id === "k-nahiv" ? `<p class="btns"><a class="btn alt" href="#/metin/kirk-hadis">Kırk Hadis →</a></p>` : ""}
           ${c.id === "k-tasavvuf" ? `<p class="btns"><a class="btn alt" href="#/metin/eyyuhel-veled">Eyyühe'l-Veled metni →</a></p>` : ""}
           ${c.id === "k-kelam" || c.id === "k-akaid1" ? `<p class="btns"><a class="btn alt" href="#/metin/akaid-nesefi">el-Akāidü'n-Nesefiyye metni →</a></p>` : ""}
@@ -302,11 +298,7 @@
           <button id="reset" class="danger">Tüm ilerlemeyi sıfırla</button>
         </div>
       </div>
-      <div class="card">
-        <h3>Hakkında</h3>
-        <p class="muted tiny">Müfredat: ${window.KLASIK.length} klasik, ${window.MODERN.length} çağdaş ders · ${ALL.reduce((a, c) => a + c.texts.length, 0)} metin/kaynak.
-        Klasik müfredat ağırlıklı olarak Osmanlı/Anadolu medrese geleneğini (Hanefî-Mâtürîdî) esas alır; Şâfiî ve diğer gelenekler için alternatif metinler “alternatif/ek” olarak işaretlidir.</p>
-      </div>`;
+`;
   }
 
   // ───────── Yönlendirme ve olaylar ─────────
@@ -314,9 +306,11 @@
 
   function render() {
     const parts = (location.hash.replace(/^#\/?/, "") || "").split("/").map((x) => { try { return decodeURIComponent(x); } catch (e) { return x; } });
-    const route = parts[0] || "panel";
+    const route = parts[0] || "ana";
 
-    const navKey = route === "ders" || route === "sinav" || route === "cekim" ? "mufredat" : route === "metin" || route === "tahlil" ? "metinler" : route === "hafta" ? "panel" : route;
+    const NAV = { ana: "ana", panel: "ana", kuran: "kuran", sure: "kuran", tahlil: "kuran", meseleler: "meseleler", mesele: "meseleler",
+      alimler: "alimler", alim: "alimler", yollar: "yollar", yol: "yollar", defter: "defter" };
+    const navKey = NAV[route] || "derinles";
     document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === navKey));
 
     const V = window.Views;
@@ -329,7 +323,18 @@
       route === "metinler" ? V.metinler() :
       route === "metin" ? V.metin(parts[1]) :
       route === "tahlil" ? (parts[1] ? V.tahlil(parts[1]) : V.tahlilList()) :
-      route === "hafta" ? V.hafta(parts[1]) : null;
+      route === "hafta" ? V.hafta(parts[1]) :
+      route === "ana" || route === "panel" ? V.anaSayfa() :
+      route === "kuran" ? V.kuran() :
+      route === "sure" ? V.sure(parts[1]) :
+      route === "meseleler" ? V.meseleler() :
+      route === "mesele" ? V.mesele(parts[1]) :
+      route === "alimler" ? V.alimler() :
+      route === "alim" ? V.alim(parts[1]) :
+      route === "yollar" ? V.yollar() :
+      route === "yol" ? V.yol(parts[1]) :
+      route === "defter" ? V.defter() :
+      route === "derinles" ? V.derinles() : null;
     if (special) {
       app.innerHTML = special.html;
       if (special.bind) special.bind();
@@ -412,7 +417,7 @@
     }
   }
 
-  window.U = { esc, BY_ID, ALL, bar, render: () => render() };
+  window.U = { esc, BY_ID, ALL, bar, render: () => render(), panelHtml: () => viewPanel() };
 
   window.addEventListener("hashchange", () => {
     if (!location.hash.startsWith("#/mufredat")) searchQ = "";

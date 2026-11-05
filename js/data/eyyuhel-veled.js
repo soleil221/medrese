@@ -2,7 +2,7 @@
 // Uzun bölümler (Hâtem el-Esam'ın faydaları, dört-dört tavsiye) özetlenmiş; "ozet: true" ile işaretlidir.
 window.METINLER.push({
   id: "eyyuhel-veled", title: "Eyyühe'l-Veled", tur: "Tasavvuf",
-  aciklama: "İmam Gazâlî'nin (ö. 505/1111) bir talebesine yazdığı nasihat risalesi. Aslı Farsçadır; burada yaygın Arapça tercümesinden seçilmiş bölümler verilmiştir. Özet işaretli bölümlerde Arapça metin kısaltılmıştır. Nüshalar arasında lafız farkları bulunur.",
+  aciklama: "İmam Gazâlî'nin (ö. 505/1111) bir talebesine yazdığı nasihat risalesi. Aslı Farsçadır; burada yaygın Arapça tercümesinden seçilmiş bölümler verilmiştir; özet işaretli bölümler kısaltılmıştır.",
   satirlar: [
     { no: 1, baslik: "Risalenin yazılış sebebi", ders: "giris", ozet: true,
       ar: "أَيُّ نَوْعٍ مِنَ الْعُلُومِ يَنْفَعُنِي غَدًا وَيُؤَانِسُنِي فِي قَبْرِي، وَأَيُّهَا لَا يَنْفَعُنِي حَتَّى أَتْرُكَهُ؟",

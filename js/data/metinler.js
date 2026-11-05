@@ -4,12 +4,12 @@
 window.METINLER = [
   {
     id: "emsile", title: "Emsile-i Muhtelife (نَصَرَ)", tur: "Sarf",
-    aciklama: "Emsile'nin muhtelife kısmı, نَصَرَ kökü üzerinden. Satırlar çekim motorunca üretilir; ezberde hocanın nüshasını esas al.",
+    aciklama: "Emsile'nin muhtelife kısmı, نَصَرَ kökü üzerinden. Ezberde hocanın nüshasını esas al.",
     uretilen: { kok: "نصر", bab: 1 }
   },
   {
     id: "kirk-hadis", title: "Kırk Hadis (el-Erbaûn en-Neveviyye)", tur: "Hadis",
-    aciklama: "İmam Nevevî'nin 42 hadislik el-Erbaûn'u. Senedler kısaltılmış, râvi ve başlıca kaynak belirtilmiştir. Tercümeler mana tercümesidir; ezber ve ders için basılı bir nüshayla karşılaştırarak oku.",
+    aciklama: "İmam Nevevî'nin 42 hadislik el-Erbaûn'u. Senedler kısaltılmış, râvi ve başlıca kaynak belirtilmiştir. Tercümeler mana tercümesidir.",
     satirlar: [
       { no: 1, ravi: "Hz. Ömer", kaynak: "Buhârî, Müslim",
         ar: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى، فَمَنْ كَانَتْ هِجْرَتُهُ إِلَى اللهِ وَرَسُولِهِ فَهِجْرَتُهُ إِلَى اللهِ وَرَسُولِهِ، وَمَنْ كَانَتْ هِجْرَتُهُ لِدُنْيَا يُصِيبُهَا أَوِ امْرَأَةٍ يَنْكِحُهَا فَهِجْرَتُهُ إِلَى مَا هَاجَرَ إِلَيْهِ",

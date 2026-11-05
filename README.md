@@ -3,7 +3,32 @@
 Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğitimi müfredatını
 (ilahiyat fakültesi ders yapısı) tek bir yolda birleştiren, kişisel ilerleme takip uygulaması.
 
-## Özellikler
+## Vizyon
+
+Bir okul müfredatı değil, bir **ilim yuvası**: Kur'an'ı anlamak; dinî meseleleri delilleri, mezhepleri ve âlimleriyle
+derinlemesine öğrenmek; öğrendiklerini kişisel bir ilim defterinde biriktirmek. Seviye: temeli olan, orta üstü okuyucu.
+Yaklaşım: baştan karşılaştırmalı (dört mezhep ve diğer önemli görüşler), âlim merkezli; kurumsal görüş örneği olarak Diyanet ve TDV.
+
+## Bölümler
+
+- **Ana sayfa** — günün âyeti, kaldığın yer, öğrenme yolları, meseleler, günün âlimi, defterden notlar
+- **Kur'an** — 14 sure sayfası (Fâtiha ve Amme cüzünün sık okunan sureleri): ana mesaj, iniş ortamı, âyetler ve meal,
+  akış, kavramlar, âlimlerden tefsir notları, tefekkür sorusu, ilgili meseleler; kelime tahlili olan surelerde tahlile geçiş
+- **Meseleler** — “İhtilaf neden var?” giriş yazısı ve 14 derin mesele (namazların cem'i, abdesti bozanlar, imam arkasında
+  Fâtiha, teravih, kurban, çorap üzerine mesh, fitrenin kıymetle ödenmesi, ribâ ve banka faizi, tek mecliste üç talak,
+  kadının şahitliği, musiki, organ bağışı, kader, kabir hayatı). Her birinde: âyetler, sıhhat dereceli hadisler,
+  mezheplerin görüşleri ve delilleri, ihtilafın kökü, çağdaş görüşler, kesin/çoğunluk/tartışmalı tablosu, kaynaklar
+- **Âlimler** — hicrî asırlara göre zaman çizelgesinde 31 âlim; hayat, ilmî yöntem, hoca-talebe silsilesi, eserler,
+  meselelerdeki görüşleri
+- **Öğrenme yolları** — 4 rehberli yolculuk (Fıkıh nasıl düşünür?, Kur'an'ın son sayfalarıyla tefekkür,
+  İnancın derin soruları, Modern hayat ve fıkıh); ilerleme ziyaretle işaretlenir, sayfalarda “sonraki adım” bandı
+- **İlim defteri** — her sayfadan not kaydı, serbest notlar, arama ve filtre
+- **İçerik onayı** — her mesele, sure ve âlim sayfasında “Gözden geçirdim” işareti
+- **Derinleş** — önceki bütün içerik: müfredat ve dersler, metinler (Kırk Hadis, Akāid-i Nesefî, Eyyühe'l-Veled,
+  Emsile, Amme tahlili), ezber kartları, hıfz, sarf atölyesi, haftalık hedefler, günlük, ayarlar
+
+### Derinleş katmanının ayrıntıları
+
 
 - **Üç müfredat görünümü**
   - **Klasik Medrese** — 4 merhale: Mukaddimât → Alet İlimleri I-II → Âlî İlimler
@@ -99,6 +124,8 @@ js/store.js         İlerleme, notlar, günlük, kartlar, hıfz (localStorage)
 js/sarf.js          Çekim (tasrîf) motoru
 js/ses.js           Kârî sesi ve kullanıcı ses kaydı
 js/views-hafta-tahlil.js  Amme tahlili ve haftalık hedef/rapor ekranları
+js/merkez.js        Ana sayfa, Kur'an, meseleler, âlimler, yollar, defter, Derinleş ekranları
+js/data/alimler.js, meseleler-*.js, kuran-anlam.js, yollar.js  İlim merkezi içerikleri
 js/data/akaid-nesefi.js, dersler-kelam.js, dersler-usul.js, tahlil-amme.js
 js/data/dersler-belagat.js, dersler-mantik.js, dersler-fikih.js, tecvid-ayetler.js
 js/features.js      Ders, sınav, tekrar, hıfz ve çekim ekranları
