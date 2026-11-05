@@ -47,7 +47,7 @@
 
   function exercisesBlock(l) {
     if (!l.exercises) return "";
-    const roles = window.IRAB_ROLLER.map((r) => `<option>${r}</option>`).join("");
+    const roles = window.IRAB_ROLLER.map(([g, rs]) => `<optgroup label="${g}">${rs.map((r) => `<option>${r}</option>`).join("")}</optgroup>`).join("");
     return `<section class="card"><h3>İ'râb alıştırması</h3>
       <p class="muted tiny">Her kelimenin cümledeki görevini seç, sonra “Kontrol et”e bas.</p>
       ${l.exercises.map((ex, ei) => `<div class="ex" data-ex="${ei}">
@@ -414,7 +414,18 @@
     ["Muzâaf", [["مدد", 1], ["فرر", 2]]],
     ["Misâl", [["وعد", 2], ["وجل", 4]]],
     ["Ecvef", [["قول", 1], ["بيع", 2], ["خوف", 4]]],
-    ["Nâkıs", [["دعو", 1], ["رمي", 2], ["سعي", 3], ["رضي", 4]]]
+    ["Nâkıs", [["دعو", 1], ["رمي", 2], ["سعي", 3], ["رضي", 4]]],
+    ["Lefîf", [["وقي", 2], ["ولي", 6], ["طوي", 2]]],
+    ["Birleşik", [["أتي", 2], ["جيء", 2], ["أمم", 1]]]
+  ];
+  const MEZID_ORNEK = [
+    ["Sâlim", null],
+    ["Mehmûz", [["أمن", "ifal"], ["أخذ", "iftial"]]],
+    ["Muzâaf", [["حبب", "ifal"], ["مدد", "istifal"], ["حجج", "mufaale"]]],
+    ["Misâl", [["وجد", "ifal"], ["وصل", "iftial"]]],
+    ["Ecvef", [["قوم", "ifal"], ["قوم", "istifal"], ["خير", "iftial"], ["قود", "infial"]]],
+    ["Nâkıs", [["عطو", "ifal"], ["سمي", "tefil"], ["ندو", "mufaale"], ["شري", "iftial"], ["لقي", "tefaul_"], ["علو", "tefaul"]]],
+    ["Lefîf", [["وقي", "iftial"], ["وصي", "ifal"], ["حيي", "ifal"]]]
   ];
 
   // #/cekim/KÖK/BAB  veya  #/cekim/KÖK/mezîd-anahtarı
@@ -469,13 +480,14 @@
       : Sf.BABS.map((x) => `<button class="${x.n === st.bab ? "" : "ghost"}" data-bab="${x.n}"><small>${x.n}. bab</small> <span lang="ar">${x.ad}</span></button>`).join("");
     const mz = Sf.MEZID.find((m) => m.k === st.mezid);
     const examples = st.mode === "mezid"
-      ? Sf.MEZID.map((m) => `<button class="ghost sm" data-ex="${m.ornek}" data-mzk="${m.k}" lang="ar">${m.ornek}</button>`).join("")
+      ? MEZID_ORNEK.map(([grp, xs]) => `<span class="exg"><small class="muted">${grp}:</small> ${(xs || Sf.MEZID.map((m) => [m.ornek, m.k]))
+          .map(([k, mk]) => `<button class="ghost sm" data-ex="${k}" data-mzk="${mk}"><span lang="ar">${k}</span> <small>${xs ? Sf.MEZID.find((m) => m.k === mk).ad : ""}</small></button>`).join("")}</span>`).join("")
       : ORNEKLER.map(([grp, xs]) => `<span class="exg"><small class="muted">${grp}:</small> ${xs.map(([k, n]) => `<button class="ghost sm" data-ex="${k}" data-b="${n}" lang="ar">${k}</button>`).join("")}</span>`).join("");
 
     const html = `
       <a class="back" href="#/ders/k-sarf">← Sarf</a>
       <h1>Çekim Aracı <span lang="ar" class="muted">تصريف</span></h1>
-      <p class="muted intro">Üç harfli kökü gir. İlletli fiillerde kökün aslını yaz: <span lang="ar">قال</span> → <span lang="ar">قول</span>, <span lang="ar">دعا</span> → <span lang="ar">دعو</span>. Sülâsî mücerredde sâlim, mehmûz, muzâaf, misâl, ecvef ve nâkıs fiiller; mezîd bablarında sâlim fiiller çekilir.</p>
+      <p class="muted intro">Üç harfli kökü gir. İlletli fiillerde kökün aslını yaz: <span lang="ar">قال</span> → <span lang="ar">قول</span>, <span lang="ar">دعا</span> → <span lang="ar">دعو</span>. Sâlim, mehmûz, muzâaf, misâl, ecvef, nâkıs ve lefîf fiiller hem sülâsî mücerredde hem 8 mezîd babında çekilir.</p>
       <div class="tabs">${[["mucerred", "Sülâsî mücerred"], ["mezid", "Sülâsî mezîd"], ["emsile", "Emsile-i muhtelife"]].map(([k, t]) => `<a href="javascript:void 0" data-mode="${k}" class="${st.mode === k ? "on" : ""}">${t}</a>`).join("")}</div>
       <div class="card cekim-form">
         <div class="root-row"><label>Kök (3 harf)<input id="root" lang="ar" dir="rtl" value="${esc(st.root)}" maxlength="12" autocomplete="off"></label>
@@ -532,7 +544,7 @@
       rows = Sf.emsile(Sf.analyze(t.uretilen.kok), Sf.BABS[t.uretilen.bab - 1]).map((x) => ({ ar: x.ar, tr: `<b>${x.ad}</b>${x.tr ? " — " + x.tr : ""}` }));
     } else {
       rows = t.satirlar.map((r) => ({
-        head: `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>`,
+        head: `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}`,
         ar: r.ar, tr: esc(r.tr),
         kelimeler: r.kelimeler
       }));

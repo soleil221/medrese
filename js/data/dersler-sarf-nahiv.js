@@ -308,10 +308,5 @@
     }
   );
 
-  // Alıştırmalarda seçilebilecek görevler
-  window.IRAB_ROLLER = [
-    "Fiil-i mâzî", "Fiil-i muzâri", "Nâkıs fiil (kâne grubu)", "Fâil", "Mef'ûlün bih", "Mübtedâ", "Haber",
-    "Harf-i cer", "Mecrûr (harf-i cer ile)", "Muzâfun ileyh", "Harf (inne grubu)", "İnne'nin ismi", "İnne'nin haberi",
-    "Kâne'nin ismi", "Kâne'nin haberi", "Harf (nasb/cezm edatı)"
-  ];
+  // Alıştırma görev listesi: js/data/dersler-kafiye.js (IRAB_ROLLER)
 })();

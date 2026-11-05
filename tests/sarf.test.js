@@ -74,5 +74,42 @@ mz('خرج','istifal','maziMalum',0,'اِسْتَخْرَجَ'); mz('خرج','is
 // emsile
 const e = S.emsile(S.analyze('نصر'), S.BABS[0]); console.log(e.map(x => x.ar).join(' | '));
 console.log(S.emsile(S.analyze('جلس'), S.BABS[1]).find(x=>x.k==='zarf').ar);
-console.log(S.analyze('وقي').error?.slice(0,30), '|', S.analyze('قال').error?.slice(0,20));
+// lefîf ve birleşik
+check('وقي',2,'maziMalum',0,'وَقَى'); check('وقي',2,'maziMalum',12,'وَقَيْتُ'); check('وقي',2,'muzariMalum',0,'يَقِي'); check('وقي',2,'muzariMalum',2,'يَقُونَ');
+check('وقي',2,'emir',0,'قِ'); check('وقي',2,'emir',2,'قُوا'); check('وقي',2,'nehy',0,'لَا تَقِ'); check('وقي',2,'maziMechul',0,'وُقِيَ');
+check('وقي',2,'muzariMechul',0,'يُوقَى'); check('وقي',2,'ismiFail',null,'وَاقٍ'); check('وقي',2,'ismiMeful',null,'مَوْقِيٌّ');
+check('ولي',6,'muzariMalum',0,'يَلِي'); check('ولي',6,'maziMalum',0,'وَلِيَ');
+check('طوي',2,'maziMalum',0,'طَوَى'); check('طوي',2,'muzariMalum',0,'يَطْوِي'); check('طوي',2,'emir',0,'اِطْوِ'); check('طوي',2,'ismiMeful',null,'مَطْوِيٌّ');
+check('أتي',2,'maziMalum',0,'أَتَى'); check('أتي',2,'muzariMalum',0,'يَأْتِي'); check('أتي',2,'muzariMalum',12,'آتِي'); check('أتي',2,'ismiFail',null,'آتٍ');
+check('جيء',2,'maziMalum',0,'جَاءَ'); check('جيء',2,'maziMalum',12,'جِئْتُ'); check('جيء',2,'muzariMalum',0,'يَجِيءُ'); check('جيء',2,'ismiFail',null,'جَاءٍ'); check('جيء',2,'emir',0,'جِئْ');
+check('أمم',1,'maziMalum',0,'أَمَّ'); check('أمم',1,'muzariMalum',0,'يَؤُمُّ');
+console.log(S.analyze('رأي').error?.slice(0,10), '|', S.analyze('قال').error?.slice(0,20));
+// mezîd: mehmûz, muzâaf, misâl
+mz('أمن','ifal','maziMalum',0,'آمَنَ'); mz('أمن','ifal','muzariMalum',0,'يُؤْمِنُ'); mz('أمن','ifal','muzariMalum',12,'أُومِنُ'); mz('أمن','ifal','masdar',null,'إِيمَانٌ'); mz('أمن','ifal','ismiFail',null,'مُؤْمِنٌ');
+mz('أخذ','iftial','maziMalum',0,'اِتَّخَذَ'); mz('أخذ','iftial','muzariMalum',0,'يَتَّخِذُ');
+mz('حبب','ifal','maziMalum',0,'أَحَبَّ'); mz('حبب','ifal','maziMalum',12,'أَحْبَبْتُ'); mz('حبب','ifal','muzariMalum',0,'يُحِبُّ'); mz('حبب','ifal','ismiFail',null,'مُحِبٌّ'); mz('حبب','ifal','ismiMeful',null,'مُحَبٌّ'); mz('حبب','ifal','emir',2,'أَحِبُّوا'); mz('حبب','ifal','muzariMalum',5,'يُحْبِبْنَ');
+mz('حجج','mufaale','maziMalum',0,'حَاجَّ'); mz('حجج','mufaale','muzariMalum',0,'يُحَاجُّ');
+mz('مدد','istifal','maziMalum',0,'اِسْتَمَدَّ'); mz('مدد','istifal','maziMalum',12,'اِسْتَمْدَدْتُ'); mz('مدد','istifal','muzariMalum',0,'يَسْتَمِدُّ');
+mz('حلل','iftial','maziMalum',0,'اِحْتَلَّ'); mz('حلل','iftial','muzariMalum',0,'يَحْتَلُّ'); mz('شقق','infial','maziMalum',0,'اِنْشَقَّ');
+mz('حدد','tefil','maziMalum',0,'حَدَّدَ'); mz('حدد','tefil','muzariMalum',0,'يُحَدِّدُ');
+mz('وجد','ifal','maziMalum',0,'أَوْجَدَ'); mz('وجد','ifal','muzariMalum',0,'يُوجِدُ'); mz('وجد','ifal','masdar',null,'إِيجَادٌ'); mz('وجد','ifal','ismiFail',null,'مُوجِدٌ');
+mz('وصل','iftial','maziMalum',0,'اِتَّصَلَ'); mz('وصل','iftial','muzariMalum',0,'يَتَّصِلُ'); mz('وصل','iftial','masdar',null,'اِتِّصَالٌ');
+mz('وجب','istifal','maziMalum',0,'اِسْتَوْجَبَ'); mz('وجب','istifal','masdar',null,'اِسْتِيجَابٌ');
+// mezîd: ecvef
+const q = [['maziMalum',0,'أَقَامَ'],['maziMalum',12,'أَقَمْتُ'],['maziMechul',0,'أُقِيمَ'],['muzariMalum',0,'يُقِيمُ'],['muzariMalum',5,'يُقِمْنَ'],['muzariMechul',0,'يُقَامُ'],['emir',0,'أَقِمْ'],['emir',2,'أَقِيمُوا'],['nehy',0,'لَا تُقِمْ'],['masdar',null,'إِقَامَةٌ'],['ismiFail',null,'مُقِيمٌ'],['ismiMeful',null,'مُقَامٌ'],['muzariMalum',12,'أُقِيمُ']];
+q.forEach(([f,i,e]) => mz('قوم','ifal',f,i,e));
+[['maziMalum',0,'اِسْتَقَامَ'],['muzariMalum',0,'يَسْتَقِيمُ'],['emir',0,'اِسْتَقِمْ'],['masdar',null,'اِسْتِقَامَةٌ'],['ismiFail',null,'مُسْتَقِيمٌ'],['maziMechul',0,'اُسْتُقِيمَ']].forEach(([f,i,e]) => mz('قوم','istifal',f,i,e));
+[['maziMalum',0,'اِخْتَارَ'],['maziMalum',12,'اِخْتَرْتُ'],['maziMechul',0,'اُخْتِيرَ'],['muzariMalum',0,'يَخْتَارُ'],['emir',0,'اِخْتَرْ'],['emir',2,'اِخْتَارُوا'],['masdar',null,'اِخْتِيَارٌ'],['ismiFail',null,'مُخْتَارٌ'],['muzariMalum',5,'يَخْتَرْنَ']].forEach(([f,i,e]) => mz('خير','iftial',f,i,e));
+[['maziMalum',0,'اِنْقَادَ'],['muzariMalum',0,'يَنْقَادُ'],['masdar',null,'اِنْقِيَادٌ']].forEach(([f,i,e]) => mz('قود','infial',f,i,e));
+mz('قوم','tefil','maziMalum',0,'قَوَّمَ'); mz('قوم','tefil','muzariMalum',0,'يُقَوِّمُ');
+// mezîd: nâkıs
+[['maziMalum',0,'أَعْطَى'],['maziMalum',12,'أَعْطَيْتُ'],['maziMalum',2,'أَعْطَوْا'],['maziMechul',0,'أُعْطِيَ'],['maziMechul',2,'أُعْطُوا'],['muzariMalum',0,'يُعْطِي'],['muzariMalum',2,'يُعْطُونَ'],['muzariMechul',0,'يُعْطَى'],['emir',0,'أَعْطِ'],['emir',2,'أَعْطُوا'],['nehy',0,'لَا تُعْطِ'],['masdar',null,'إِعْطَاءٌ'],['ismiFail',null,'مُعْطٍ'],['ismiMeful',null,'مُعْطًى']].forEach(([f,i,e]) => mz('عطو','ifal',f,i,e));
+[['maziMalum',0,'سَمَّى'],['muzariMalum',0,'يُسَمِّي'],['emir',0,'سَمِّ'],['masdar',null,'تَسْمِيَةٌ'],['ismiMeful',null,'مُسَمًّى']].forEach(([f,i,e]) => mz('سمي','tefil',f,i,e));
+[['maziMalum',0,'نَادَى'],['muzariMalum',0,'يُنَادِي'],['masdar',null,'مُنَادَاةٌ'],['ismiFail',null,'مُنَادٍ']].forEach(([f,i,e]) => mz('ندو','mufaale',f,i,e));
+[['maziMalum',0,'اِشْتَرَى'],['muzariMalum',0,'يَشْتَرِي'],['emir',0,'اِشْتَرِ'],['masdar',null,'اِشْتِرَاءٌ'],['ismiFail',null,'مُشْتَرٍ']].forEach(([f,i,e]) => mz('شري','iftial',f,i,e));
+[['maziMalum',0,'تَلَقَّى'],['muzariMalum',0,'يَتَلَقَّى'],['emir',0,'تَلَقَّ'],['masdar',null,'تَلَقٍّ']].forEach(([f,i,e]) => mz('لقي','tefaul_',f,i,e));
+[['maziMalum',0,'تَعَالَى'],['muzariMalum',0,'يَتَعَالَى'],['emir',0,'تَعَالَ']].forEach(([f,i,e]) => mz('علو','tefaul',f,i,e));
+[['maziMalum',0,'اِتَّقَى'],['muzariMalum',0,'يَتَّقِي'],['emir',0,'اِتَّقِ'],['masdar',null,'اِتِّقَاءٌ'],['ismiFail',null,'مُتَّقٍ']].forEach(([f,i,e]) => mz('وقي','iftial',f,i,e));
+[['maziMalum',0,'أَحْيَا'],['muzariMalum',0,'يُحْيِي']].forEach(([f,i,e]) => mz('حيي','ifal',f,i,e));
+[['maziMalum',0,'أَوْصَى'],['muzariMalum',0,'يُوصِي'],['emir',0,'أَوْصِ'],['masdar',null,'إِيصَاءٌ']].forEach(([f,i,e]) => mz('وصي','ifal',f,i,e));
 console.log('pass', pass, 'fail', fail); process.exit(fail ? 1 : 0);
