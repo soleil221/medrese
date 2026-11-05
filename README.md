@@ -20,10 +20,18 @@ Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğ
   Kur'an Tarihi, Mâtürîdiyye–Eş'ariyye (23 ders, ~200 kart)
 - **Sınav** — her dersin kartlarından üretilen çoktan seçmeli sınav; en iyi puan saklanır
 - **Aralıklı tekrar** — Leitner sistemi (1, 3, 7, 16, 35 gün); bilinmeyen kart başa döner
-- **Çekim aracı** — sülâsî mücerred sâlim kökleri 6 babda, 14 sîga hâlinde mâzî/muzâri (ma'lûm–meçhul),
-  emir ve nehiy olarak çeker; ism-i fâil/mef'ûl; “ezber modu” ile hücreleri gizleyip kendini sınama
+- **Çekim aracı** — 14 sîgada mâzî/muzâri (ma'lûm–meçhul), emir ve nehiy; ism-i fâil/mef'ûl/masdar:
+  - Sülâsî mücerred 6 bab: sâlim, mehmûz (hemze imlâsı dahil), muzâaf, misâl, ecvef, nâkıs
+  - Sülâsî mezîd 8 bab (sâlim): if'âl, tef'îl, mufâale, ifti'âl (ibdâl/idğam dahil), infi'âl, tefa''ul, tefâul, istif'âl
+  - Emsile-i muhtelife (sâlim kökler); “ezber modu” ile hücreleri gizleyip kendini sınama
+  - `#/cekim/KÖK/BAB` bağlantısıyla doğrudan açılır (ör. `#/cekim/قول/1`, `#/cekim/خرج/istifal`)
+- **Sarf ve Nahiv dersleri** — Emsile, mehmûz-muzâaf, misâl-ecvef, nâkıs (motorla üretilen tablolar);
+  isim/fiil cümlesi, harf-i cerler, kâne ve inne grupları, muzâriyi nasb/cezm edenler; **i'râb alıştırmaları**
+- **Metinler** — Arapça ve Türkçe yan yana; tercümeyi veya harekeleri gizleme; kelime notlarından çekim aracına geçiş.
+  Emsile metni ve Kırk Hadis'ten 15 hadis (tekrar kartı olarak da eklenebilir)
 - **Hıfz** — 604 sayfalık mushaf haritası (zayıf/orta/sağlam), günlük plan: yeni ezber + yakın tekrar
-  (son ezberlenen sayfalar) + uzak tekrar (en eski ve zayıf sayfalar önce); baştan veya 30. cüzden geriye ezber sırası
+  (son ezberlenen sayfalar) + uzak tekrar (sayfa usulü: en eski ve zayıf sayfalar önce; cüz usulü: her gün sıradaki cüz);
+  sure adları, sure veya cüz bazında toplu işaretleme; baştan veya 30. cüzden geriye ezber sırası
 - **Yedekleme** — JSON olarak dışa/içe aktarma
 - **Çevrimdışı çalışma (PWA)** — telefona "Ana ekrana ekle" ile uygulama gibi kurulabilir; açık/koyu tema
 
@@ -37,6 +45,14 @@ python3 -m http.server 8000
 
 Ardından `http://localhost:8000` adresini açın. (GitHub Pages ile de doğrudan yayınlanabilir.)
 
+## Testler
+
+```bash
+node tests/sarf.test.js
+```
+
+Çekim motorunu bilinen ~200 çekime karşı doğrular.
+
 ## Yapı
 
 ```
@@ -45,6 +61,9 @@ css/style.css       Görünüm
 js/data/klasik.js   Klasik medrese müfredatı (dersler, metinler, müellifler, önkoşullar)
 js/data/modern.js   Çağdaş müfredat + klasik↔modern köprüleri + merhale adları
 js/data/dersler.js  Ders içerikleri ve ezber kartları
+js/data/dersler-sarf-nahiv.js  Sarf/Nahiv derinleştirme dersleri ve i'râb alıştırmaları
+js/data/metinler.js Okuma metinleri (Emsile, Kırk Hadis seçmeleri)
+js/data/sureler.js  114 surenin Medine mushafındaki başlangıç sayfaları
 js/store.js         İlerleme, notlar, günlük, kartlar, hıfz (localStorage)
 js/sarf.js          Çekim (tasrîf) motoru
 js/features.js      Ders, sınav, tekrar, hıfz ve çekim ekranları

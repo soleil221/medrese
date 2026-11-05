@@ -206,7 +206,8 @@
       <div class="ders-grid">
         <div>
           ${window.Views.lessonsBlock(c)}
-          ${c.id === "k-sarf" ? `<p><a class="btn alt" href="#/cekim">Çekim Aracı'nı aç →</a></p>` : ""}
+          ${c.id === "k-sarf" ? `<p class="btns"><a class="btn alt" href="#/cekim">Çekim Aracı'nı aç →</a><a class="btn ghost" href="#/metin/emsile">Emsile metni →</a></p>` : ""}
+          ${c.id === "k-hadis" || c.id === "k-nahiv" ? `<p class="btns"><a class="btn alt" href="#/metin/kirk-hadis">Kırk Hadis'ten seçmeler →</a></p>` : ""}
           <h2>Metinler ve kaynaklar <small class="muted">${pct(p)}</small></h2>
           ${bar(p, c.track)}
           <ol class="texts">
@@ -307,10 +308,10 @@
   let searchQ = "";
 
   function render() {
-    const parts = (location.hash.replace(/^#\/?/, "") || "").split("/");
+    const parts = (location.hash.replace(/^#\/?/, "") || "").split("/").map((x) => { try { return decodeURIComponent(x); } catch (e) { return x; } });
     const route = parts[0] || "panel";
 
-    const navKey = route === "ders" || route === "sinav" || route === "cekim" ? "mufredat" : route;
+    const navKey = route === "ders" || route === "sinav" || route === "cekim" ? "mufredat" : route === "metin" ? "metinler" : route;
     document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === navKey));
 
     const V = window.Views;
@@ -319,7 +320,9 @@
       route === "sinav" ? V.sinav(parts[1], parts[2]) :
       route === "tekrar" ? V.tekrar() :
       route === "hifz" ? V.hifz() :
-      route === "cekim" ? V.cekim() : null;
+      route === "cekim" ? V.cekim(parts[1], parts[2]) :
+      route === "metinler" ? V.metinler() :
+      route === "metin" ? V.metin(parts[1]) : null;
     if (special) {
       app.innerHTML = special.html;
       if (special.bind) special.bind();

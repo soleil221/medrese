@@ -10,10 +10,67 @@
   const cardKeys = (cid, l) => l.cards.map((_, i) => `${cid}/${l.id}/${i}`);
   const cardByKey = (key) => {
     const [cid, lid, i] = key.split("/");
+    if (cid === "metin") {
+      const t = (window.METINLER || []).find((x) => x.id === lid);
+      const r = t && t.satirlar && t.satirlar.find((x) => String(x.no) === i);
+      return r ? { cid, lid, metin: true, lesson: { title: `${t.title} · ${r.no}` }, front: `<span lang="ar">${r.ar}</span>`, back: r.tr } : null;
+    }
     const l = lessonOf(cid, lid);
     return l && l.cards[+i] ? { cid, lid, lesson: l, front: l.cards[+i][0], back: l.cards[+i][1] } : null;
   };
   const stripTags = (h) => h.replace(/<[^>]+>/g, "");
+  // Düz metindeki Arapça parçaları yön yalıtımlı span'e alır (önce HTML kaçışı yapılır)
+  const arWrap = (t) => U().esc(t).replace(/([\u0600-\u06FF][\u0600-\u06FF\u064B-\u0652 ]*[\u0600-\u06FF\u064B-\u0652])|([\u0600-\u06FF])/g, '<span lang="ar">$&</span>');
+
+  // ═════════════ ÇEKİM TABLOLARI (ders içinde) ═════════════
+  function miniTable(root, babN) {
+    const Sf = window.Sarf, an = Sf.analyze(root), bab = Sf.BABS[babN - 1];
+    if (an.error) return "";
+    const out = Sf.conjugate(an, bab);
+    if (out.error) return "";
+    const r = out.r;
+    return `<div class="tbl-wrap mini">
+      <div class="mini-h"><b lang="ar">${r.maziMalum[0]} ${r.muzariMalum[0]}</b>
+        <small class="muted">${an.label} · ${babN}. bab</small>
+        <a href="#/cekim/${root}/${babN}">Tam çekim →</a></div>
+      <table class="cekim"><thead><tr><th>Sîga</th><th>Mâzî</th><th>Muzâri</th><th>Emir</th></tr></thead>
+      <tbody>${Sf.SIGA.map(([ad], i) => `<tr><td><small>${ad}</small></td><td lang="ar">${r.maziMalum[i]}</td><td lang="ar">${r.muzariMalum[i]}</td><td lang="ar">${i >= 6 && i < 12 ? r.emir[i - 6] : ""}</td></tr>`).join("")}</tbody></table></div>`;
+  }
+  function emsileTable(root, babN) {
+    const Sf = window.Sarf, rows = Sf.emsile(Sf.analyze(root), Sf.BABS[babN - 1]);
+    if (!rows) return "";
+    return `<div class="tbl-wrap"><table class="cekim emsile"><tbody>${rows.map((x) =>
+      `<tr><td><b>${x.ad}</b>${x.tr ? `<small class="muted">${x.tr}</small>` : ""}</td><td lang="ar">${x.ar}</td></tr>`).join("")}</tbody></table></div>`;
+  }
+  const renderTokens = (html) => html.replace(/\{\{(tablo|emsile):([^:}]+):(\d)\}\}/g,
+    (_, kind, root, bab) => (kind === "emsile" ? emsileTable(root, +bab) : miniTable(root, +bab)));
+
+  function exercisesBlock(l) {
+    if (!l.exercises) return "";
+    const roles = window.IRAB_ROLLER.map((r) => `<option>${r}</option>`).join("");
+    return `<section class="card"><h3>İ'râb alıştırması</h3>
+      <p class="muted tiny">Her kelimenin cümledeki görevini seç, sonra “Kontrol et”e bas.</p>
+      ${l.exercises.map((ex, ei) => `<div class="ex" data-ex="${ei}">
+        <p class="ar-block" lang="ar">${ex.ar}</p>
+        <div class="ex-words">${ex.words.map(([w], wi) => `<div class="exw"><b lang="ar">${w}</b>
+          <select data-w="${wi}"><option value="">— seç —</option>${roles}</select><small class="exr"></small></div>`).join("")}</div>
+        <button class="sm" data-check="${ei}">Kontrol et</button> <small class="ex-score"></small>
+      </div>`).join("")}</section>`;
+  }
+  function bindExercises(l) {
+    document.querySelectorAll("[data-check]").forEach((b) => b.onclick = () => {
+      const ei = +b.dataset.check, ex = l.exercises[ei], box = document.querySelector(`.ex[data-ex="${ei}"]`);
+      let ok = 0;
+      box.querySelectorAll("select").forEach((sel) => {
+        const [, role, irab] = ex.words[+sel.dataset.w];
+        const res = sel.parentElement.querySelector(".exr"), right = sel.value === role;
+        if (right) ok++;
+        sel.parentElement.className = "exw " + (right ? "ok" : "bad");
+        res.textContent = right ? "✓ " + irab : "✗ Doğrusu: " + role + " — " + irab;
+      });
+      box.querySelector(".ex-score").textContent = `${ok} / ${ex.words.length} doğru`;
+    });
+  }
 
   // ═════════════ DERS İÇERİĞİ ═════════════
   function lessonsBlock(c) {
@@ -41,7 +98,8 @@
       <a class="back" href="#/ders/${cid}">← ${U().esc(c.title)}</a>
       <article class="lesson">
         <header><small class="muted">${idx + 1}. ders / ${ls.length}</small><h1>${U().esc(l.title)}</h1></header>
-        <div class="prose">${l.body}</div>
+        <div class="prose">${renderTokens(l.body)}</div>
+        ${exercisesBlock(l)}
 
         <section class="card">
           <div class="row-head"><h3>Ezber kartları (${l.cards.length})</h3>
@@ -62,6 +120,7 @@
       </article>`;
 
     const bind = () => {
+      bindExercises(l);
       const add = document.getElementById("add-deck"), rm = document.getElementById("rm-deck");
       if (add) add.onclick = () => { S.addCards(keys); U().render(); };
       if (rm) rm.onclick = () => { S.removeCards(key); U().render(); };
@@ -144,6 +203,12 @@
       return `<li><a href="#/ders/${cid}">${U().esc(c.title)}</a>
         <small class="muted">${inDeck}/${total} kart${d ? ` · <b>${d} bekliyor</b>` : ""}</small>
         ${inDeck < total ? `<button class="ghost sm" data-addall="${cid}">Tümünü ekle</button>` : ""}</li>`;
+    }).join("") + (window.METINLER || []).filter((t) => t.satirlar).map((t) => {
+      const keys = t.satirlar.map((r) => `metin/${t.id}/${r.no}`);
+      const inDeck = keys.filter((k) => S.card(k)).length, d = due.filter((k) => keys.includes(k)).length;
+      return `<li><a href="#/metin/${t.id}">${U().esc(t.title)}</a>
+        <small class="muted">${inDeck}/${keys.length} kart${d ? ` · <b>${d} bekliyor</b>` : ""}</small>
+        ${inDeck < keys.length ? `<button class="ghost sm" data-addmetin="${t.id}">Tümünü ekle</button>` : ""}</li>`;
     }).join("");
 
     const boxes = [0, 1, 2, 3, 4, 5].map((b) => all.filter((k) => S.state.cards[k].box === b).length);
@@ -153,7 +218,7 @@
     let main;
     if (card) {
       main = `<div class="flash card">
-        <small class="muted">${U().esc(U().BY_ID[card.cid].title)} · ${U().esc(card.lesson.title)} · kalan ${session.queue.length}</small>
+        <small class="muted">${card.metin ? "Metinler" : U().esc(U().BY_ID[card.cid].title)} · ${U().esc(card.lesson.title)} · kalan ${session.queue.length}</small>
         <div class="f-front">${card.front}</div>
         ${session.shown ? `<div class="f-back">${card.back}</div>
           <div class="btns center"><button id="no" class="danger">Bilemedim</button><button id="yes">Bildim</button></div>`
@@ -178,6 +243,11 @@
       if (g("show")) { g("show").onclick = () => { session.shown = true; U().render(); }; g("show").focus(); }
       if (g("yes")) g("yes").onclick = () => { S.gradeCard(key, true); session.right++; session.queue.shift(); session.shown = false; U().render(); };
       if (g("no")) g("no").onclick = () => { S.gradeCard(key, false); session.wrong++; session.queue.push(session.queue.shift()); session.shown = false; U().render(); };
+      document.querySelectorAll("[data-addmetin]").forEach((b) => b.onclick = () => {
+        const t = window.METINLER.find((x) => x.id === b.dataset.addmetin);
+        S.addCards(t.satirlar.map((r) => `metin/${t.id}/${r.no}`));
+        session = null; U().render();
+      });
       document.querySelectorAll("[data-addall]").forEach((b) => b.onclick = () => {
         const cid = b.dataset.addall;
         S.addCards(D[cid].flatMap((l) => cardKeys(cid, l)));
@@ -205,19 +275,31 @@
   }
 
   function makePlan() {
-    const h = S.state.hifz, today = S.todayStr();
+    const h = S.state.hifz, today = S.todayStr(), prev = h.plan;
     const mem = Object.keys(h.pages).map(Number).filter((p) => h.pages[p].m !== today);
     const yeni = pageOrder().filter((p) => !h.pages[p]).slice(0, h.newPerDay);
-    const yakin = mem.filter((p) => h.pages[p].m !== OLD).sort((a, b) => (h.pages[b].m + String(b).padStart(3, "0")).localeCompare(h.pages[a].m + String(a).padStart(3, "0"))).slice(0, h.nearCount);
-    const score = (p) => new Date(h.pages[p].r).getTime() - (3 - h.pages[p].s) * 5 * 864e5;
-    const uzak = mem.filter((p) => !yakin.includes(p)).sort((a, b) => score(a) - score(b) || a - b).slice(0, h.farPerDay).sort((a, b) => a - b);
-    S.setHifz({ plan: { date: today, yeni, yakin: yakin.sort((a, b) => a - b), uzak } });
+    const yakin = mem.filter((p) => h.pages[p].m !== OLD)
+      .sort((a, b) => (h.pages[b].m + String(b).padStart(3, "0")).localeCompare(h.pages[a].m + String(a).padStart(3, "0")))
+      .slice(0, h.nearCount);
+    const rest = mem.filter((p) => !yakin.includes(p));
+    let uzak, cuz = null, cuzPrev = null;
+    if (h.farMode === "cuz") {
+      // Her gün sıradaki ezberli cüzün tamamı; aynı gün yeniden planlanırsa cüz değişmez
+      cuzPrev = prev && prev.date === today ? prev.cuzPrev : prev ? prev.cuz : 0;
+      const juzler = [...new Set(rest.map(juzOf))].sort((a, b) => a - b);
+      cuz = juzler.find((j) => j > (cuzPrev || 0)) || juzler[0] || null;
+      uzak = cuz ? rest.filter((p) => juzOf(p) === cuz).sort((a, b) => a - b) : [];
+    } else {
+      const score = (p) => new Date(h.pages[p].r).getTime() - (3 - h.pages[p].s) * 5 * 864e5;
+      uzak = rest.sort((a, b) => score(a) - score(b) || a - b).slice(0, h.farPerDay).sort((a, b) => a - b);
+    }
+    S.setHifz({ plan: { date: today, yeni, yakin: yakin.sort((a, b) => a - b), uzak, cuz, cuzPrev } });
   }
 
   let selPage = null;
 
   function hifz() {
-    const h = S.state.hifz, today = S.todayStr();
+    const h = S.state.hifz, today = S.todayStr(), esc = U().esc;
     if (!h.plan || h.plan.date !== today) makePlan();
     const plan = S.state.hifz.plan;
     const memCount = Object.keys(h.pages).length;
@@ -227,7 +309,7 @@
 
     const item = (p, kind) => {
       const d = isDone(p, kind), pg = h.pages[p];
-      return `<li class="${d ? "done" : ""}"><span><b>Sayfa ${p}</b> <small class="muted">${juzOf(p)}. cüz${pg && kind !== "yeni" ? ` · ${STRENGTH[pg.s]}` : ""}</small></span>
+      return `<li class="${d ? "done" : ""}"><span><b>Sayfa ${p}</b> <small class="muted">${esc(window.sureOfPage(p).ad)} · ${juzOf(p)}. cüz${pg && kind !== "yeni" ? ` · ${STRENGTH[pg.s]}` : ""}</small></span>
         ${kind === "yeni"
           ? (d ? `<small>✓ ezberlendi</small>` : `<button class="sm" data-mem="${p}">Ezberledim</button>`)
           : (d ? `<small>✓ ${STRENGTH[pg.s]}</small>` : `<span class="seg sm">${[1, 2, 3].map((s) => `<button data-rev="${p}" data-s="${s}">${STRENGTH[s]}</button>`).join("")}</span>`)}
@@ -240,16 +322,19 @@
       const j = i + 1, pages = [];
       for (let p = juzStart(j); p <= juzEnd(j); p++) pages.push(p);
       const m = pages.filter((p) => h.pages[p]).length;
-      return `<div class="juz"><span class="jn">${j}</span><div class="cells">${pages.map((p) =>
-        `<i data-p="${p}" class="s${h.pages[p] ? h.pages[p].s : 0} ${selPage === p ? "sel" : ""}" title="Sayfa ${p}"></i>`).join("")}</div>
+      return `<div class="juz"><span class="jn"><b>${j}</b> <small>${esc(window.sureOfPage(juzStart(j)).ad)}</small></span><div class="cells">${pages.map((p) =>
+        `<i data-p="${p}" class="s${h.pages[p] ? h.pages[p].s : 0} ${selPage === p ? "sel" : ""} ${window.surelerStartingOn(p).length ? "sb" : ""}" title="Sayfa ${p} · ${esc(window.sureOfPage(p).ad)}"></i>`).join("")}</div>
         <small class="muted">${m}/${pages.length}</small></div>`;
     }).join("");
 
     const sp = selPage && h.pages[selPage];
+    const starting = selPage ? window.surelerStartingOn(selPage) : [];
     const editor = selPage ? `<div class="card page-ed">
-        <b>Sayfa ${selPage}</b> <small class="muted">${juzOf(selPage)}. cüz${sp ? ` · ezber: ${sp.m === OLD ? "önceden" : sp.m} · son tekrar: ${sp.r}` : ""}</small>
-        <div class="btns">${[0, 1, 2, 3].map((s) => `<button class="${(sp ? sp.s : 0) === s ? "" : "ghost"} sm" data-set="${s}">${s ? STRENGTH[s] : "Ezberlenmedi"}</button>`).join("")}
-        <button class="ghost sm" data-juz="${juzOf(selPage)}">${juzOf(selPage)}. cüzün tamamını “Orta” işaretle</button></div></div>` : "";
+        <b>Sayfa ${selPage}</b> <small class="muted">${esc(window.sureOfPage(selPage).ad)} · ${juzOf(selPage)}. cüz${starting.length ? ` · bu sayfada başlayan: ${starting.map((s) => esc(s.ad)).join(", ")}` : ""}${sp ? ` · ezber: ${sp.m === OLD ? "önceden" : sp.m} · son tekrar: ${sp.r}` : ""}</small>
+        <div class="btns">${[0, 1, 2, 3].map((s) => `<button class="${(sp ? sp.s : 0) === s ? "" : "ghost"} sm" data-set="${s}">${s ? STRENGTH[s] : "Ezberlenmedi"}</button>`).join("")}</div></div>` : "";
+
+    const farTitle = h.farMode === "cuz" ? `Uzak tekrar${plan.cuz ? ` — ${plan.cuz}. cüz` : ""}` : "Uzak tekrar";
+    const farDesc = h.farMode === "cuz" ? "Cüz usulü: her gün ezberli cüzlerden sıradakinin tamamı okunur." : "En uzun süredir tekrar edilmeyen ve zayıf sayfalar öne alınır.";
 
     const html = `
       <h1>Hıfz</h1>
@@ -262,13 +347,20 @@
       <div class="plan-grid">
         ${list("Yeni ezber", "Sıradaki sayfa(lar). Ezberleyip hocana/kendine dinlettikten sonra işaretle.", plan.yeni, "yeni")}
         ${list("Yakın tekrar", `Son ezberlenen ${h.nearCount} sayfa; her gün okunur.`, plan.yakin, "yakin")}
-        ${list("Uzak tekrar", "En uzun süredir tekrar edilmeyen ve zayıf sayfalar öne alınır.", plan.uzak, "uzak")}
+        ${list(farTitle, farDesc, plan.uzak, "uzak")}
       </div>
       <div class="btns"><button class="ghost sm" id="replan">Planı yenile</button>
         <form id="hlog" class="qlog"><input name="m" type="number" min="1" max="600" value="45"> <span>dk</span><button class="sm">Hıfz çalışmasını günlüğe ekle</button></form></div>
 
       <h2 style="margin-top:28px">Mushaf haritası</h2>
-      <p class="muted tiny">604 sayfalık (Medine / hafızlık) mushaf düzeni: 1. cüz 21, 30. cüz 23, diğerleri 20 sayfa. Daha önce ezberlediğin yerleri işaretlemek için bir sayfaya tıkla.</p>
+      <p class="muted tiny">604 sayfalık Medine mushafı düzeni (1. cüz 21, 30. cüz 23, diğerleri 20 sayfa). Altı çizgili hücrelerde yeni bir sure başlar. Daha önce ezberlediğin yerleri işaretlemek için bir sayfaya tıkla ya da toplu işaretlemeyi kullan.</p>
+      <div class="card bulk">
+        <label>Sure <select id="bulk-sure">${window.SURELER.map((s) => `<option value="${s.no}">${s.no}. ${esc(s.ad)} (s. ${s.sayfa})</option>`).join("")}</select></label>
+        <button class="sm" id="bulk-sure-go">Sureyi “Orta” işaretle</button>
+        <label>Cüz <select id="bulk-juz">${Array.from({ length: 30 }, (_, i) => `<option>${i + 1}</option>`).join("")}</select></label>
+        <button class="sm" id="bulk-juz-go">Cüzü “Orta” işaretle</button>
+        <small class="muted">Yalnızca işaretsiz sayfalar “önceden ezberlendi” olarak eklenir. Sure sınırındaki sayfayı iki sure paylaşabilir.</small>
+      </div>
       <div class="legend"><span><i class="s0"></i>Ezberlenmedi</span><span><i class="s1"></i>Zayıf</span><span><i class="s2"></i>Orta</span><span><i class="s3"></i>Sağlam</span></div>
       ${editor}
       <div class="mushaf">${grid}</div>
@@ -277,7 +369,10 @@
         <form id="hset" class="hset">
           <label>Günlük yeni sayfa<input type="number" name="newPerDay" min="0" max="20" value="${h.newPerDay}"></label>
           <label>Yakın tekrar (sayfa)<input type="number" name="nearCount" min="0" max="60" value="${h.nearCount}"></label>
-          <label>Uzak tekrar (sayfa/gün)<input type="number" name="farPerDay" min="0" max="200" value="${h.farPerDay}"></label>
+          <label>Uzak tekrar usulü<select name="farMode">
+            <option value="sayfa" ${h.farMode !== "cuz" ? "selected" : ""}>Sayfa usulü (en eski önce)</option>
+            <option value="cuz" ${h.farMode === "cuz" ? "selected" : ""}>Cüz usulü (her gün sıradaki cüz)</option></select></label>
+          <label>Uzak tekrar (sayfa/gün)<input type="number" name="farPerDay" min="0" max="200" value="${h.farPerDay}" ${h.farMode === "cuz" ? "disabled" : ""}></label>
           <label>Ezber sırası<select name="order">
             <option value="bastan" ${h.order === "bastan" ? "selected" : ""}>Baştan (1. cüzden)</option>
             <option value="sondan" ${h.order === "sondan" ? "selected" : ""}>Sondan (30. cüzden geriye)</option></select></label>
@@ -285,25 +380,26 @@
         </form></div>`;
 
     const bind = () => {
-      const set = (p, s) => {
-        if (!s) return S.setPage(p, null);
-        const old = h.pages[p];
-        S.setPage(p, { s, m: old ? old.m : OLD, r: today });
-      };
-      document.querySelectorAll("[data-mem]").forEach((b) => b.onclick = () => { const p = +b.dataset.mem; S.setPage(p, { s: 2, m: today, r: today }); U().render(); });
+      const markOld = (pages) => { pages.forEach((p) => { if (!h.pages[p]) S.setPage(p, { s: 2, m: OLD, r: today }); }); makePlan(); U().render(); };
+      document.querySelectorAll("[data-mem]").forEach((b) => b.onclick = () => { S.setPage(+b.dataset.mem, { s: 2, m: today, r: today }); U().render(); });
       document.querySelectorAll("[data-rev]").forEach((b) => b.onclick = () => { const p = +b.dataset.rev; S.setPage(p, Object.assign({}, h.pages[p], { s: +b.dataset.s, r: today })); U().render(); });
       document.querySelectorAll(".cells i").forEach((c) => c.onclick = () => { selPage = +c.dataset.p; U().render(); });
-      document.querySelectorAll("[data-set]").forEach((b) => b.onclick = () => { set(selPage, +b.dataset.set); U().render(); });
-      document.querySelectorAll("[data-juz]").forEach((b) => b.onclick = () => {
-        const j = +b.dataset.juz;
-        for (let p = juzStart(j); p <= juzEnd(j); p++) if (!h.pages[p]) S.setPage(p, { s: 2, m: OLD, r: today });
+      document.querySelectorAll("[data-set]").forEach((b) => b.onclick = () => {
+        const s = +b.dataset.set, old = h.pages[selPage];
+        S.setPage(selPage, s ? { s, m: old ? old.m : OLD, r: today } : null);
         U().render();
       });
+      document.getElementById("bulk-sure-go").onclick = () => markOld(window.surePages(+document.getElementById("bulk-sure").value));
+      document.getElementById("bulk-juz-go").onclick = () => {
+        const j = +document.getElementById("bulk-juz").value, ps = [];
+        for (let p = juzStart(j); p <= juzEnd(j); p++) ps.push(p);
+        markOld(ps);
+      };
       document.getElementById("replan").onclick = () => { makePlan(); U().render(); };
       document.getElementById("hlog").onsubmit = (e) => { e.preventDefault(); S.addLog({ date: today, courseId: "hifz", minutes: +e.target.m.value, note: "" }); alert("Günlüğe eklendi."); };
       document.getElementById("hset").onsubmit = (e) => {
         e.preventDefault(); const f = e.target;
-        S.setHifz({ newPerDay: +f.newPerDay.value, nearCount: +f.nearCount.value, farPerDay: +f.farPerDay.value, order: f.order.value });
+        S.setHifz({ newPerDay: +f.newPerDay.value, nearCount: +f.nearCount.value, farPerDay: +(f.farPerDay.value || h.farPerDay), order: f.order.value, farMode: f.farMode.value });
         makePlan(); U().render();
       };
     };
@@ -311,57 +407,168 @@
   }
 
   // ═════════════ ÇEKİM ARACI ═════════════
-  let cekimState = { root: "نصر", bab: 1, hide: false };
+  const cekimState = { root: "نصر", mode: "mucerred", bab: 1, mezid: "ifal", hide: false, applied: "" };
+  const ORNEKLER = [
+    ["Sâlim", [["كتب", 1], ["جلس", 2], ["ذهب", 3], ["شرب", 4], ["كرم", 5]]],
+    ["Mehmûz", [["أكل", 1], ["سأل", 3], ["قرأ", 3]]],
+    ["Muzâaf", [["مدد", 1], ["فرر", 2]]],
+    ["Misâl", [["وعد", 2], ["وجل", 4]]],
+    ["Ecvef", [["قول", 1], ["بيع", 2], ["خوف", 4]]],
+    ["Nâkıs", [["دعو", 1], ["رمي", 2], ["سعي", 3], ["رضي", 4]]]
+  ];
 
-  function cekim() {
-    const Sf = window.Sarf;
-    const bab = Sf.BABS.find((b) => b.n === cekimState.bab);
-    const parsed = Sf.parseRoot(cekimState.root);
-    const cell = (t) => `<td lang="ar" class="${cekimState.hide ? "hid" : ""}">${t}</td>`;
+  // #/cekim/KÖK/BAB  veya  #/cekim/KÖK/mezîd-anahtarı
+  function applyParams(root, b) {
+    const key = `${root}/${b}`;
+    if (!root || cekimState.applied === key) return;
+    cekimState.applied = key;
+    cekimState.root = root;
+    if (/^\d$/.test(b)) { cekimState.bab = +b; cekimState.mode = "mucerred"; }
+    else if (window.Sarf.MEZID.some((m) => m.k === b)) { cekimState.mezid = b; cekimState.mode = "mezid"; }
+  }
 
-    let table = "";
-    if (parsed.error) table = `<div class="notice">${parsed.error}</div>`;
-    else {
-      const r = Sf.conjugate(parsed.root, bab);
-      table = `
-        <div class="card"><div class="ism">
-          <div><small class="muted">İsm-i fâil</small><b lang="ar">${r.ismiFail}</b></div>
-          <div><small class="muted">İsm-i mef'ûl</small><b lang="ar">${r.ismiMeful}</b></div>
-        </div>${bab.n === 5 ? `<p class="muted tiny">Not: 5. bab fiilleri lâzımdır; meçhul ve ism-i mef'ûl kalıpları teorik olarak gösterilmiştir. Bu babda ism-i fâil yerine genellikle sıfat-ı müşebbehe kullanılır (${"<span lang=ar>حَسَنٌ، كَرِيمٌ</span>"}).</p>` : ""}</div>
-        <div class="tbl-wrap"><table class="cekim">
-          <thead><tr><th>#</th><th>Sîga</th><th>Mâzî ma'lûm</th><th>Mâzî meçhul</th><th>Muzâri ma'lûm</th><th>Muzâri meçhul</th></tr></thead>
-          <tbody>${Sf.SIGA.map(([ad, an], i) => `<tr><td>${i + 1}</td><td><b>${ad}</b><small class="muted">${an}</small></td>
-            ${cell(r.maziMalum[i])}${cell(r.maziMechul[i])}${cell(r.muzariMalum[i])}${cell(r.muzariMechul[i])}</tr>`).join("")}</tbody>
-        </table></div>
-        <div class="tbl-wrap"><table class="cekim">
-          <thead><tr><th>#</th><th>Sîga</th><th>Emr-i hâzır</th><th>Nehy-i hâzır</th></tr></thead>
-          <tbody>${r.emir.map((e, i) => `<tr><td>${i + 7}</td><td><b>${Sf.SIGA[i + 6][0]}</b><small class="muted">${Sf.SIGA[i + 6][1]}</small></td>${cell(e)}${cell(r.nehy[i])}</tr>`).join("")}</tbody>
-        </table></div>`;
+  function cekim(root, b) {
+    applyParams(root, b);
+    const Sf = window.Sarf, st = cekimState, esc = U().esc;
+    const an = Sf.analyze(st.root);
+    const cell = (t) => `<td lang="ar" class="${st.hide ? "hid" : ""}">${t == null ? "—" : t}</td>`;
+
+    let out = null, content = "";
+    if (an.error) content = `<div class="notice">${an.error}</div>`;
+    else if (st.mode === "emsile") {
+      const rows = Sf.emsile(an, Sf.BABS[st.bab - 1]);
+      content = rows ? `<div class="tbl-wrap"><table class="cekim emsile"><tbody>${rows.map((x) =>
+        `<tr><td><b>${x.ad}</b>${x.tr ? `<small class="muted">${x.tr}</small>` : ""}</td>${cell(x.ar)}</tr>`).join("")}</tbody></table></div>`
+        : `<div class="notice">Emsile-i muhtelife şimdilik yalnız sâlim kökler için üretilir. Bu kök: ${an.label}.</div>`;
+    } else {
+      out = st.mode === "mezid" ? Sf.mezid(an, st.mezid) : Sf.conjugate(an, Sf.BABS[st.bab - 1]);
+      if (out.error) content = `<div class="notice">${out.error}</div>`;
+      else {
+        const r = out.r;
+        content = `
+          ${out.notes && out.notes.length ? `<div class="tip">${out.notes.map(arWrap).join("<br>")}</div>` : ""}
+          <div class="card"><div class="ism">
+            ${r.masdar ? `<div><small class="muted">Masdar</small><b lang="ar">${r.masdar}</b></div>` : ""}
+            <div><small class="muted">İsm-i fâil</small><b lang="ar">${r.ismiFail}</b></div>
+            <div><small class="muted">İsm-i mef'ûl</small><b lang="ar">${r.ismiMeful || "—"}</b></div>
+          </div></div>
+          <div class="tbl-wrap"><table class="cekim">
+            <thead><tr><th>#</th><th>Sîga</th><th>Mâzî ma'lûm</th><th>Mâzî meçhul</th><th>Muzâri ma'lûm</th><th>Muzâri meçhul</th></tr></thead>
+            <tbody>${Sf.SIGA.map(([ad, anl], i) => `<tr><td>${i + 1}</td><td><b>${ad}</b><small class="muted">${anl}</small></td>
+              ${cell(r.maziMalum[i])}${cell(r.maziMechul && r.maziMechul[i])}${cell(r.muzariMalum[i])}${cell(r.muzariMechul && r.muzariMechul[i])}</tr>`).join("")}</tbody>
+          </table></div>
+          <div class="tbl-wrap"><table class="cekim">
+            <thead><tr><th>#</th><th>Sîga</th><th>Emr-i hâzır</th><th>Nehy-i hâzır</th></tr></thead>
+            <tbody>${r.emir.map((e, i) => `<tr><td>${i + 7}</td><td><b>${Sf.SIGA[i + 6][0]}</b><small class="muted">${Sf.SIGA[i + 6][1]}</small></td>${cell(e)}${cell(r.nehy[i])}</tr>`).join("")}</tbody>
+          </table></div>`;
+      }
     }
+
+    const babButtons = st.mode === "mezid"
+      ? Sf.MEZID.map((m) => `<button class="${m.k === st.mezid ? "" : "ghost"}" data-mz="${m.k}" title="${esc(m.anlam)}"><small>${m.ad}</small> <span lang="ar">${m.mazi.replace(/F/g, "ف").replace(/A/g, "ع").replace(/L/g, "ل").replace(/T/g, "ت")}${"َ"}</span></button>`).join("")
+      : Sf.BABS.map((x) => `<button class="${x.n === st.bab ? "" : "ghost"}" data-bab="${x.n}"><small>${x.n}. bab</small> <span lang="ar">${x.ad}</span></button>`).join("");
+    const mz = Sf.MEZID.find((m) => m.k === st.mezid);
+    const examples = st.mode === "mezid"
+      ? Sf.MEZID.map((m) => `<button class="ghost sm" data-ex="${m.ornek}" data-mzk="${m.k}" lang="ar">${m.ornek}</button>`).join("")
+      : ORNEKLER.map(([grp, xs]) => `<span class="exg"><small class="muted">${grp}:</small> ${xs.map(([k, n]) => `<button class="ghost sm" data-ex="${k}" data-b="${n}" lang="ar">${k}</button>`).join("")}</span>`).join("");
 
     const html = `
       <a class="back" href="#/ders/k-sarf">← Sarf</a>
       <h1>Çekim Aracı <span lang="ar" class="muted">تصريف</span></h1>
-      <p class="muted intro">Sülâsî mücerred, sâlim bir kök gir ve babını seç. Araç 14 sîgayı mâzî, muzâri (ma'lûm/meçhul), emir ve nehiy olarak çeker. Mehmûz, muzâaf ve mu'tel kökler sonraki sürümlerde eklenecek.</p>
+      <p class="muted intro">Üç harfli kökü gir. İlletli fiillerde kökün aslını yaz: <span lang="ar">قال</span> → <span lang="ar">قول</span>, <span lang="ar">دعا</span> → <span lang="ar">دعو</span>. Sülâsî mücerredde sâlim, mehmûz, muzâaf, misâl, ecvef ve nâkıs fiiller; mezîd bablarında sâlim fiiller çekilir.</p>
+      <div class="tabs">${[["mucerred", "Sülâsî mücerred"], ["mezid", "Sülâsî mezîd"], ["emsile", "Emsile-i muhtelife"]].map(([k, t]) => `<a href="javascript:void 0" data-mode="${k}" class="${st.mode === k ? "on" : ""}">${t}</a>`).join("")}</div>
       <div class="card cekim-form">
-        <label>Kök (3 harf)<input id="root" lang="ar" dir="rtl" value="${U().esc(cekimState.root)}" maxlength="12" autocomplete="off"></label>
-        <div class="babs">${Sf.BABS.map((b) => `<button class="${b.n === cekimState.bab ? "" : "ghost"}" data-bab="${b.n}"><small>${b.n}. bab</small> <span lang="ar">${b.ad}</span></button>`).join("")}</div>
-        <div class="btns"><small class="muted">Örnek kökler:</small>
-          ${[["كتب", 1], ["دخل", 1], ["جلس", 2], ["ذهب", 3], ["شرب", 4], ["كرم", 5]].map(([k, b]) => `<button class="ghost sm" data-ex="${k}" data-b="${b}" lang="ar">${k}</button>`).join("")}
-          <label class="check"><input type="checkbox" id="hide" ${cekimState.hide ? "checked" : ""}> Ezber modu (hücreleri gizle)</label></div>
+        <div class="root-row"><label>Kök (3 harf)<input id="root" lang="ar" dir="rtl" value="${esc(st.root)}" maxlength="12" autocomplete="off"></label>
+          ${an.error ? "" : `<span class="tag klasik">${an.label}</span>`}
+          ${st.mode === "mezid" && mz ? `<small class="muted">${mz.ad}: ${esc(mz.anlam)}</small>` : ""}</div>
+        <div class="babs">${babButtons}</div>
+        <div class="btns exs"><small class="muted">Örnekler:</small> ${examples}</div>
+        <label class="check"><input type="checkbox" id="hide" ${st.hide ? "checked" : ""}> Ezber modu (hücreleri gizle, tıklayınca açılır)</label>
       </div>
-      ${table}`;
+      ${content}`;
 
     const bind = () => {
-      const root = document.getElementById("root");
-      root.oninput = () => { cekimState.root = root.value; const pos = root.selectionStart; U().render(); const n = document.getElementById("root"); n.focus(); n.setSelectionRange(pos, pos); };
-      document.querySelectorAll("[data-bab]").forEach((b) => b.onclick = () => { cekimState.bab = +b.dataset.bab; U().render(); });
-      document.querySelectorAll("[data-ex]").forEach((b) => b.onclick = () => { cekimState.root = b.dataset.ex; cekimState.bab = +b.dataset.b; U().render(); });
-      document.getElementById("hide").onchange = (e) => { cekimState.hide = e.target.checked; U().render(); };
+      const rootEl = document.getElementById("root");
+      rootEl.oninput = () => { st.root = rootEl.value; const pos = rootEl.selectionStart; U().render(); const n = document.getElementById("root"); n.focus(); n.setSelectionRange(pos, pos); };
+      document.querySelectorAll("[data-mode]").forEach((a) => a.onclick = (e) => { e.preventDefault(); st.mode = a.dataset.mode; U().render(); });
+      document.querySelectorAll("[data-bab]").forEach((x) => x.onclick = () => { st.bab = +x.dataset.bab; U().render(); });
+      document.querySelectorAll("[data-mz]").forEach((x) => x.onclick = () => { st.mezid = x.dataset.mz; U().render(); });
+      document.querySelectorAll("[data-ex]").forEach((x) => x.onclick = () => {
+        st.root = x.dataset.ex;
+        if (x.dataset.mzk) st.mezid = x.dataset.mzk; else st.bab = +x.dataset.b;
+        U().render();
+      });
+      document.getElementById("hide").onchange = (e) => { st.hide = e.target.checked; U().render(); };
       document.querySelectorAll("td.hid").forEach((td) => td.onclick = () => td.classList.remove("hid"));
     };
     return { html, bind };
   }
 
-  window.Views = { lessonsBlock, lesson, sinav, tekrar, resetSession, hifz, cekim };
+  // ═════════════ METİNLER ═════════════
+  const metinState = { hideTr: false, hideHarake: false };
+  const HARAKE = /[ً-ْٰ]/g;
+
+  function metinler() {
+    const esc = U().esc;
+    const html = `
+      <h1>Metinler</h1>
+      <p class="muted intro">Arapça metinler ve Türkçe tercümeleri yan yana. Tercümeyi veya harekeleri gizleyerek okuma pratiği yapabilirsin.</p>
+      <div class="cards">${window.METINLER.map((t) => `<a class="ccard" href="#/metin/${t.id}">
+        <div class="cc-top"><small>${esc(t.tur)}</small></div>
+        <div class="cc-title"><b>${esc(t.title)}</b></div>
+        <p>${esc(t.aciklama)}</p>
+        <div class="cc-foot"><small>${t.satirlar ? t.satirlar.length + " hadis" : "Çekim motoruyla üretilir"}</small></div></a>`).join("")}</div>`;
+    return { html };
+  }
+
+  function metin(id) {
+    const t = window.METINLER.find((x) => x.id === id), esc = U().esc;
+    if (!t) return { html: `<p class="empty">Metin bulunamadı.</p>` };
+    const st = metinState;
+    const ar = (s) => (st.hideHarake ? s.replace(HARAKE, "") : s);
+    let rows;
+    if (t.uretilen) {
+      const Sf = window.Sarf;
+      rows = Sf.emsile(Sf.analyze(t.uretilen.kok), Sf.BABS[t.uretilen.bab - 1]).map((x) => ({ ar: x.ar, tr: `<b>${x.ad}</b>${x.tr ? " — " + x.tr : ""}` }));
+    } else {
+      rows = t.satirlar.map((r) => ({
+        head: `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>`,
+        ar: r.ar, tr: esc(r.tr),
+        kelimeler: r.kelimeler
+      }));
+    }
+    const keys = t.satirlar ? t.satirlar.map((r) => `metin/${t.id}/${r.no}`) : [];
+    const inDeck = keys.filter((k) => S.card(k)).length;
+
+    const html = `
+      <a class="back" href="#/metinler">← Metinler</a>
+      <h1>${esc(t.title)}</h1>
+      <p class="muted intro">${esc(t.aciklama)}</p>
+      <div class="btns metin-tools">
+        <label class="check"><input type="checkbox" id="hideTr" ${st.hideTr ? "checked" : ""}> Tercümeyi gizle</label>
+        <label class="check"><input type="checkbox" id="hideHr" ${st.hideHarake ? "checked" : ""}> Harekeleri gizle</label>
+        ${keys.length ? (inDeck < keys.length ? `<button class="sm" id="addm">Hadisleri tekrar listeme ekle</button>` : `<small class="muted">✓ Tümü tekrar listende</small>`) : ""}
+      </div>
+      <div class="metin">${rows.map((r) => `
+        <div class="mrow">
+          ${r.head ? `<div class="mhead">${r.head}</div>` : ""}
+          <div class="mar" lang="ar">${ar(r.ar)}</div>
+          <div class="mtr ${st.hideTr ? "hid" : ""}">${r.tr}</div>
+          ${r.kelimeler ? `<div class="kel">${r.kelimeler.map(([w, kok, aciklama, bab]) => {
+            const link = kok && bab ? `#/cekim/${kok}/${bab}` : "";
+            return `<${link ? `a href="${link}"` : "span"} class="kchip"><b lang="ar">${w}</b> <small>${arWrap(aciklama)}</small>${link ? " ↗" : ""}</${link ? "a" : "span"}>`;
+          }).join("")}</div>` : ""}
+        </div>`).join("")}</div>`;
+
+    const bind = () => {
+      document.getElementById("hideTr").onchange = (e) => { st.hideTr = e.target.checked; U().render(); };
+      document.getElementById("hideHr").onchange = (e) => { st.hideHarake = e.target.checked; U().render(); };
+      document.querySelectorAll(".mtr.hid").forEach((el) => el.onclick = () => el.classList.remove("hid"));
+      const addm = document.getElementById("addm");
+      if (addm) addm.onclick = () => { S.addCards(keys); U().render(); };
+    };
+    return { html, bind };
+  }
+
+  window.Views = { lessonsBlock, lesson, sinav, tekrar, resetSession, hifz, cekim, metinler, metin };
 })();
