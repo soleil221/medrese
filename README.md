@@ -15,6 +15,15 @@ Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğ
 - **Ders notları** — her ders için otomatik kaydedilen not alanı
 - **Çalışma günlüğü** — günlük süre hedefi, seri (streak), son 14 günün grafiği
 - **Arama** — ders, kitap veya müellif adına göre
+- **Ders içerikleri** — konu anlatımları (tablolar, Arapça örnekler) ve her derse ait ezber kartları:
+  Tecvid, İlmihal, Akaid, Sarf, Nahiv, Mantık, Siyer, Usûl-i Hadis, Belâgat, Ferâiz, Usûl-i Fıkıh,
+  Kur'an Tarihi, Mâtürîdiyye–Eş'ariyye (23 ders, ~200 kart)
+- **Sınav** — her dersin kartlarından üretilen çoktan seçmeli sınav; en iyi puan saklanır
+- **Aralıklı tekrar** — Leitner sistemi (1, 3, 7, 16, 35 gün); bilinmeyen kart başa döner
+- **Çekim aracı** — sülâsî mücerred sâlim kökleri 6 babda, 14 sîga hâlinde mâzî/muzâri (ma'lûm–meçhul),
+  emir ve nehiy olarak çeker; ism-i fâil/mef'ûl; “ezber modu” ile hücreleri gizleyip kendini sınama
+- **Hıfz** — 604 sayfalık mushaf haritası (zayıf/orta/sağlam), günlük plan: yeni ezber + yakın tekrar
+  (son ezberlenen sayfalar) + uzak tekrar (en eski ve zayıf sayfalar önce); baştan veya 30. cüzden geriye ezber sırası
 - **Yedekleme** — JSON olarak dışa/içe aktarma
 - **Çevrimdışı çalışma (PWA)** — telefona "Ana ekrana ekle" ile uygulama gibi kurulabilir; açık/koyu tema
 
@@ -35,12 +44,17 @@ index.html          Uygulama iskeleti
 css/style.css       Görünüm
 js/data/klasik.js   Klasik medrese müfredatı (dersler, metinler, müellifler, önkoşullar)
 js/data/modern.js   Çağdaş müfredat + klasik↔modern köprüleri + merhale adları
-js/store.js         İlerleme, notlar ve günlük (localStorage)
-js/app.js           Görünümler ve yönlendirme
+js/data/dersler.js  Ders içerikleri ve ezber kartları
+js/store.js         İlerleme, notlar, günlük, kartlar, hıfz (localStorage)
+js/sarf.js          Çekim (tasrîf) motoru
+js/features.js      Ders, sınav, tekrar, hıfz ve çekim ekranları
+js/app.js           Panel, müfredat, günlük, ayarlar ve yönlendirme
 sw.js               Çevrimdışı önbellek
 ```
 
 Müfredatı genişletmek için yalnızca `js/data/*.js` dosyalarına yeni ders/metin eklemek yeterlidir.
+Yeni bir konu anlatımı eklemek için `js/data/dersler.js` içinde ilgili ders kimliğinin altına
+`{ id, title, body, cards: [[ön, arka], ...] }` biçiminde bir kayıt eklenir.
 
 > Kaynak listeleri öneri niteliğindedir; müellif nispetleri ve baskı bilgileri doğrulanmalıdır.
 > Klasik geleneğe uygun olarak metinlerin bir hoca rehberliğinde okunması tavsiye edilir.

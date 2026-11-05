@@ -9,6 +9,7 @@
   const TRACK_LABEL = { klasik: "Klasik", modern: "Modern" };
 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const courseTitle = (id) => (id === "hifz" ? "Hıfz" : BY_ID[id] ? BY_ID[id].title : id);
 
   // ───────── İlerleme hesapları ─────────
   // Ana metinler (alt olmayanlar) ders ilerlemesini belirler; "okunuyor" yarım sayılır.
@@ -84,6 +85,24 @@
           <small>Son 14 gün</small>
           <div class="spark">${days.map((d) => `<i title="${d.ds}: ${d.m} dk" style="height:${Math.max(4, (d.m / maxM) * 100)}%" class="${d.m >= goal ? "ok" : ""}"></i>`).join("")}</div>
         </div>
+      </section>
+
+      <section class="grid3">
+        <a class="card stat link" href="#/tekrar">
+          <small>Ezber kartları</small>
+          <b>${S.dueCards().length} <span>kart bekliyor</span></b>
+          <p class="muted tiny">Toplam ${Object.keys(S.state.cards).length} kart tekrar listende.</p>
+        </a>
+        <a class="card stat link" href="#/hifz">
+          <small>Hıfz</small>
+          <b>${Object.keys(S.state.hifz.pages).length} <span>/ 604 sayfa</span></b>
+          ${bar(Object.keys(S.state.hifz.pages).length / 604)}
+        </a>
+        <a class="card stat link" href="#/cekim">
+          <small>Sarf aracı</small>
+          <b lang="ar" style="font-size:1.5rem">نَصَرَ يَنْصُرُ</b>
+          <p class="muted tiny">Bir kökü 14 sîgada çek, ezber modunda kendini sına.</p>
+        </a>
       </section>
 
       <section>
@@ -186,6 +205,8 @@
 
       <div class="ders-grid">
         <div>
+          ${window.Views.lessonsBlock(c)}
+          ${c.id === "k-sarf" ? `<p><a class="btn alt" href="#/cekim">Çekim Aracı'nı aç →</a></p>` : ""}
           <h2>Metinler ve kaynaklar <small class="muted">${pct(p)}</small></h2>
           ${bar(p, c.track)}
           <ol class="texts">
@@ -234,7 +255,7 @@
     for (const l of logs) (groups[l.date] = groups[l.date] || []).push(l);
     const opts = ["klasik", "modern"].map((t) =>
       `<optgroup label="${t === "klasik" ? "Klasik Medrese" : "Çağdaş Müfredat"}">${ALL.filter((c) => c.track === t).map((c) => `<option value="${c.id}">${esc(c.title)}</option>`).join("")}</optgroup>`
-    ).join("");
+    ).join("") + `<option value="hifz">Hıfz</option>`;
 
     return `
       <h1>Çalışma Günlüğü</h1>
@@ -252,7 +273,7 @@
           <ul>${ls.map((l) => {
             const c = BY_ID[l.courseId];
             return `<li><span class="tag ${c ? c.track : ""}">${l.minutes} dk</span>
-              <a href="#/ders/${l.courseId}">${esc(c ? c.title : l.courseId)}</a>
+              <a href="${l.courseId === "hifz" ? "#/hifz" : "#/ders/" + l.courseId}">${esc(courseTitle(l.courseId))}</a>
               ${l.note ? `<span class="muted">— ${esc(l.note)}</span>` : ""}
               <button class="x" data-del="${l.id}" title="Sil">×</button></li>`;
           }).join("")}</ul>
@@ -288,7 +309,22 @@
   function render() {
     const parts = (location.hash.replace(/^#\/?/, "") || "").split("/");
     const route = parts[0] || "panel";
-    document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === route || (route === "ders" && a.dataset.nav === "mufredat")));
+
+    const navKey = route === "ders" || route === "sinav" || route === "cekim" ? "mufredat" : route;
+    document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === navKey));
+
+    const V = window.Views;
+    const special =
+      route === "ders" && parts[2] ? V.lesson(parts[1], parts[2]) :
+      route === "sinav" ? V.sinav(parts[1], parts[2]) :
+      route === "tekrar" ? V.tekrar() :
+      route === "hifz" ? V.hifz() :
+      route === "cekim" ? V.cekim() : null;
+    if (special) {
+      app.innerHTML = special.html;
+      if (special.bind) special.bind();
+      return;
+    }
 
     let html;
     if (route === "mufredat") html = viewMufredat(["klasik", "modern"].includes(parts[1]) ? parts[1] : "birlesik", searchQ);
@@ -366,7 +402,13 @@
     }
   }
 
-  window.addEventListener("hashchange", () => { if (!location.hash.startsWith("#/mufredat")) searchQ = ""; render(); window.scrollTo(0, 0); });
+  window.U = { esc, BY_ID, ALL, bar, render: () => render() };
+
+  window.addEventListener("hashchange", () => {
+    if (!location.hash.startsWith("#/mufredat")) searchQ = "";
+    window.Views.resetSession();
+    render(); window.scrollTo(0, 0);
+  });
   render();
 
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {

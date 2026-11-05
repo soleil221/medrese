@@ -1,12 +1,22 @@
 // Kalıcı ilerleme verisi (tarayıcının localStorage'ında tutulur).
 (function () {
   const KEY = "medrese.v1";
-  const empty = () => ({ texts: {}, notes: {}, logs: [], dailyGoal: 60 });
+  const empty = () => ({
+    texts: {}, notes: {}, logs: [], dailyGoal: 60,
+    lessons: {},   // "kursId/dersId": tamamlanma tarihi
+    quiz: {},      // "kursId/dersId": en iyi yüzde
+    cards: {},     // "kursId/dersId/i": { box, due }
+    hifz: { pages: {}, newPerDay: 1, nearCount: 10, farPerDay: 20, order: "bastan" }
+  });
+  const INTERVALS = [0, 1, 3, 7, 16, 35]; // Leitner kutusu → gün
 
   function load() {
     try {
       const raw = localStorage.getItem(KEY);
-      return raw ? Object.assign(empty(), JSON.parse(raw)) : empty();
+      if (!raw) return empty();
+      const d = Object.assign(empty(), JSON.parse(raw));
+      d.hifz = Object.assign(empty().hifz, d.hifz);
+      return d;
     } catch (e) {
       return empty();
     }
@@ -59,6 +69,30 @@
       while (days.has(todayStr(d))) { n++; d.setDate(d.getDate() - 1); }
       return n;
     },
+
+    // ── Dersler ve sınavlar ──
+    lessonDone(key) { return state.lessons[key]; },
+    setLessonDone(key, on) { if (on) state.lessons[key] = todayStr(); else delete state.lessons[key]; save(); },
+    quizBest(key) { return state.quiz[key]; },
+    recordQuiz(key, p) { state.quiz[key] = Math.max(state.quiz[key] || 0, p); save(); },
+
+    // ── Ezber kartları (Leitner) ──
+    card(key) { return state.cards[key]; },
+    addCards(keys) { keys.forEach((k) => { if (!state.cards[k]) state.cards[k] = { box: 0, due: todayStr() }; }); save(); },
+    removeCards(prefix) { Object.keys(state.cards).forEach((k) => { if (k.startsWith(prefix + "/")) delete state.cards[k]; }); save(); },
+    dueCards() { const t = todayStr(); return Object.keys(state.cards).filter((k) => state.cards[k].due <= t); },
+    gradeCard(key, ok) {
+      const c = state.cards[key]; if (!c) return;
+      c.box = ok ? Math.min(5, c.box + 1) : 1;
+      const d = new Date(); d.setDate(d.getDate() + (ok ? INTERVALS[c.box] : 1));
+      c.due = todayStr(d);
+      save();
+    },
+
+    // ── Hıfz ──
+    page(n) { return state.hifz.pages[n]; },
+    setPage(n, data) { if (data) state.hifz.pages[n] = data; else delete state.hifz.pages[n]; save(); },
+    setHifz(opts) { Object.assign(state.hifz, opts); save(); },
 
     exportJSON() { return JSON.stringify(state, null, 2); },
     importJSON(text) {
