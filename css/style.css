@@ -680,3 +680,14 @@ table.rapor { border-collapse: collapse; width: 100%; max-width: 480px; }
 .seyir li::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2px solid var(--klasik); }
 .seyir li p { margin: 2px 0 0; }
 .tercihler { display: flex; flex-direction: column; gap: 4px; }
+
+/* ───── 2. aşama derinleşme ───── */
+.ornek-kutu { background: var(--klasik-soft); border-left: 3px solid var(--klasik); border-radius: 6px; padding: 10px 14px; margin: 12px 0; }
+.ornek-kutu > small { font-family: system-ui, sans-serif; font-weight: 600; color: var(--klasik); }
+.ornek-kutu p { margin: 4px 0 0; }
+.yontem { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; margin-bottom: 14px; }
+.yontem summary { cursor: pointer; font-weight: 600; }
+.sss { display: flex; flex-direction: column; gap: 8px; }
+.sss details { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: var(--surface); }
+.sss summary { cursor: pointer; font-weight: 600; }
+.sss details p { margin: 8px 0 0; }

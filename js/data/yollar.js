@@ -95,6 +95,9 @@ window.YOLLAR = [
       { t: "konu", id: "rizik", not: "Rızık ve imtihan" },
       { t: "konu", id: "adalet", not: "Peygamberlerin gönderiliş amacı" },
       { t: "konu", id: "emanet", not: "İnsanın yüklendiği yük" },
+      { t: "konu", id: "imtihan", not: "İyilikle ve kötülükle" },
+      { t: "konu", id: "dua", not: "Kulluğun özü" },
+      { t: "konu", id: "anababa", not: "Allah'tan sonra en büyük hak" },
       { t: "konu", id: "ahiret", not: "Zerre kadar" }
     ],
     soru: "Bu konulardan hangisi senin hayatında en eksik kalan? O konunun âyetlerinden birini bu hafta ezberleyip üzerinde düşünmeye ne dersin?"

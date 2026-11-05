@@ -557,7 +557,7 @@
   function kavram(id) {
     const list = window.KAVRAMLAR, i = list.findIndex((k) => k.id === id), k = list[i];
     if (!k) return kavramlar();
-    const key = "kavram:" + k.id, geri = atiflar(key).filter((r) => r !== key);
+    const key = "kavram:" + k.id, geri = atiflar(key).filter((r) => r !== key), E = (window.KAVRAM_EK || {})[k.id] || {};
     const html = `
       <a class="back" href="#/kavramlar">← Kavramlar</a>
       ${yolBandi(key)}
@@ -566,6 +566,8 @@
         <header class="alim-bas"><h1>${esc(k.ad)}</h1><div class="alim-ar" lang="ar">${k.ar}</div></header>
         <p class="lead">${k.tanim}</p>
         ${k.nuans ? `<h2>Ekoller ve incelikler</h2><p>${k.nuans}</p>` : ""}
+        ${E.ornek ? `<h2>Uygulamada</h2><div class="ornek-kutu"><p>${E.ornek}</p></div>` : ""}
+        ${E.kaynak ? `<h2>Klasik kaynaklar</h2><ul class="kaynak">${E.kaynak.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
         ${k.ilgili && k.ilgili.length ? `<h2>Bağlantılar</h2>${refChips(k.ilgili)}` : ""}
         ${geri.length ? `<h2>Bu kavrama başvuranlar</h2>${refChips(geri)}` : ""}
       </article>
@@ -589,7 +591,7 @@
   function konu(id) {
     const list = window.KONULAR, i = list.findIndex((k) => k.id === id), k = list[i];
     if (!k) return konular();
-    const key = "konu:" + k.id;
+    const key = "konu:" + k.id, E = (window.KONU_EK || {})[k.id] || {};
     const html = `
       <a class="back" href="#/konular">← Konular</a>
       ${yolBandi(key)}
@@ -599,6 +601,10 @@
         <h2>Âyetler</h2>
         ${k.ayetler.map(([ref, ar, tr]) => `<div class="nas"><div class="nas-ar" lang="ar">${ar}</div><p>${esc(tr)}</p><small class="muted">${esc(ref)}</small></div>`).join("")}
         ${k.boyutlar.map((b) => `<h2>${esc(b.baslik)}</h2><p>${b.metin}</p>`).join("")}
+        ${E.kissa ? `<h2>Kıssa: ${esc(E.kissa.baslik)}</h2><p>${esc(E.kissa.metin)}</p>` : ""}
+        ${E.hadisler ? `<h2>Hadislerden</h2>${E.hadisler.map(([t, kay]) => `<div class="nas hadis"><p>${esc(t)}</p><small class="muted">${esc(kay)}</small></div>`).join("")}` : ""}
+        ${E.sozler ? `<h2>Âlimlerden</h2>${E.sozler.map((x) => { const a = AL()[x.alim]; return `<blockquote class="alim-not"><p>${esc(x.metin)}</p>${a ? `<footer>— <a href="#/alim/${a.id}">${esc(a.ad)}</a></footer>` : ""}</blockquote>`; }).join("")}` : ""}
+        ${E.uygulama ? `<div class="ornek-kutu"><small>Bu hafta</small><p>${esc(E.uygulama)}</p></div>` : ""}
       </article>
       <section class="okuma tefekkur"><h2>Tefekkür</h2><p>${esc(k.tefekkur)}</p></section>
       ${k.ilgili && k.ilgili.length ? `<section><h3>Bağlantılar</h3>${refChips(k.ilgili)}</section>` : ""}
@@ -609,13 +615,19 @@
   }
 
   // ───────── Yaygın sözler ─────────
-  const sozArama = { q: "" };
+  const sozArama = { q: "", tur: "Tümü" };
+  const SOZ_TUR = { "Tümü": null, "Uydurma": /uydurma/i, "Aslı yok": /aslı yok|sabit değil|hadis değil|nispeti/i, "Zayıf": /zayıf/i, "Tartışmalı": /tartışmalı/i };
+  const sozTuru = (s) => { if (/manası sahih/i.test(s.hukum)) return "Zayıf"; for (const [t, r] of Object.entries(SOZ_TUR)) if (r && r.test(s.hukum)) return t; return "Tümü"; };
   function sozler() {
     const q = sozArama.q.toLocaleLowerCase("tr");
-    const list = window.SOZLER.filter((s) => !q || [s.soz, s.aciklama, s.hukum].join(" ").toLocaleLowerCase("tr").includes(q));
+    const list = window.SOZLER.filter((s) => (sozArama.tur === "Tümü" || sozTuru(s) === sozArama.tur) && (!q || [s.soz, s.aciklama, s.hukum].join(" ").toLocaleLowerCase("tr").includes(q)));
     const html = `
       <a class="back" href="#/meseleler">← Meseleler</a>
       <h1>Dilden Dile Dolaşan Sözler</h1>
+      ${window.SOZ_YONTEM ? `<details class="yontem"><summary>Bir sözü nasıl tahkik etmeli?</summary>
+        <ol>${window.SOZ_YONTEM.ilkeler.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>
+        <h4>Başvuru kaynakları</h4><ul class="kaynak">${window.SOZ_YONTEM.kaynaklar.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}
+      <div class="tabs">${Object.keys(SOZ_TUR).map((t) => `<a href="javascript:void 0" data-stur="${t}" class="${sozArama.tur === t ? "on" : ""}">${t}${t !== "Tümü" ? ` (${window.SOZLER.filter((s) => sozTuru(s) === t).length})` : ""}</a>`).join("")}</div>
       <input id="sara" class="search" type="search" placeholder="Söz ara…" value="${esc(sozArama.q)}">
       <div class="soz-liste">${list.map((s) => `<article class="soz-kart" id="soz-${s.id}">
         <div class="soz-ust"><span class="hukum">${esc(s.hukum)}</span></div>
@@ -628,7 +640,8 @@
         ${refChips(s.ilgili)}
         <div class="sayfa-alt">${onayKutusu("soz:" + s.id)}</div>
       </article>`).join("") || `<p class="empty">Sonuç yok.</p>`}</div>`;
-    return { html, bind: () => { aramaBind("sara", sozArama); bindOnay(); ziyaret("sozler", "Dilden Dile Dolaşan Sözler", "#/sozler"); } };
+    return { html, bind: () => { aramaBind("sara", sozArama); bindOnay();
+      document.querySelectorAll("[data-stur]").forEach((a) => a.onclick = (e) => { e.preventDefault(); sozArama.tur = a.dataset.stur; U().render(); }); ziyaret("sozler", "Dilden Dile Dolaşan Sözler", "#/sozler"); } };
   }
 
   // ───────── Hayatın içinden rehberler ─────────
@@ -642,7 +655,7 @@
   function rehber(id) {
     const list = window.REHBERLER, i = list.findIndex((r) => r.id === id), r = list[i];
     if (!r) return rehberler();
-    const key = "rehber:" + r.id;
+    const key = "rehber:" + r.id, SSS = (window.REHBER_SSS || {})[r.id] || [];
     const html = `
       <a class="back" href="#/rehberler">← Hayatın içinden</a>
       ${yolBandi(key)}
@@ -650,8 +663,9 @@
         <h1>${esc(r.baslik)}</h1>
         <p class="soru">${esc(r.alt)}</p>
         <p class="lead">${esc(r.giris)}</p>
-        <nav class="bolum-nav">${r.bolumler.map((b, j) => `<a href="#rb${j}">${esc(b.baslik)}</a>`).join("")}<a href="#rdua">Dualar</a></nav>
+        <nav class="bolum-nav">${r.bolumler.map((b, j) => `<a href="#rb${j}">${esc(b.baslik)}</a>`).join("")}${SSS.length ? `<a href="#rsss">İnce sorular</a>` : ""}<a href="#rdua">Dualar</a></nav>
         ${r.bolumler.map((b, j) => `<h2 id="rb${j}">${esc(b.baslik)}</h2>${b.html}`).join("")}
+        ${SSS.length ? `<h2 id="rsss">İnce sorular</h2><div class="sss">${SSS.map((x) => `<details><summary>${esc(x.s)}</summary><p>${esc(x.c)}</p></details>`).join("")}</div>` : ""}
         <h2 id="rdua">Dualar</h2>
         ${r.dualar.map(([ar, tr, kaynak]) => `<div class="nas"><div class="nas-ar" lang="ar">${ar}</div><p>${esc(tr)}</p><small class="muted">${esc(kaynak)}</small></div>`).join("")}
         ${r.ilgili && r.ilgili.length ? `<h2>Bağlantılar</h2>${refChips(r.ilgili)}` : ""}
