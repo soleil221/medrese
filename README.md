@@ -35,7 +35,10 @@ Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğ
 - **Mantık** — Îsâgûcî sırasıyla: delâlet, lafızlar, külliyât, tarif, kazıyyeler, tenâkuz ve aks, kıyas, sınaât-ı hams
 - **Fıkıh** — Nûru'l-Îzâh sırasıyla Hanefî ibadet fıkhı: taharet, abdest-mesh, gusül-teyemmüm, namaz (vakit, farz, vacip,
   sünnet, bozanlar, sehiv), cuma-bayram-sefer-cenaze, oruç, zekât, hac
-- **Kelam** — el-Akāidü'n-Nesefiyye sırasıyla 10 ders; her derste metnin ilgili bölümü Arapça-Türkçe
+- **Kelam** — el-Akāidü'n-Nesefiyye sırasıyla 14 ders; her derste metnin ilgili bölümü Arapça-Türkçe
+- **Usûl-i Hadis** — Nuhbetü'l-Fiker sırasıyla: haberin yolları, makbul haber, senedde düşme, râvide kusur,
+  isnad, tahammül-edâ ve cerh-ta'dîl
+- **Siyer** — Nûru'l-Yakîn sırasıyla 10 dönem: doğumdan vefata
 - **Usûl-i Fıkıh** — Menâr sırasıyla: lafzın taksimleri (hâs-âm, zuhur-hafâ, dört delâlet), emir-nehiy,
   Sünnet, icmâ-kıyas-istihsân, hüküm-ehliyet-avârız
 - **Amme cüzü tahlili** — âyet âyet meal, kelime kelime i'râb ve sarf, belâgat notları, kârîden dinleme;
@@ -45,7 +48,7 @@ Klasik medrese müfredatını (Osmanlı/Anadolu geleneği) ve son dönem din eğ
 - **Tecvid sesleri** — her kural için örnek âyetler; kârî okuyuşu (everyayah.com, internet gerekir) ve kendi okuyuşunu
   kaydedip karşılaştırma (kayıtlar yalnızca cihazda, IndexedDB)
 - **Metinler** — Arapça ve Türkçe yan yana; tercümeyi veya harekeleri gizleme; kelime notlarından çekim aracına geçiş.
-  Emsile metni, İmam Nevevî'nin Kırk Hadis'inin tamamı (42 hadis) ve el-Akāidü'n-Nesefiyye (hilâfet bahsine kadar);
+  Emsile metni, İmam Nevevî'nin Kırk Hadis'inin tamamı (42 hadis) ve el-Akāidü'n-Nesefiyye'nin tamamı (25 bölüm);
   tekrar kartı olarak da eklenebilir
 - **Hıfz** — 604 sayfalık mushaf haritası (zayıf/orta/sağlam), günlük plan: yeni ezber + yakın tekrar
   (son ezberlenen sayfalar) + uzak tekrar (sayfa usulü: en eski ve zayıf sayfalar önce; cüz usulü: her gün sıradaki cüz);
