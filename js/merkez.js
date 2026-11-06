@@ -147,6 +147,12 @@
     try { return new Intl.DateTimeFormat("tr-TR-u-ca-islamic", { day: "numeric", month: "long", year: "numeric" }).format(new Date()); } catch (e) { return ""; }
   }
 
+  // Ana sayfada en fazla altı yol: önce devam edilenler, sonra başlanmamışlar, en son bitenler.
+  function anaYollar() {
+    const durum = (y) => { const n = yolIlerleme(y); return n && n < y.adimlar.length ? 0 : n ? 2 : 1; };
+    return window.YOLLAR.map((y, i) => [y, durum(y), i]).sort((a, b) => a[1] - b[1] || a[2] - b[2]).slice(0, 6).map((x) => x[0]);
+  }
+
   // Yürünmüş adımlardan, günden güne değişen bir tedebbür sorusu: ezber değil, yeniden düşünme.
   function tefekkurKarti() {
     const havuz = [];
@@ -186,7 +192,7 @@
 
       <section>
         <div class="row-head"><h2>Öğrenme yolları</h2><a href="#/yollar">Tümü →</a></div>
-        <div class="yol-grid">${window.YOLLAR.map((y) => { const n = yolIlerleme(y); return `<a class="ykart" href="#/yol/${y.id}">
+        <div class="yol-grid">${anaYollar().map((y) => { const n = yolIlerleme(y); return `<a class="ykart" href="#/yol/${y.id}">
           <b>${esc(y.baslik)}</b><p>${esc(y.alt)}</p>${U().bar(n / y.adimlar.length)}<small class="muted">${n}/${y.adimlar.length} adım</small></a>`; }).join("")}</div>
       </section>
 
@@ -586,11 +592,22 @@
   }
 
   // ───────── Öğrenme yolları ─────────
+  const YOL_GRUP = [
+    ["Kur'an ile tefekkür", ["son-sayfalar", "kuran-konulari", "siyer"]],
+    ["İnanç", ["inanc", "iman", "yaratilis"]],
+    ["Fıkıh ve hayat", ["ihtilaf", "cagdas", "aile", "tesettur", "faiz"]],
+    ["İlimlerin temelleri", ["kuran-ilimleri", "hadis-okumak", "usul-kavramlari", "tasavvuf", "dusunce-tarihi"]]
+  ];
   function yollar() {
+    const kart = (y) => { const n = yolIlerleme(y), et = yolEk(y.id).etaplar || []; return `<a class="ykart buyuk" href="#/yol/${y.id}">
+        <b>${esc(y.baslik)}</b><p>${esc(y.alt)}</p>${et.length ? `<small class="ykart-etap">${et.map((e) => esc(e[0])).join(" · ")}</small>` : ""}${U().bar(n / y.adimlar.length)}<small class="muted">${n}/${y.adimlar.length} adım</small></a>`; };
+    const grupta = new Set(YOL_GRUP.flatMap((g) => g[1]));
+    const gruplar = YOL_GRUP.map(([ad, ids]) => [ad, ids.map((id) => window.YOLLAR.find((y) => y.id === id)).filter(Boolean)]);
+    const diger = window.YOLLAR.filter((y) => !grupta.has(y.id));
+    if (diger.length) gruplar.push(["Diğer", diger]);
     const html = `
       <h1>Öğrenme Yolları</h1>
-      <div class="yol-liste">${window.YOLLAR.map((y) => { const n = yolIlerleme(y); return `<a class="ykart buyuk" href="#/yol/${y.id}">
-        <b>${esc(y.baslik)}</b><p>${esc(y.alt)}</p>${(yolEk(y.id).etaplar || []).length ? `<small class="ykart-etap">${yolEk(y.id).etaplar.map((e) => esc(e[0])).join(" · ")}</small>` : ""}${U().bar(n / y.adimlar.length)}<small class="muted">${n}/${y.adimlar.length} adım</small></a>`; }).join("")}</div>`;
+      ${gruplar.filter((g) => g[1].length).map(([ad, ys]) => `<section><h2 class="alan-bas">${esc(ad)}</h2><div class="yol-grid">${ys.map(kart).join("")}</div></section>`).join("")}`;
     return { html };
   }
 
