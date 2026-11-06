@@ -349,6 +349,7 @@
     if (special) {
       app.innerHTML = special.html;
       if (special.bind) special.bind();
+      if (V.yolKatmani) V.yolKatmani();
       return;
     }
 

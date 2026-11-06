@@ -35,7 +35,6 @@
   const arw = (t) => esc(t).replace(/([؀-ۿ][؀-ۿً-ْٰ ]*[؀-ۿً-ْٰ]|[؀-ۿ])/g, '<span lang="ar">$&</span>');
 
   // ───────── Yol takibi ─────────
-  let aktifYol = null; // { id, i }
   const adimKey = (a) => a.t === "link" ? "link:" + a.href : a.t + ":" + a.id;
   const adimHref = (a) => ({ yazi: "#/mesele/ihtilaf", mesele: `#/mesele/${a.id}`, sure: `#/sure/${a.id}`, alim: `#/alim/${a.id}`, konu: `#/konu/${a.id}`, kavram: `#/kavram/${a.id}`, rehber: `#/rehber/${a.id}`, link: a.href })[a.t];
   const adimBaslik = (a) => {
@@ -48,27 +47,58 @@
   };
   const adimTur = { yazi: "Yazı", mesele: "Mesele", sure: "Sure", alim: "Âlim", konu: "Konu", kavram: "Kavram", rehber: "Rehber", link: "Metin" };
   const yolIlerleme = (y) => y.adimlar.filter((a) => S.ziyaretEdildi(adimKey(a))).length;
+  const yolEk = (id) => (window.YOL_EK || {})[id] || {};
+  const adimEk = (id, i) => (yolEk(id).adim || {})[i] || {};
+  const etapBul = (id, i) => (yolEk(id).etaplar || []).find((e) => i >= e[1] && i <= e[2]);
 
-  function yolBandi(key) {
-    if (!aktifYol) return "";
-    const y = window.YOLLAR.find((x) => x.id === aktifYol.id);
-    if (!y || adimKey(y.adimlar[aktifYol.i]) !== key) return "";
-    const next = y.adimlar[aktifYol.i + 1];
-    return `<div class="yol-bant">
-      <span><b>${esc(y.baslik)}</b> · ${aktifYol.i + 1}/${y.adimlar.length}</span>
-      ${next ? `<a href="${adimHref(next)}" data-yol-ilerle="${aktifYol.i + 1}">Sonraki: ${esc(adimBaslik(next))} →</a>` : `<a href="#/yol/${y.id}">Yolu tamamla →</a>`}
+  // Sayfa şablonlarındaki eski çağrılar: yol katmanı artık render sonrasında tek yerden eklenir.
+  const yolBandi = () => "";
+  const bindYolBandi = () => {};
+
+  // Aktif yolun adımındaki sayfaya üstte okuma odağını, altta tedebbür panelini ekler.
+  function yolKatmani() {
+    const ay = S.aktifYol();
+    if (!ay) return;
+    const y = window.YOLLAR.find((x) => x.id === ay.id);
+    const a = y && y.adimlar[ay.i];
+    if (!a || adimHref(a) !== location.hash) return;
+    const app = document.getElementById("app");
+    if (!app || app.querySelector(".yol-bant")) return;
+    if (a.t === "link") S.ziyaretEt(adimKey(a), adimBaslik(a), a.href);
+    const d = adimEk(y.id, ay.i), et = etapBul(y.id, ay.i), N = y.adimlar.length;
+    const bant = `<div class="yol-bant">
+      <div class="yb-ust"><a href="#/yol/${y.id}"><b>${esc(y.baslik)}</b></a><small class="muted">${et ? esc(et[0]) + " · " : ""}${ay.i + 1}/${N}</small></div>
+      ${d.odak ? `<p class="yb-odak"><small>Okurken</small>${esc(d.odak)}</p>` : ""}
     </div>`;
-  }
-  function bindYolBandi() {
-    document.querySelectorAll("[data-yol-ilerle]").forEach((a) => a.addEventListener("click", () => { aktifYol.i = +a.dataset.yolIlerle; }));
+    const back = app.querySelector(":scope > .back");
+    if (back) back.insertAdjacentHTML("afterend", bant); else app.insertAdjacentHTML("afterbegin", bant);
+
+    const prev = y.adimlar[ay.i - 1], next = y.adimlar[ay.i + 1];
+    const etapSonu = et && et[2] === ay.i && et[3];
+    const panel = `<section class="yol-panel">
+      <div class="yp-bas"><small class="muted">${esc(y.baslik)} · ${ay.i + 1}. adım</small><h2>Tedebbür</h2>${d.amac ? `<p class="muted">${esc(d.amac)}</p>` : ""}</div>
+      ${d.not ? `<div class="yp-not"><h3>Derinleşme</h3><p>${arw(d.not)}</p></div>` : ""}
+      ${(d.tedebbur || []).map(([q, yon]) => `<div class="yp-soru"><p>${arw(q)}</p><details><summary>Düşünme yönü</summary><p>${arw(yon)}</p></details></div>`).join("")}
+      ${etapSonu ? `<div class="yp-etap"><small>“${esc(et[0])}” bölümünün sonunda</small><p>${arw(et[3])}</p></div>` : ""}
+      ${defterKutusu(`yol:${y.id}:${ay.i}`, "yol", `${y.baslik} · ${adimBaslik(a)}`, adimHref(a), { etiket: "Kendi düşüncem", ipucu: "Sorulardan biri üzerine kendi cümlelerinle düşün..." })}
+      <div class="yp-nav">
+        ${prev ? `<a href="${adimHref(prev)}" data-yol-git="${ay.i - 1}">← ${esc(adimBaslik(prev))}</a>` : "<span></span>"}
+        ${next ? `<a class="btn" href="${adimHref(next)}" data-yol-git="${ay.i + 1}">Sonraki: ${esc(adimBaslik(next))} →</a>` : `<a class="btn" href="#/yol/${y.id}">Yolu tamamla →</a>`}
+      </div>
+    </section>`;
+    const kutular = app.querySelectorAll(".defter-kutu");
+    const son = kutular[kutular.length - 1];
+    if (son) son.insertAdjacentHTML("beforebegin", panel); else app.insertAdjacentHTML("beforeend", panel);
+    app.querySelectorAll("[data-yol-git]").forEach((l) => l.addEventListener("click", () => S.aktifYolYap({ id: y.id, i: +l.dataset.yolGit })));
+    bindDefterKutusu();
   }
 
   // ───────── Ortak parçalar ─────────
-  function defterKutusu(ref, tip, baslik, href) {
+  function defterKutusu(ref, tip, baslik, href, o = {}) {
     const k = S.defterKaydi(ref);
     return `<section class="defter-kutu" data-ref="${esc(ref)}" data-tip="${tip}" data-baslik="${esc(baslik)}" data-href="${esc(href)}">
-      <div class="dk-ust"><b>İlim defterim</b>${k ? `<small class="muted">${k.guncel || k.tarih}</small>` : ""}</div>
-      <textarea rows="${k && k.not ? 4 : 2}" placeholder="Bu konuda aklında kalan, sorduğun veya üzerinde düşündüğün...">${esc(k ? k.not : "")}</textarea>
+      <div class="dk-ust"><b>${esc(o.etiket || "İlim defterim")}</b>${k ? `<small class="muted">${k.guncel || k.tarih}</small>` : ""}</div>
+      <textarea rows="${k && k.not ? 4 : 2}" placeholder="${esc(o.ipucu || "Bu konuda aklında kalan, sorduğun veya üzerinde düşündüğün...")}">${esc(k ? k.not : "")}</textarea>
       <div class="dk-alt"><button class="sm" data-dk-kaydet>${k ? "Notu güncelle" : "Deftere kaydet"}</button><small class="dk-msg muted"></small></div>
     </section>`;
   }
@@ -117,6 +147,20 @@
     try { return new Intl.DateTimeFormat("tr-TR-u-ca-islamic", { day: "numeric", month: "long", year: "numeric" }).format(new Date()); } catch (e) { return ""; }
   }
 
+  // Yürünmüş adımlardan, günden güne değişen bir tedebbür sorusu: ezber değil, yeniden düşünme.
+  function tefekkurKarti() {
+    const havuz = [];
+    window.YOLLAR.forEach((y) => y.adimlar.forEach((a, i) => {
+      if (!S.ziyaretEdildi(adimKey(a))) return;
+      (adimEk(y.id, i).tedebbur || []).forEach(([q]) => havuz.push({ y, a, i, q }));
+    }));
+    if (!havuz.length) return "";
+    const gun = Math.floor(Date.now() / 864e5);
+    const t = havuz[(gun * 7919) % havuz.length];
+    return `<a class="tefekkur-kart" href="${adimHref(t.a)}" data-tk-yol="${t.y.id}" data-tk-i="${t.i}">
+      <small>Yeniden düşün · ${esc(t.y.baslik)} · ${esc(adimBaslik(t.a))}</small><p>${arw(t.q)}</p></a>`;
+  }
+
   function anaSayfa() {
     const g = gununAyeti(), son = S.sonZiyaret();
     const gunAlim = window.ALIMLER[Math.floor(Date.now() / 864e5) % window.ALIMLER.length];
@@ -137,6 +181,8 @@
       </a>` : ""}
 
       ${son ? `<a class="kaldigin" href="${son.href}"><small class="muted">Kaldığın yer</small><b>${esc(son.baslik)}</b><span>Devam et →</span></a>` : ""}
+
+      ${tefekkurKarti()}
 
       <section>
         <div class="row-head"><h2>Öğrenme yolları</h2><a href="#/yollar">Tümü →</a></div>
@@ -180,7 +226,7 @@
         <a href="#/mufredat/birlesik">Müfredat</a>
         <a href="#/derinles">Derinleş →</a>
       </section>`;
-    return { html };
+    return { html, bind: () => document.querySelectorAll("[data-tk-yol]").forEach((l) => l.addEventListener("click", () => S.aktifYolYap({ id: l.dataset.tkYol, i: +l.dataset.tkI }))) };
   }
 
   // ───────── Kur'an ─────────
@@ -544,28 +590,42 @@
     const html = `
       <h1>Öğrenme Yolları</h1>
       <div class="yol-liste">${window.YOLLAR.map((y) => { const n = yolIlerleme(y); return `<a class="ykart buyuk" href="#/yol/${y.id}">
-        <b>${esc(y.baslik)}</b><p>${esc(y.alt)}</p>${U().bar(n / y.adimlar.length)}<small class="muted">${n}/${y.adimlar.length} adım</small></a>`; }).join("")}</div>`;
+        <b>${esc(y.baslik)}</b><p>${esc(y.alt)}</p>${(yolEk(y.id).etaplar || []).length ? `<small class="ykart-etap">${yolEk(y.id).etaplar.map((e) => esc(e[0])).join(" · ")}</small>` : ""}${U().bar(n / y.adimlar.length)}<small class="muted">${n}/${y.adimlar.length} adım</small></a>`; }).join("")}</div>`;
     return { html };
   }
 
   function yol(id) {
     const y = window.YOLLAR.find((x) => x.id === id);
     if (!y) return yollar();
+    const ek = yolEk(y.id), N = y.adimlar.length;
     const n = yolIlerleme(y);
     const ilkEksik = y.adimlar.findIndex((a) => !S.ziyaretEdildi(adimKey(a)));
+    const adimLi = (a, i) => {
+      const ok = S.ziyaretEdildi(adimKey(a)), d = adimEk(y.id, i), notlu = S.defterKaydi(`yol:${y.id}:${i}`);
+      return `<li class="${ok ? "ok" : ""} ${i === ilkEksik ? "sirada" : ""}">
+        <span class="adim-no">${ok ? "✓" : i + 1}</span>
+        <a href="${adimHref(a)}" data-adim="${i}"><small class="muted">${adimTur[a.t]}${notlu ? " · düşünce notun var" : ""}</small><b>${esc(adimBaslik(a))}</b><span>${arw(a.not)}</span>
+        ${d.odak ? `<em class="adim-odak">${esc(d.odak)}</em>` : ""}</a>
+      </li>`;
+    };
+    const etaplar = ek.etaplar && ek.etaplar.length ? ek.etaplar : [["", 0, N - 1, ""]];
     const html = `
       <a class="back" href="#/yollar">← Öğrenme yolları</a>
-      <header class="yol-bas"><h1>${esc(y.baslik)}</h1><p class="muted">${esc(y.alt)}</p>${U().bar(n / y.adimlar.length)}<small class="muted">${n}/${y.adimlar.length} adım</small></header>
+      <header class="yol-bas"><h1>${esc(y.baslik)}</h1><p class="muted">${esc(y.alt)}</p>${U().bar(n / N)}<small class="muted">${n}/${N} adım${ek.sure ? " · " + esc(ek.sure) : ""}</small></header>
       <p class="lead">${esc(y.giris)}</p>
-      <ol class="adimlar">${y.adimlar.map((a, i) => { const ok = S.ziyaretEdildi(adimKey(a)); return `<li class="${ok ? "ok" : ""} ${i === ilkEksik ? "sirada" : ""}">
-        <span class="adim-no">${ok ? "✓" : i + 1}</span>
-        <a href="${adimHref(a)}" data-adim="${i}"><small class="muted">${adimTur[a.t]}</small><b>${esc(adimBaslik(a))}</b><span>${arw(a.not)}</span></a>
-      </li>`; }).join("")}</ol>
+      ${ek.buyukResim ? `<section class="okuma yol-resim"><h2>Yolun büyük resmi</h2><p>${arw(ek.buyukResim)}</p></section>` : ""}
+      ${ek.hedefler ? `<section class="yol-hedef"><h2>Bu yolun sonunda</h2><ul>${ek.hedefler.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>${ek.onbilgi ? `<small class="muted">Ön bilgi: ${esc(ek.onbilgi)}</small>` : ""}</section>` : ""}
       ${ilkEksik >= 0 ? `<p><a class="btn" href="${adimHref(y.adimlar[ilkEksik])}" data-adim="${ilkEksik}">${n ? "Kaldığın yerden devam et" : "Başla"} →</a></p>` : ""}
+      ${etaplar.map(([ad, ilk, son, bag], k) => `<section class="etap">
+        ${ad ? `<h2 class="etap-bas"><small>${k + 1}. bölüm</small>${esc(ad)}</h2>` : ""}
+        <ol class="adimlar" start="${ilk + 1}">${y.adimlar.slice(ilk, son + 1).map((a, j) => adimLi(a, ilk + j)).join("")}</ol>
+        ${bag ? `<div class="yp-etap"><small>Bölümün sonunda düşün</small><p>${arw(bag)}</p></div>` : ""}
+      </section>`).join("")}
       <section class="okuma tefekkur"><h2>Yolun sonunda</h2><p>${esc(y.soru)}</p></section>
-      ${defterKutusu("yol:" + y.id, "yol", y.baslik, `#/yol/${y.id}`)}`;
+      ${ek.sentez ? `<section class="yol-sentez"><h2>Sentez</h2><p>${arw(ek.sentez)}</p></section>` : ""}
+      ${defterKutusu("yol:" + y.id, "yol", y.baslik, `#/yol/${y.id}`, ek.sentez ? { etiket: "Sentez yazım", ipucu: "Yolun sonunda kendi cümlelerinle..." } : {})}`;
     const bind = () => {
-      document.querySelectorAll("[data-adim]").forEach((a) => a.addEventListener("click", () => { aktifYol = { id: y.id, i: +a.dataset.adim }; }));
+      document.querySelectorAll("[data-adim]").forEach((a) => a.addEventListener("click", () => S.aktifYolYap({ id: y.id, i: +a.dataset.adim })));
       bindDefterKutusu();
     };
     return { html, bind };
@@ -782,5 +842,5 @@
     return { html, bind };
   }
 
-  Object.assign(window.Views, { anaSayfa, kuran, sure, meseleler, mesele, alimler, alim, yollar, yol, defter, derinles, kavramlar, kavram, konular, konu, sozler, rehberler, rehber, ekoller });
+  Object.assign(window.Views, { yolKatmani, anaSayfa, kuran, sure, meseleler, mesele, alimler, alim, yollar, yol, defter, derinles, kavramlar, kavram, konular, konu, sozler, rehberler, rehber, ekoller });
 })();

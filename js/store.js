@@ -12,7 +12,8 @@
     hifzLog: {},    // tarih: { yeni, tekrar }
     defter: [],     // { id, tip, ref, baslik, href, not, tarih }
     ziyaret: {},    // anahtar: { tarih, baslik, href }
-    onay: {}        // içerik anahtarı: onay tarihi
+    onay: {},       // içerik anahtarı: onay tarihi
+    aktifYol: null  // { id, i }: üzerinde yürünen öğrenme yolu ve adımı
   });
   const INTERVALS = [0, 1, 3, 7, 16, 35]; // Leitner kutusu → gün
 
@@ -116,6 +117,8 @@
     ziyaretEt(key, baslik, href) { state.ziyaret[key] = { tarih: new Date().toISOString(), baslik, href }; save(); },
     ziyaretEdildi(key) { return !!state.ziyaret[key]; },
     sonZiyaret() { const e = Object.values(state.ziyaret).sort((a, b) => b.tarih.localeCompare(a.tarih)); return e[0]; },
+    aktifYol() { return state.aktifYol; },
+    aktifYolYap(v) { state.aktifYol = v; save(); },
     onayli(key) { return state.onay[key]; },
     onayla(key, on) { if (on) state.onay[key] = todayStr(); else delete state.onay[key]; save(); },
 

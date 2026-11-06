@@ -804,3 +804,38 @@ body.menu-acik { overflow: hidden; }
 .eser-diger { color: var(--muted); }
 .soz-alinti p, .hakkinda p { font-style: italic; }
 .soz-alinti footer { font-size: .8rem; color: var(--muted); }
+
+/* Öğrenme yolları: anlama ve tedebbür katmanı */
+.yol-bant { display: block; }
+.yb-ust { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.yb-odak { margin: 6px 0 0; font-family: var(--serif); font-style: italic; }
+.yb-odak small { display: block; font-style: normal; font-family: var(--sans, inherit); color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+.yol-panel { max-width: 760px; margin: 32px 0 10px; border-top: 2px solid var(--gold); padding-top: 6px; }
+.yp-bas h2 { margin: .2em 0 .2em; }
+.yp-bas p { margin: 0 0 10px; }
+.yp-not { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--klasik); border-radius: 10px; padding: 4px 16px; margin: 12px 0; }
+.yp-not h3 { margin: .7em 0 .2em; font-size: .95rem; color: var(--muted); }
+.yp-not p, .yp-soru p, .yp-etap p, .yol-resim p, .yol-sentez p { font-family: var(--serif); line-height: 1.7; }
+.yp-soru { background: var(--klasik-soft); border-radius: 10px; padding: 2px 16px 10px; margin: 10px 0; }
+.yp-soru > p { font-weight: 600; margin-bottom: 6px; }
+.yp-soru details summary { cursor: pointer; color: var(--muted); font-size: .88rem; }
+.yp-soru details p { margin: 6px 0 0; font-style: italic; }
+.yp-etap { border: 1px dashed var(--gold); border-radius: 10px; padding: 4px 16px; margin: 14px 0; max-width: 760px; }
+.yp-etap small { color: var(--muted); }
+.yp-etap p { margin: 4px 0 8px; font-style: italic; }
+.yol-panel .defter-kutu { margin-top: 14px; }
+.yp-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.yp-nav a { min-width: 0; overflow-wrap: anywhere; }
+.yol-resim, .yol-hedef, .yol-sentez { max-width: 760px; }
+.yol-hedef ul { margin: 6px 0 6px; padding-left: 20px; }
+.yol-hedef li { margin: 4px 0; }
+.yol-sentez { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 8px; margin-top: 16px; }
+.etap { margin-top: 18px; }
+.etap-bas { font-size: 1.15rem; margin-bottom: 6px; }
+.etap-bas small { display: block; font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 500; }
+.adim-odak { display: block; font-size: .86rem; color: var(--muted); margin-top: 4px; font-family: var(--serif); }
+.ykart-etap { color: var(--muted); font-size: .8rem; }
+.tefekkur-kart { display: block; background: var(--klasik-soft); border-radius: 12px; padding: 12px 16px; color: var(--ink); margin: 0 0 18px; }
+.tefekkur-kart:hover { text-decoration: none; }
+.tefekkur-kart small { color: var(--muted); }
+.tefekkur-kart p { margin: 4px 0 0; font-family: var(--serif); font-style: italic; }
