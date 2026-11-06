@@ -872,3 +872,5 @@ body.menu-acik { overflow: hidden; }
 .sd-bolum { margin: 10px 0; }
 .sd-bolum b { display: block; font-family: var(--sans, inherit); font-size: .85rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
 .sd-bolum p { margin: 4px 0 0; font-family: var(--serif); line-height: 1.65; }
+.agrid .hayatta-bas { grid-column: 1 / -1; margin: 10px 0 0; font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
+.akart.hayatta { border-style: dashed; }

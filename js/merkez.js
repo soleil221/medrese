@@ -4,6 +4,10 @@
   const U = () => window.U;
   const esc = (s) => U().esc(s == null ? "" : s);
   const AL = () => Object.fromEntries(window.ALIMLER.map((a) => [a.id, a]));
+  // Yaşayan âlimlerde vefat yerine doğum tarihi gösterilir
+  const yasiyor = (a) => a.olum === "Hayatta";
+  const tarihKisa = (a) => (yasiyor(a) ? `d. ${a.dogum}` : `ö. ${a.olum}`);
+  const vefatSira = (a) => (yasiyor(a) ? 9000 + (parseInt(a.dogum) || 0) : parseInt(String(a.olum).replace(/^[^0-9]*/, "")) || a.y * 100);
   const MS = () => Object.fromEntries(window.MESELELER.map((m) => [m.id, m]));
   const SURE = (no) => window.SURE_ANLAM.find((s) => s.no === +no);
   const sureAyetleri = (s) => s.ayetler || ((window.TAHLIL || {})[s.no] ? window.TAHLIL[s.no].ayetler.map((a) => ({ n: a.n, ar: a.ar, tr: a.tr })) : []);
@@ -121,7 +125,7 @@
   }
   const alimChip = (id) => {
     const a = AL()[id];
-    return a ? `<a class="achip" href="#/alim/${a.id}"><b>${esc(a.ad)}</b> <small>ö. ${esc(a.olum)}</small></a>` : `<span class="achip"><b>${esc(id)}</b></span>`;
+    return a ? `<a class="achip" href="#/alim/${a.id}"><b>${esc(a.ad)}</b> <small>${esc(tarihKisa(a))}</small></a>` : `<span class="achip"><b>${esc(id)}</b></span>`;
   };
   const kisiChip = (x) => (AL()[x] ? alimChip(x) : `<span class="achip plain">${esc(x)}</span>`);
   const meseleKart = (m) => `<a class="mkart" href="#/mesele/${m.id}">
@@ -216,7 +220,7 @@
         <a class="card alim-gun" href="#/alim/${gunAlim.id}">
           <small class="muted">Âlimlerden</small>
           <b>${esc(gunAlim.ad)}</b> <span lang="ar" class="muted">${gunAlim.ar}</span>
-          <small class="muted">ö. ${esc(gunAlim.olum)} · ${esc(gunAlim.ekol)}</small>
+          <small class="muted">${esc(tarihKisa(gunAlim))} · ${esc(gunAlim.ekol)}</small>
           <p>${esc(gunAlim.ozet.replace(/<[^>]+>/g, "").slice(0, 220))}…</p>
         </a>
         <div class="card">
@@ -467,9 +471,9 @@
       <input id="aara" class="search" type="search" placeholder="Âlim, ekol, şehir veya eser ara…" value="${esc(alimArama.q)}">
       <div class="zaman">${asirlar.map((y) => `<section class="asir">
         <h2><span>Hicrî ${y}. asır</span></h2>
-        <div class="agrid">${list.filter((a) => a.y === y).sort((p, q) => (parseInt(p.olum) || 0) - (parseInt(q.olum) || 0)).map((a) => `<a class="akart" href="#/alim/${a.id}">
+        <div class="agrid">${list.filter((a) => a.y === y).sort((p, q) => vefatSira(p) - vefatSira(q)).map((a, i, L) => `${yasiyor(a) && !(i && yasiyor(L[i - 1])) ? `<h3 class="hayatta-bas">Hayatta olanlar</h3>` : ""}<a class="akart${yasiyor(a) ? " hayatta" : ""}" href="#/alim/${a.id}">
           <div><b>${esc(a.ad)}</b> ${a.ar ? `<span lang="ar" class="muted">${a.ar}</span>` : ""}</div>
-          <small class="muted">ö. ${esc(a.olum)} · ${esc(a.sehir)}</small>
+          <small class="muted">${esc(tarihKisa(a))} · ${esc(a.sehir)}</small>
           <small>${esc(a.ekol)}</small></a>`).join("")}</div>
       </section>`).join("") || `<p class="empty">Sonuç yok.</p>`}</div>`;
     const bind = () => {
@@ -487,7 +491,7 @@
       ${alimSekme("ekol")}
       ${(window.EKOLLER || []).map((e) => `<section class="ekol">
         <h2>${esc(e.ad)}</h2><p class="muted">${esc(e.alt)}</p>
-        <ol class="ekol-zincir">${e.ids.filter((id) => A[id]).map((id) => `<li><a href="#/alim/${id}"><b>${esc(A[id].ad)}</b><small>ö. ${esc(A[id].olum)}</small></a></li>`).join("")}</ol>
+        <ol class="ekol-zincir">${e.ids.filter((id) => A[id]).map((id) => `<li><a href="#/alim/${id}"><b>${esc(A[id].ad)}</b><small>${esc(tarihKisa(A[id]))}</small></a></li>`).join("")}</ol>
       </section>`).join("")}`;
     return { html };
   }
@@ -530,7 +534,7 @@
             ${a.ar ? `<div class="alim-ar" lang="ar">${a.ar}</div>` : ""}
           </div>
           <dl class="ah-bilgi">
-            <div><dt>Vefatı</dt><dd>${esc(a.olum)}</dd></div>
+            ${yasiyor(a) ? `<div><dt>Doğumu</dt><dd>${esc(a.dogum)} · hayatta</dd></div>` : `<div><dt>Vefatı</dt><dd>${esc(a.olum)}</dd></div>`}
             <div><dt>Şehirleri</dt><dd>${esc(a.sehir)}</dd></div>
             <div><dt>Ekolü</dt><dd>${esc(a.ekol)}</dd></div>
           </dl>
@@ -583,7 +587,7 @@
       </article>
       ${defterKutusu(key, "alim", a.ad, `#/alim/${a.id}`)}
       <div class="sayfa-alt">${onayKutusu(key)}</div>
-      ${(() => { const vy = (x) => parseInt(String(x.olum).replace(/[^0-9].*$/, "").replace(/^$/, "0"), 10) || x.y * 100, L = [...window.ALIMLER].sort((x, y) => x.y - y.y || vy(x) - vy(y)), i = L.indexOf(a); return pager(L, i, (x) => `#/alim/${x.id}`, (x) => x.ad); })()}`;
+      ${(() => { const vy = vefatSira, L = [...window.ALIMLER].sort((x, y) => x.y - y.y || vy(x) - vy(y)), i = L.indexOf(a); return pager(L, i, (x) => `#/alim/${x.id}`, (x) => x.ad); })()}`;
     const bind = () => {
       ziyaret(key, a.ad, `#/alim/${a.id}`); bindYolBandi(); bindDefterKutusu(); bindOnay();
       document.querySelectorAll(".bolum-nav a").forEach((x) => x.onclick = (e) => { e.preventDefault(); const t = document.getElementById(x.getAttribute("href").slice(1)); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); });

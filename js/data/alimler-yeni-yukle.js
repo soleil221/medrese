@@ -9,7 +9,7 @@
     if (mevcut.has(x.id)) return;
     const eserAd = (x.eser || []).map(([ad]) => ad);
     window.ALIMLER.push({
-      id: x.id, ad: x.ad, ar: x.ar, olum: x.olum, y: x.y, sehir: x.sehir, ekol: x.ekol,
+      id: x.id, ad: x.ad, ar: x.ar, olum: x.olum, dogum: x.dogum, y: x.y, sehir: x.sehir, ekol: x.ekol,
       hocalar: x.hocalar || [], talebeler: x.talebeler || [],
       eserler: eserAd.length ? eserAd : ["Müstakil bir eseri günümüze ulaşmamıştır; görüşleri talebelerinin ve sonraki âlimlerin eserlerinde nakledilir."],
       ozet: x.ozet, metod: x.metod
@@ -26,7 +26,17 @@
     "Hâkim en-Nîsâbûrî": "hakim", "Ebü'l-Hasan el-Kerhî": "kerhi", "Cemâleddin el-Mizzî": "mizzi", "Cemâleddin el-Mizzî (kayınpederi)": "mizzi",
     "Zeynüddin el-Irâkī": "iraki", "Ekmeleddin el-Bâbertî": "baberti", "İbn Hacer el-Heytemî": "heytemi", "Cemâleddin Efgânî": "efgani",
     "Sadreddin Konevî": "konevi", "Seyfeddin el-Âmidî": "amidi", "Hatîb el-Bağdâdî": "hatib", "Abdülfettâh Ebû Gudde": "ebugudde",
-    "Sehâvî": "sehavi", "İbn Receb": "ibnrecep", "Katâde b. Diâme": "katade", "Katâde": "katade", "İbn Sîrîn": "ibnsirin"
+    "Sehâvî": "sehavi", "İbn Receb": "ibnrecep", "Katâde b. Diâme": "katade", "Katâde": "katade", "İbn Sîrîn": "ibnsirin",
+    "Süfyân b. Uyeyne": "ibnuyeyne", "Abdurrahmân b. Mehdî": "ibnmehdi", "İbn Huzeyme": "ibnhuzeyme", "İbn Fûrek": "ibnfurek",
+    "Züfer b. Hüzeyl": "zufer", "Nâfi' (İbn Ömer'in mevlâsı)": "nafi", "Nâfi' (mevlâsı)": "nafi", "Nâfi'": "nafi", "Rabîatü'r-re'y": "rabiaturrey",
+    "Annesi tarafından dedesi Kāsım b. Muhammed": "kasimbinmuhammed", "Kāsım b. Muhammed (yeğeni)": "kasimbinmuhammed",
+    "Babası Muhammed el-Bâkır": "bakir", "Kardeşi Muhammed el-Bâkır": "bakir", "İkrime": "ikrime", "Saîd b. Cübeyr": "saidbincubeyr",
+    "Vâsıl b. Atâ": "vasil", "Dârimî": "darimi", "Taberânî (rivayet)": "taberani",
+    "Ebû Abdirrahmân es-Sülemî": "sulemi", "Ebü'l-Vefâ İbn Akīl": "ibnakil", "İbn Dakîkul'îd": "ibndakik", "İbn Dakîkul'îd'den icazet": "ibndakik",
+    "Kāsım b. Kutluboğa": "ibnkutluboga", "Celâleddin el-Mahallî": "mahalli", "Ali el-Müttakī el-Hindî": "aliyyulmuttaki",
+    "Şu'be b. el-Haccâc": "sube", "Bişr el-Hâfî": "bisrhafi", "Halîl b. Ahmed": "halil", "Yahyâ b. Saîd el-Kattân": "yahyakattan",
+    "İbn Ebî Şeybe": "ibnebiseybe", "Kisâî": "kisai", "Ebû Nuaym el-İsfahânî": "ebunuaym", "Kadızâde Mehmed Efendi": "kadizade",
+    "Ebû Bekir İbnü'l-Arabî": "ebubekiribnularabi", "Oğlu Şah Abdülaziz": "sahabdulaziz", 
   };
   const ids = new Set(window.ALIMLER.map((a) => a.id));
   const bagla = (liste) => {
@@ -54,7 +64,25 @@
   if (!E.find((x) => x.ad === "Tarih, siyer ve ilimler tarihi")) E.push({ ad: "Tarih, siyer ve ilimler tarihi", alt: "Hafızanın taşıyıcıları", ids: ["urve", "zuhri", "ibnishak", "taberi", "hatib", "ibnasakir", "zehebi", "ibnhaldun", "sehavi", "taskoprizade", "katipcelebi", "cevdetpasa", "hamidullah"] });
   if (!E.find((x) => x.ad === "Fıkıh usulü ve kaideler")) E.push({ ad: "Fıkıh usulü ve kaideler", alt: "Hükmün nasıl çıkarıldığı", ids: ["safii", "kerhi", "cessas", "debusi", "bakillani", "cuveyni", "pezdevi", "serahsi", "gazali", "razi", "amidi", "izzbinabdisselam", "karafi", "satibi", "ibnnuceym", "ibnasur", "zerka"] });
 
-  // Her zinciri vefat asrına göre sırala (aynı asır içinde mevcut sıra korunur)
+  // Beşinci tur: boşlukları dolduran âlimler ve hayatta olanlar
+  ekle("Sahabe ve tâbiûn fakihleri", ["ebudderda", "ebumusa", "saidbincubeyr", "sabi", "ikrime", "kasimbinmuhammed", "bakir", "nafi"]);
+  ekle("Hanefî fıkıh geleneği", ["zufer", "sadrusseria", "zeylai", "ayni", "ibnkutluboga", "mollagurani", "halebi", "haskefi", "hadimi", "abdulhakdihlevi", "tanevi", "takiosmani", "avvame", "karaman"]);
+  ekle("Mâlikî fıkıh geleneği", ["rabiaturrey", "ibnatiyye", "ibndakik", "derdir", "zurkani", "sinkiti", "ibnbeyyah"]);
+  ekle("Şâfiî fıkıh geleneği", ["ibnhuzeyme", "hattabi", "munziri", "ibndakik", "mahalli", "kastallani", "sirbini", "remli", "bacuri", "alicuma"]);
+  ekle("Hanbelî gelenek", ["ebuyala", "herevi", "ibnakil"]);
+  ekle("Kelâm: Mu'tezile ve Eş'ariyye", ["vasil", "ibnfurek", "bacuri", "ahmedettayyib"]);
+  ekle("Kelâm: Mâtürîdiyye", ["usi", "nureddinsabuni", "sadrusseria", "alikuscu", "hocazade", "topaloglu", "hakimmurad"]);
+  ekle("Hadis geleneği", ["nafi", "sube", "ibnuyeyne", "ibnmehdi", "yahyakattan", "abdurrezzak", "ibnebiseybe", "darimi", "ibnhuzeyme", "ibnebihatim", "taberani", "hattabi", "mecdudinibnulesir", "munziri", "ibndakik", "zeylai", "ayni", "kastallani", "aliyyulmuttaki", "abdulhakdihlevi", "ahmedsakir", "sibai", "azami", "itr", "avvame", "gormez"]);
+  ekle("Tefsir geleneği", ["saidbincubeyr", "ikrime", "mukatil", "sehltusteri", "ibnebihatim", "vahidi", "sulemi", "ibnatiyye", "ebuhayyan", "mahalli", "mollagurani", "diraz", "seyyidkutub", "sinkiti", "esed", "alisabuni"]);
+  ekle("Tasavvuf geleneği", ["ibrahimedhem", "marufkerhi", "bisrhafi", "bayezid", "sehltusteri", "serrac", "sulemi", "hucviri", "herevi", "rifai", "kubra", "sazili", "hacibektas", "ibnataullah", "nakisbend", "mollacami", "merkezefendi", "niyazimisri", "emirabdulkadir"]);
+  ekle("Islah ve çağdaş düşünce", ["musacarullah", "babanzade", "ikbal", "malikbinnebi", "seyyidkutub", "faruki", "esed", "nedvi", "attas", "tahaabdurrahman", "hakimmurad", "hamzayusuf"]);
+  ekle("Dil ve belâgat", ["halil", "kisai", "ibnkuteybe", "hattabi", "mecdudinibnulesir", "ibnmalik", "ebuhayyan", "mollacami"]);
+  ekle("Tarih, siyer ve ilimler tarihi", ["ibnhisam", "ayni", "kastallani", "zurkani", "gelenbevi"]);
+  ekle("Fıkıh usulü ve kaideler", ["ebuyala", "ibnakil", "sadrusseria", "ibndakik", "mahalli", "ibnkutluboga", "hadimi", "hallaf", "karaman", "kemali", "ibnbeyyah", "reysuni", "alicuma"]);
+  if (!E.find((x) => x.ad === "Kıraat ve Kur'an metni")) E.push({ ad: "Kıraat ve Kur'an metni", alt: "Kur'an'ın nasıl okunduğu ve nasıl yazıldığı", ids: ["ubeyy", "zeyd", "ebudderda", "ebumusa", "ibnmesud", "asim", "kisai", "ebuubeyd", "ibnmucahid", "satibikari", "ibnulcezeri", "azami", "altikulac"] });
+
+  // Her zinciri vefat asrına, asır içinde vefat yılına göre sırala (hayatta olanlar en sonda)
   const yil = Object.fromEntries(window.ALIMLER.map((a) => [a.id, a.y]));
-  E.forEach((e) => { e.ids = e.ids.filter((id) => yil[id] !== undefined).map((id, i) => [id, i]).sort((a, b) => yil[a[0]] - yil[b[0]] || a[1] - b[1]).map(([id]) => id); });
+  const vs = Object.fromEntries(window.ALIMLER.map((a) => [a.id, a.olum === "Hayatta" ? 9000 + (parseInt(a.dogum) || 0) : parseInt(String(a.olum).replace(/^[^0-9]*/, "")) || 0]));
+  E.forEach((e) => { e.ids = e.ids.filter((id) => yil[id] !== undefined).map((id, i) => [id, i]).sort((a, b) => yil[a[0]] - yil[b[0]] || vs[a[0]] - vs[b[0]] || a[1] - b[1]).map(([id]) => id); });
 })();
