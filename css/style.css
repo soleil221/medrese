@@ -780,3 +780,27 @@ body.menu-acik { overflow: hidden; }
 .skart.rehberli { border-left: 3px solid var(--gold); }
 .kaynak-not { font-size: .8rem; margin-top: 10px; }
 .yukleniyor { padding: 20px 0; }
+
+/* ───── Âlim sayfası ───── */
+.alim-hero { background: linear-gradient(135deg, var(--klasik-soft), color-mix(in srgb, var(--gold) 10%, var(--surface))); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; margin-bottom: 14px; }
+.ah-ust { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.ah-ust > div:first-child { min-width: 0; }
+.ah-ust h1 { margin: 2px 0 0; }
+.alim-hero .alim-ar { font-size: 2rem; line-height: 1.4; }
+.ah-bilgi { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px; margin: 14px 0 10px; }
+.ah-bilgi div { background: color-mix(in srgb, var(--surface) 75%, transparent); border-radius: 10px; padding: 8px 12px; }
+.ah-bilgi dt { font-family: system-ui, sans-serif; font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.ah-bilgi dd { margin: 2px 0 0; font-size: .92rem; }
+.ah-sayac { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; font-family: system-ui, sans-serif; font-size: .8rem; color: var(--muted); }
+.ah-sayac span { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+.ah-sayac b { color: var(--klasik); }
+.alim section { scroll-margin-top: 80px; }
+.gorus-kart { list-style: none; counter-reset: g; padding: 0; display: grid; gap: 10px; }
+.gorus-kart li { counter-increment: g; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 12px 48px; }
+.gorus-kart li::before { content: counter(g); position: absolute; left: 14px; top: 12px; width: 24px; height: 24px; border-radius: 50%; background: var(--klasik-soft); color: var(--klasik); display: grid; place-items: center; font: 600 .8rem system-ui, sans-serif; }
+.eser-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-bottom: 10px; }
+.eser-kart { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: 12px; padding: 12px 14px; }
+.eser-kart p { margin: 4px 0 0; color: var(--muted); font-size: .92rem; }
+.eser-diger { color: var(--muted); }
+.soz-alinti p, .hakkinda p { font-style: italic; }
+.soz-alinti footer { font-size: .8rem; color: var(--muted); }

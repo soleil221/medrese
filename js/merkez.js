@@ -443,7 +443,8 @@
   function alim(id) {
     const A = AL(), a = A[id];
     if (!a) return alimler();
-    const key = "alim:" + a.id, E = AEK(a.id);
+    const key = "alim:" + a.id, E = AEK(a.id), D = (window.ALIM_DERIN || {})[a.id] || {};
+    const hayat = E.hayat || D.hayat;
     // Silsile: kendi kayıtları + diğer âlimlerin kayıtlarından ters ilişki
     const hocalar = [...a.hocalar], talebeler = [...a.talebeler];
     window.ALIMLER.forEach((b) => {
@@ -454,43 +455,88 @@
     window.MESELELER.forEach((m) => m.gorusler.forEach((g) => { if ((g.alimler || []).includes(a.id)) goruslerde.push({ m, g }); }));
     const surelerde = [];
     window.SURE_ANLAM.forEach((s) => (s.notlar || []).forEach((n) => { if (n.alim === a.id) surelerde.push({ s, n }); }));
+    const tercihler = [];
+    Object.entries(window.DERINLIK || {}).forEach(([mid, d]) => (d.tercih || []).forEach((x) => { if (x.alim === a.id && MS()[mid]) tercihler.push({ m: MS()[mid], x }); }));
+    const atif = atiflar("alim:" + a.id);
+    const ekoller = (window.EKOLLER || []).filter((e) => e.ids.includes(a.id));
+    const cagdas = window.ALIMLER.filter((b) => b.y === a.y && b.id !== a.id);
+    const kimAd = (k) => A[k] ? `<a href="#/alim/${k}">${esc(A[k].ad)}</a>` : esc(k);
+    // Eserler: açıklamalı olanlar önce, kalanlar sade liste
+    const eserAc = D.eser || [];
+    const kalanEser = a.eserler.filter((e) => !eserAc.some(([ad]) => e.toLocaleLowerCase("tr").includes(ad.toLocaleLowerCase("tr").split(" ")[0])));
+    const bol = [["ozet", "Özet"], hayat && ["hayat", "Hayatı"], D.gorus && D.gorus.length && ["gorus", "Görüşleri"], ["yontem", "Yöntemi"], ["eser", "Eserleri"],
+      ((D.soz && D.soz.length) || (D.hakkinda && D.hakkinda.length)) && ["soz", "Sözler"], ["silsile", "Silsile"], E.etki && ["etki", "Etkisi"],
+      (goruslerde.length || tercihler.length || surelerde.length) && ["meseleler", "Meselelerde"]].filter(Boolean);
+    const sayac = [[goruslerde.length, "meselede görüşü"], [tercihler.length, "tercihi"], [surelerde.length, "tefsir notu"], [talebeler.length, "talebe"]].filter(([n]) => n);
     const html = `
       <a class="back" href="#/alimler">← Âlimler</a>
       ${yolBandi(key)}
       <article class="okuma alim">
-        <header class="alim-bas">
-          <div><h1>${esc(a.ad)}</h1><small class="muted">ö. ${esc(a.olum)} · ${esc(a.sehir)}</small><p class="tag klasik">${esc(a.ekol)}</p></div>
-          ${a.ar ? `<div class="alim-ar" lang="ar">${a.ar}</div>` : ""}
+        <header class="alim-hero">
+          <div class="ah-ust">
+            <div><small class="muted">Hicrî ${a.y}. asır</small><h1>${esc(a.ad)}</h1></div>
+            ${a.ar ? `<div class="alim-ar" lang="ar">${a.ar}</div>` : ""}
+          </div>
+          <dl class="ah-bilgi">
+            <div><dt>Vefatı</dt><dd>${esc(a.olum)}</dd></div>
+            <div><dt>Şehirleri</dt><dd>${esc(a.sehir)}</dd></div>
+            <div><dt>Ekolü</dt><dd>${esc(a.ekol)}</dd></div>
+          </dl>
+          ${E.alan ? `<div class="chips">${E.alan.map((x) => `<span class="achip plain">${esc(x)}</span>`).join("")}</div>` : ""}
+          ${sayac.length ? `<div class="ah-sayac">${sayac.map(([n, t]) => `<span><b>${n}</b> ${t}</span>`).join("")}</div>` : ""}
         </header>
-        ${E.alan ? `<div class="chips">${E.alan.map((x) => `<span class="achip plain">${esc(x)}</span>`).join("")}</div>` : ""}
-        <p class="lead">${a.ozet}</p>
-        ${E.hayat ? `<h2>Hayatı</h2><ol class="seyir">${E.hayat.map(([t, o]) => `<li><b>${esc(t)}</b><p>${esc(o)}</p></li>`).join("")}</ol>` : ""}
-        <h2>İlmî yöntemi</h2><p>${a.metod}</p>
-        ${E.etki ? `<h2>Etkisi ve hakkındaki tartışmalar</h2><p>${esc(E.etki)}</p>` : ""}
-        ${E.okuma ? `<div class="ornek-kutu"><small>Okumaya nereden başlamalı?</small><p>${esc(E.okuma)}</p></div>` : ""}
+        <nav class="bolum-nav">${bol.map(([k, t]) => `<a href="#a-${k}">${t}</a>`).join("")}</nav>
 
-        <h2>Silsile</h2>
-        <div class="silsile">
-          <div><h4>Hocaları</h4><div class="chips">${hocalar.map(kisiChip).join("") || "—"}</div></div>
-          <div class="silsile-ok">↓</div>
-          <div class="silsile-ben"><b>${esc(a.ad)}</b></div>
-          <div class="silsile-ok">↓</div>
-          <div><h4>Talebeleri</h4><div class="chips">${talebeler.map(kisiChip).join("") || "—"}</div></div>
-        </div>
+        <section id="a-ozet"><p class="lead">${a.ozet}</p></section>
 
-        <h2>Eserleri</h2><ul>${a.eserler.map((e) => `<li>${esc(e)}</li>`).join("")}</ul>
-        ${(() => { const ek = (window.EKOLLER || []).filter((e) => e.ids.includes(a.id)); return ek.length ? `<h2>Yer aldığı gelenekler</h2><div class="chips">${ek.map((e) => `<a class="achip" href="#/ekoller"><b>${esc(e.ad)}</b></a>`).join("")}</div>` : ""; })()}
-        ${(() => { const c = window.ALIMLER.filter((b) => b.y === a.y && b.id !== a.id); return c.length ? `<h2>Aynı asrın âlimleri</h2><div class="chips">${c.map((b) => alimChip(b.id)).join("")}</div>` : ""; })()}
+        ${hayat ? `<section id="a-hayat"><h2>Hayatı</h2><ol class="seyir">${hayat.map(([t, o]) => `<li><b>${esc(t)}</b><p>${esc(o)}</p></li>`).join("")}</ol></section>` : ""}
 
-        ${goruslerde.length ? `<h2>Meselelerdeki görüşleri</h2><ul class="gorus-list">${goruslerde.map(({ m, g }) => `<li><a href="#/mesele/${m.id}"><b>${esc(m.baslik)}</b></a> <small class="muted">${esc(g.ekol)}</small><p>${g.hukum}</p></li>`).join("")}</ul>` : ""}
-        ${surelerde.length ? `<h2>Tefsir notları</h2><ul class="gorus-list">${surelerde.map(({ s, n }) => `<li><a href="#/sure/${s.no}"><b>${esc(s.ad)} Sûresi</b></a><p>${arw(n.metin)}</p></li>`).join("")}</ul>` : ""}
-        ${(() => { const t = []; Object.entries(window.DERINLIK || {}).forEach(([mid, d]) => (d.tercih || []).forEach((x) => { if (x.alim === a.id && MS()[mid]) t.push({ m: MS()[mid], x }); }));
-          return t.length ? `<h2>Meselelerdeki tercihleri</h2><ul class="gorus-list">${t.map(({ m, x }) => `<li><a href="#/mesele/${m.id}"><b>${esc(m.baslik)}</b></a><p>${esc(x.metin)}</p></li>`).join("")}</ul>` : ""; })()}
-        ${(() => { const r = atiflar("alim:" + a.id); return r.length ? `<h2>Geçtiği kavram ve konular</h2>${refChips(r)}` : ""; })()}
+        ${D.gorus && D.gorus.length ? `<section id="a-gorus"><h2>Öne çıkan görüşleri ve katkıları</h2>
+          <ol class="gorus-kart">${D.gorus.map((g) => `<li>${esc(g)}</li>`).join("")}</ol></section>` : ""}
+
+        <section id="a-yontem"><h2>İlmî yöntemi</h2><p>${a.metod}</p></section>
+
+        <section id="a-eser"><h2>Eserleri</h2>
+          ${eserAc.length ? `<div class="eser-grid">${eserAc.map(([ad, ac]) => `<div class="eser-kart"><b>${esc(ad)}</b><p>${esc(ac)}</p></div>`).join("")}</div>` : ""}
+          ${kalanEser.length ? `<ul class="eser-diger">${kalanEser.map((e) => `<li>${esc(e)}</li>`).join("")}</ul>` : ""}
+          ${E.okuma ? `<div class="ornek-kutu"><small>Okumaya nereden başlamalı?</small><p>${esc(E.okuma)}</p></div>` : ""}
+        </section>
+
+        ${(D.soz && D.soz.length) || (D.hakkinda && D.hakkinda.length) ? `<section id="a-soz">
+          ${D.soz && D.soz.length ? `<h2>Sözlerinden</h2>${D.soz.map(([t, k]) => `<blockquote class="alim-not soz-alinti"><p>“${esc(t)}”</p><footer>${esc(k)}</footer></blockquote>`).join("")}` : ""}
+          ${D.hakkinda && D.hakkinda.length ? `<h2>Hakkında söylenenler</h2>${D.hakkinda.map(([kim, t, k]) => `<blockquote class="alim-not hakkinda"><p>“${esc(t)}”</p><footer>— ${kimAd(kim)}${k ? ` <small class="muted">· ${esc(k)}</small>` : ""}</footer></blockquote>`).join("")}` : ""}
+        </section>` : ""}
+
+        <section id="a-silsile"><h2>Silsile</h2>
+          <div class="silsile">
+            <div><h4>Hocaları</h4><div class="chips">${hocalar.map(kisiChip).join("") || "—"}</div></div>
+            <div class="silsile-ok">↓</div>
+            <div class="silsile-ben"><b>${esc(a.ad)}</b></div>
+            <div class="silsile-ok">↓</div>
+            <div><h4>Talebeleri</h4><div class="chips">${talebeler.map(kisiChip).join("") || "—"}</div></div>
+          </div>
+          ${ekoller.length ? `<h3>Yer aldığı gelenekler</h3><div class="chips">${ekoller.map((e) => `<a class="achip" href="#/ekoller"><b>${esc(e.ad)}</b></a>`).join("")}</div>` : ""}
+        </section>
+
+        ${E.etki ? `<section id="a-etki"><h2>Etkisi ve hakkındaki tartışmalar</h2><p>${esc(E.etki)}</p></section>` : ""}
+
+        ${goruslerde.length || tercihler.length || surelerde.length ? `<section id="a-meseleler">
+          ${goruslerde.length ? `<h2>Meselelerdeki görüşleri</h2><ul class="gorus-list">${goruslerde.map(({ m, g }) => `<li><a href="#/mesele/${m.id}"><b>${esc(m.baslik)}</b></a> <small class="muted">${esc(g.ekol)}</small><p>${g.hukum}</p></li>`).join("")}</ul>` : ""}
+          ${tercihler.length ? `<h2>Muhakkik olarak tercihleri</h2><ul class="gorus-list">${tercihler.map(({ m, x }) => `<li><a href="#/mesele/${m.id}"><b>${esc(m.baslik)}</b></a><p>${esc(x.metin)}</p></li>`).join("")}</ul>` : ""}
+          ${surelerde.length ? `<h2>Tefsir notları</h2><ul class="gorus-list">${surelerde.map(({ s, n }) => `<li><a href="#/sure/${s.no}"><b>${esc(s.ad)} Sûresi</b></a><p>${arw(n.metin)}</p></li>`).join("")}</ul>` : ""}
+        </section>` : ""}
+
+        ${atif.length ? `<h2>Geçtiği kavram ve konular</h2>${refChips(atif)}` : ""}
+        ${cagdas.length ? `<h2>Aynı asrın âlimleri</h2><div class="chips">${cagdas.map((b) => alimChip(b.id)).join("")}</div>` : ""}
       </article>
       ${defterKutusu(key, "alim", a.ad, `#/alim/${a.id}`)}
-      <div class="sayfa-alt">${onayKutusu(key)}</div>`;
-    return { html, bind: () => { ziyaret(key, a.ad, `#/alim/${a.id}`); bindYolBandi(); bindDefterKutusu(); bindOnay(); } };
+      <div class="sayfa-alt">${onayKutusu(key)}</div>
+      ${(() => { const L = [...window.ALIMLER].sort((x, y) => x.y - y.y), i = L.indexOf(a); return pager(L, i, (x) => `#/alim/${x.id}`, (x) => x.ad); })()}`;
+    const bind = () => {
+      ziyaret(key, a.ad, `#/alim/${a.id}`); bindYolBandi(); bindDefterKutusu(); bindOnay();
+      document.querySelectorAll(".bolum-nav a").forEach((x) => x.onclick = (e) => { e.preventDefault(); const t = document.getElementById(x.getAttribute("href").slice(1)); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); });
+    };
+    return { html, bind };
   }
 
   // ───────── Öğrenme yolları ─────────
