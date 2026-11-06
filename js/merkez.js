@@ -876,15 +876,26 @@
   }
 
   // ───────── Hayatın içinden rehberler ─────────
+  const REHBER_GRUP = [
+    ["İbadet hayatı", ["namaz", "zekat", "ramazan", "kurban", "hacumre", "kadin"]],
+    ["Aile", ["evlilik", "dogum", "genclik", "anababa", "bosanma"]],
+    ["Hastalık, afet ve ölüm", ["hastalik", "afet", "vefat", "miras"]],
+    ["Geçim ve toplum", ["is", "borc", "kulhakki", "yemin", "yeme", "dijital", "yolculuk", "gurbet"]]
+  ];
   function rehberler() {
+    const R = Object.fromEntries(window.REHBERLER.map((r) => [r.id, r]));
+    const gruplu = new Set(REHBER_GRUP.flatMap((g) => g[1]));
+    const gruplar = [...REHBER_GRUP.map(([ad, ids]) => [ad, ids.filter((id) => R[id]).map((id) => R[id])]), ["Diğer", window.REHBERLER.filter((r) => !gruplu.has(r.id))]].filter((g) => g[1].length);
+    const kart = (r) => `<a class="rkart" href="#/rehber/${r.id}">
+        <b>${esc(r.baslik)}</b><small class="muted">${esc(r.alt)}</small><p>${esc(r.giris.slice(0, 160))}…</p></a>`;
     const html = `
       <h1>Hayatın İçinden</h1>
-      <div class="rgrid buyuk">${window.REHBERLER.map((r) => `<a class="rkart" href="#/rehber/${r.id}">
-        <b>${esc(r.baslik)}</b><small class="muted">${esc(r.alt)}</small><p>${esc(r.giris.slice(0, 160))}…</p></a>`).join("")}</div>`;
+      ${gruplar.map(([ad, rs]) => `<section><h2 class="alan-bas">${esc(ad)} <small>${rs.length}</small></h2><div class="rgrid buyuk">${rs.map(kart).join("")}</div></section>`).join("")}`;
     return { html };
   }
   function rehber(id) {
-    const list = window.REHBERLER, i = list.findIndex((r) => r.id === id), r = list[i];
+    const sira = REHBER_GRUP.flatMap((g) => g[1]), yer = (x) => { const k = sira.indexOf(x.id); return k < 0 ? 999 : k; };
+    const list = [...window.REHBERLER].sort((x, y) => yer(x) - yer(y)), i = list.findIndex((r) => r.id === id), r = list[i];
     if (!r) return rehberler();
     const key = "rehber:" + r.id, SSS = (window.REHBER_SSS || {})[r.id] || [];
     const html = `
