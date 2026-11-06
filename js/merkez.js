@@ -836,9 +836,16 @@
   const sozArama = { q: "", tur: "Tümü" };
   const SOZ_TUR = { "Tümü": null, "Uydurma": /uydurma/i, "Aslı yok": /aslı yok|sabit değil|hadis değil|nispeti/i, "Zayıf": /zayıf/i, "Tartışmalı": /tartışmalı/i };
   const sozTuru = (s) => { if (/manası sahih/i.test(s.hukum)) return "Zayıf"; for (const [t, r] of Object.entries(SOZ_TUR)) if (r && r.test(s.hukum)) return t; return "Tümü"; };
+  // Sözün ayrıntılı incelemesi (SOZ_DERIN)
+  function sozDerin(id) {
+    const D = (window.SOZ_DERIN || {})[id];
+    if (!D) return "";
+    const b = [["Neden yaygınlaştı?", D.yayilis], ["Mananın değerlendirmesi", D.mana], ["Usul dersi", D.ders], ["Nasıl söylenmeli?", D.dil]].filter((x) => x[1]);
+    return `<details class="soz-derin"><summary>Ayrıntılı inceleme</summary>${b.map(([t, m]) => `<div class="sd-bolum"><b>${t}</b><p>${arw(m)}</p></div>`).join("")}</details>`;
+  }
   function sozler() {
     const q = sozArama.q.toLocaleLowerCase("tr");
-    const list = window.SOZLER.filter((s) => (sozArama.tur === "Tümü" || sozTuru(s) === sozArama.tur) && (!q || [s.soz, s.aciklama, s.hukum].join(" ").toLocaleLowerCase("tr").includes(q)));
+    const list = window.SOZLER.filter((s) => (sozArama.tur === "Tümü" || sozTuru(s) === sozArama.tur) && (!q || [s.soz, s.aciklama, s.hukum, ...Object.values((window.SOZ_DERIN || {})[s.id] || {})].join(" ").toLocaleLowerCase("tr").includes(q)));
     const html = `
       <a class="back" href="#/meseleler">← Meseleler</a>
       <h1>Dilden Dile Dolaşan Sözler</h1>
@@ -855,6 +862,7 @@
         <div class="dogrusu"><small>Sahih olan</small>
           ${s.dogrusu[0] ? `<div class="nas-ar" lang="ar">${s.dogrusu[0]}</div>` : ""}
           <p>${esc(s.dogrusu[1])}</p><small class="muted">${esc(s.dogrusu[2])}</small></div>
+        ${sozDerin(s.id)}
         ${refChips(s.ilgili)}
         <div class="sayfa-alt">${onayKutusu("soz:" + s.id)}</div>
       </article>`).join("") || `<p class="empty">Sonuç yok.</p>`}</div>`;

@@ -867,3 +867,8 @@ body.menu-acik { overflow: hidden; }
 .kd-bag li { display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .kd-bag li span { color: var(--muted); font-family: var(--serif); }
 .alan-bas small { font-weight: 400; text-transform: none; letter-spacing: 0; margin-left: 6px; }
+.soz-derin { margin: 12px 0 6px; border-top: 1px dashed var(--line); padding-top: 8px; }
+.soz-derin summary { cursor: pointer; color: var(--klasik); font-weight: 600; font-family: var(--sans, inherit); font-size: .92rem; }
+.sd-bolum { margin: 10px 0; }
+.sd-bolum b { display: block; font-family: var(--sans, inherit); font-size: .85rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.sd-bolum p { margin: 4px 0 0; font-family: var(--serif); line-height: 1.65; }
