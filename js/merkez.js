@@ -401,7 +401,7 @@
   // ───────── Âlimler ─────────
   const alimArama = { q: "", alan: "Tümü" };
   const AEK = (id) => (window.ALIM_EK || {})[id] || {};
-  const ALAN_GRUP = { "Fıkıh": /Fıkıh|Kazâ|Menâsik|Fetva|Hukuk/, "Usul": /Usul|Makâsıd|Kavâid/, "Hadis": /Hadis/, "Tefsir": /Tefsir|Kıraat/, "Kelâm": /Kelâm|Akide/, "Tasavvuf": /Tasavvuf|Zühd|Ahlâk/, "Tarih ve düşünce": /Tarih|Siyer|Düşünce|Sosyoloji|Siyaset|Felsefe/ };
+  const ALAN_GRUP = { "Fıkıh": /Fıkıh|Kazâ|Menâsik|Fetva|Hukuk|Ferâiz|maliye/, "Usul": /Usul|Makâsıd|Kavâid/, "Hadis": /Hadis/, "Tefsir": /Tefsir|Kıraat|Kur'an/, "Kelâm": /Kelâm|Akide/, "Tasavvuf": /Tasavvuf|Zühd|Ahlâk/, "Dil ve edebiyat": /Dil|Belâgat|Edebiyat/, "Tarih ve düşünce": /Tarih|Siyer|Düşünce|Sosyoloji|Siyaset|Felsefe|Dâvet|İlimler|Coğrafya|Bilim|Tıp|Mezhepler/ };
   const alanda = (a, g) => g === "Tümü" || (AEK(a.id).alan || []).some((x) => ALAN_GRUP[g].test(x));
   const alimSekme = (on) => `<div class="tabs"><a href="#/alimler" class="${on === "zaman" ? "on" : ""}">Zaman çizgisi</a><a href="#/ekoller" class="${on === "ekol" ? "on" : ""}">Ekoller ve gelenekler</a></div>`;
   function alimler() {
@@ -415,7 +415,7 @@
       <input id="aara" class="search" type="search" placeholder="Âlim, ekol, şehir veya eser ara…" value="${esc(alimArama.q)}">
       <div class="zaman">${asirlar.map((y) => `<section class="asir">
         <h2><span>Hicrî ${y}. asır</span></h2>
-        <div class="agrid">${list.filter((a) => a.y === y).map((a) => `<a class="akart" href="#/alim/${a.id}">
+        <div class="agrid">${list.filter((a) => a.y === y).sort((p, q) => (parseInt(p.olum) || 0) - (parseInt(q.olum) || 0)).map((a) => `<a class="akart" href="#/alim/${a.id}">
           <div><b>${esc(a.ad)}</b> ${a.ar ? `<span lang="ar" class="muted">${a.ar}</span>` : ""}</div>
           <small class="muted">ö. ${esc(a.olum)} · ${esc(a.sehir)}</small>
           <small>${esc(a.ekol)}</small></a>`).join("")}</div>
@@ -531,7 +531,7 @@
       </article>
       ${defterKutusu(key, "alim", a.ad, `#/alim/${a.id}`)}
       <div class="sayfa-alt">${onayKutusu(key)}</div>
-      ${(() => { const L = [...window.ALIMLER].sort((x, y) => x.y - y.y), i = L.indexOf(a); return pager(L, i, (x) => `#/alim/${x.id}`, (x) => x.ad); })()}`;
+      ${(() => { const vy = (x) => parseInt(String(x.olum).replace(/[^0-9].*$/, "").replace(/^$/, "0"), 10) || x.y * 100, L = [...window.ALIMLER].sort((x, y) => x.y - y.y || vy(x) - vy(y)), i = L.indexOf(a); return pager(L, i, (x) => `#/alim/${x.id}`, (x) => x.ad); })()}`;
     const bind = () => {
       ziyaret(key, a.ad, `#/alim/${a.id}`); bindYolBandi(); bindDefterKutusu(); bindOnay();
       document.querySelectorAll(".bolum-nav a").forEach((x) => x.onclick = (e) => { e.preventDefault(); const t = document.getElementById(x.getAttribute("href").slice(1)); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); });
