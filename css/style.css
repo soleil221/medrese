@@ -839,3 +839,20 @@ body.menu-acik { overflow: hidden; }
 .tefekkur-kart:hover { text-decoration: none; }
 .tefekkur-kart small { color: var(--muted); }
 .tefekkur-kart p { margin: 4px 0 0; font-family: var(--serif); font-style: italic; }
+
+/* Kur'an konularında tedebbür ve derinlik katmanı */
+.kd-ic { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 18px; font-family: var(--sans, inherit); }
+.kd-ic a { font-size: .82rem; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--surface); }
+.kd-ic a:hover { text-decoration: none; border-color: var(--klasik); color: var(--ink); }
+.kd-kok { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 12px; margin: 22px 0; }
+.kd-harf { font-size: 1.7rem; color: var(--klasik); letter-spacing: .12em; margin: 2px 0 4px; }
+.kd-komsu dt { font-weight: 600; margin-top: 10px; }
+.kd-komsu dd { margin: 2px 0 0; color: var(--ink); }
+.kd-seyir { list-style: none; padding: 0; margin: 10px 0; border-left: 2px solid var(--gold); }
+.kd-seyir li { padding: 2px 0 8px 16px; position: relative; }
+.kd-seyir li::before { content: ""; position: absolute; left: -6px; top: 8px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); }
+.kd-seyir b, .kd-incelik b { display: block; font-family: var(--sans, inherit); }
+.kd-seyir p, .kd-incelik p { margin: 4px 0 0; }
+.kd-incelik { padding-left: 22px; }
+.kd-incelik li { margin: 10px 0; }
+.kd-tedebbur { max-width: 760px; }

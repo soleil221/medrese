@@ -767,30 +767,53 @@
         <p>${esc(k.ozet.slice(0, 150))}…</p></a>`).join("")}</div>`;
     return { html };
   }
+  // Konu sayfasının tedebbür ve derinlik bölümleri (KONU_DERIN).
+  function konuDerinHtml(D, yer) {
+    if (!D) return "";
+    if (yer === "kok" && D.kok) return `<section class="kd-kok" id="kd-kok"><h2>Kelimenin dünyası</h2>
+      <div class="kd-harf" lang="ar">${esc(D.kok.harf)}</div><p>${arw(D.kok.anlam)}</p>
+      ${D.kok.komsu ? `<h3>Yakın kavramlar</h3><dl class="kd-komsu">${D.kok.komsu.map(([k, f]) => `<dt>${esc(k)}</dt><dd>${arw(f)}</dd>`).join("")}</dl>` : ""}</section>`;
+    if (yer === "seyir" && D.seyir) return `<section id="kd-seyir"><h2>Kur'an'daki seyri</h2><ol class="kd-seyir">${D.seyir.map(([d, m]) => `<li><b>${esc(d)}</b><p>${arw(m)}</p></li>`).join("")}</ol></section>`;
+    if (yer === "yakin" && D.yakin) return `<section class="kd-yakin" id="kd-yakin"><h2>Bir âyeti yakından okumak</h2>
+      <div class="nas"><div class="nas-ar" lang="ar">${D.yakin.ar}</div><p>${esc(D.yakin.tr)}</p><small class="muted">${esc(D.yakin.ref)}</small></div>
+      <ol class="kd-incelik">${D.yakin.incelikler.map(([b, m]) => `<li><b>${esc(b)}</b><p>${arw(m)}</p></li>`).join("")}</ol></section>`;
+    if (yer === "tedebbur" && D.tedebbur) return `<section class="kd-tedebbur" id="kd-tedebbur"><h2>Tedebbür</h2>
+      ${D.tedebbur.map(([q, yon]) => `<div class="yp-soru"><p>${arw(q)}</p><details><summary>Düşünme yönü</summary><p>${arw(yon)}</p></details></div>`).join("")}</section>`;
+    return "";
+  }
+
   function konu(id) {
     const list = window.KONULAR, i = list.findIndex((k) => k.id === id), k = list[i];
     if (!k) return konular();
-    const key = "konu:" + k.id, E = (window.KONU_EK || {})[k.id] || {};
+    const key = "konu:" + k.id, E = (window.KONU_EK || {})[k.id] || {}, D = (window.KONU_DERIN || {})[k.id];
+    const ic = [["kd-ayet", "Âyetler"], D && D.kok && ["kd-kok", "Kelime"], ["kd-boyut", "Boyutlar"], D && D.seyir && ["kd-seyir", "Seyir"], D && D.yakin && ["kd-yakin", "Yakın okuma"], D && D.tedebbur && ["kd-tedebbur", "Tedebbür"]].filter(Boolean);
     const html = `
       <a class="back" href="#/konular">← Konular</a>
       ${yolBandi(key)}
       <article class="okuma">
         <header class="sure-bas"><div><h1>${esc(k.ad)}</h1></div><div class="sure-ar" lang="ar">${k.ar}</div></header>
         <p class="lead">${esc(k.ozet)}</p>
-        <h2>Âyetler</h2>
+        ${D ? `<nav class="kd-ic">${ic.map(([h, t]) => `<a href="javascript:void 0" data-kd="${h}">${t}</a>`).join("")}</nav>` : ""}
+        <h2 id="kd-ayet">Âyetler</h2>
         ${k.ayetler.map(([ref, ar, tr]) => `<div class="nas"><div class="nas-ar" lang="ar">${ar}</div><p>${esc(tr)}</p><small class="muted">${esc(ref)}</small></div>`).join("")}
+        ${konuDerinHtml(D, "kok")}
+        <div id="kd-boyut"></div>
         ${k.boyutlar.map((b) => `<h2>${esc(b.baslik)}</h2><p>${b.metin}</p>`).join("")}
         ${E.kissa ? `<h2>Kıssa: ${esc(E.kissa.baslik)}</h2><p>${esc(E.kissa.metin)}</p>` : ""}
         ${E.hadisler ? `<h2>Hadislerden</h2>${E.hadisler.map(([t, kay]) => `<div class="nas hadis"><p>${esc(t)}</p><small class="muted">${esc(kay)}</small></div>`).join("")}` : ""}
         ${E.sozler ? `<h2>Âlimlerden</h2>${E.sozler.map((x) => { const a = AL()[x.alim]; return `<blockquote class="alim-not"><p>${esc(x.metin)}</p>${a ? `<footer>— <a href="#/alim/${a.id}">${esc(a.ad)}</a></footer>` : ""}</blockquote>`; }).join("")}` : ""}
+        ${konuDerinHtml(D, "seyir")}
+        ${konuDerinHtml(D, "yakin")}
         ${E.uygulama ? `<div class="ornek-kutu"><small>Bu hafta</small><p>${esc(E.uygulama)}</p></div>` : ""}
       </article>
       <section class="okuma tefekkur"><h2>Tefekkür</h2><p>${esc(k.tefekkur)}</p></section>
+      ${konuDerinHtml(D, "tedebbur")}
       ${k.ilgili && k.ilgili.length ? `<section><h3>Bağlantılar</h3>${refChips(k.ilgili)}</section>` : ""}
       ${defterKutusu(key, "konu", k.ad, `#/konu/${k.id}`)}
       <div class="sayfa-alt">${onayKutusu(key)}</div>
       ${pager(list, i, (x) => `#/konu/${x.id}`, (x) => x.ad)}`;
-    return { html, bind: sayfaBind(key, k.ad, `#/konu/${k.id}`) };
+    const temel = sayfaBind(key, k.ad, `#/konu/${k.id}`);
+    return { html, bind: () => { temel(); document.querySelectorAll("[data-kd]").forEach((a) => a.onclick = () => { const h = document.getElementById(a.dataset.kd); if (h) h.scrollIntoView({ behavior: "smooth", block: "start" }); }); } };
   }
 
   // ───────── Yaygın sözler ─────────
