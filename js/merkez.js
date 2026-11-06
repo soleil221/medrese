@@ -758,13 +758,18 @@
 
   // ───────── Kur'an konuları ─────────
   function konular() {
+    const K = KN(), kart = (k) => `<a class="skart" href="#/konu/${k.id}">
+        <div class="sk-ust"><b>${esc(k.ad)}</b><span lang="ar">${k.ar}</span></div>
+        <small class="muted">${k.ayetler.length} âyet grubu${S.ziyaretEdildi("konu:" + k.id) ? " · okundu" : ""}</small>
+        <p>${esc(k.ozet.slice(0, 150))}…</p></a>`;
+    const G = window.KONU_GRUP || [["", "", window.KONULAR.map((k) => k.id)]];
+    const grupta = new Set(G.flatMap((g) => g[2]));
+    const diger = window.KONULAR.filter((k) => !grupta.has(k.id));
     const html = `
       <h1>Kur'an'ı Anlamak</h1>
       <div class="tabs"><a href="#/kuran">Sureler</a><a class="on" href="#/konular">Konular</a></div>
-      <div class="sgrid">${window.KONULAR.map((k) => `<a class="skart" href="#/konu/${k.id}">
-        <div class="sk-ust"><b>${esc(k.ad)}</b><span lang="ar">${k.ar}</span></div>
-        <small class="muted">${k.ayetler.length} âyet grubu${S.ziyaretEdildi("konu:" + k.id) ? " · okundu" : ""}</small>
-        <p>${esc(k.ozet.slice(0, 150))}…</p></a>`).join("")}</div>`;
+      ${G.map(([ad, alt, ids]) => `<section>${ad ? `<h2 class="alan-bas">${esc(ad)} <small class="muted">${esc(alt)}</small></h2>` : ""}<div class="sgrid">${ids.filter((id) => K[id]).map((id) => kart(K[id])).join("")}</div></section>`).join("")}
+      ${diger.length ? `<section><h2 class="alan-bas">Diğer</h2><div class="sgrid">${diger.map(kart).join("")}</div></section>` : ""}`;
     return { html };
   }
   // Konu sayfasının tedebbür ve derinlik bölümleri (KONU_DERIN).
@@ -777,6 +782,13 @@
     if (yer === "yakin" && D.yakin) return `<section class="kd-yakin" id="kd-yakin"><h2>Bir âyeti yakından okumak</h2>
       <div class="nas"><div class="nas-ar" lang="ar">${D.yakin.ar}</div><p>${esc(D.yakin.tr)}</p><small class="muted">${esc(D.yakin.ref)}</small></div>
       <ol class="kd-incelik">${D.yakin.incelikler.map(([b, m]) => `<li><b>${esc(b)}</b><p>${arw(m)}</p></li>`).join("")}</ol></section>`;
+    if (yer === "mun" && D.munakasa) return `<section class="kd-mun" id="kd-mun"><h2>Âlimlerin tartışması</h2><h3>${esc(D.munakasa.baslik)}</h3>
+      ${D.munakasa.taraflar.map(([t, m]) => `<div class="kd-taraf"><b>${esc(t)}</b><p>${arw(m)}</p></div>`).join("")}
+      <p class="kd-sonuc"><small>Sonuç</small>${arw(D.munakasa.sonuc)}</p></section>`;
+    if (yer === "metin" && D.metin) { const a = D.metin.alim && AL()[D.metin.alim]; return `<section class="kd-metin" id="kd-metin"><h2>Klasik bir sayfadan</h2>
+      <blockquote class="alim-not"><p>${arw(D.metin.metin)}</p><footer>— ${a ? `<a href="#/alim/${a.id}">${esc(a.ad)}</a>` : esc(D.metin.ad || "")}, <i>${esc(D.metin.eser)}</i></footer></blockquote></section>`; }
+    if (yer === "bugun" && D.bugun) return `<section class="kd-bugun" id="kd-bugun"><h2>Bugün</h2><p>${arw(D.bugun)}</p></section>`;
+    if (yer === "bag" && D.baglar) { const K = KN(); return `<section class="kd-bag" id="kd-bag"><h2>Diğer konularla bağı</h2><ul>${D.baglar.filter(([id]) => K[id]).map(([id, m]) => `<li><a href="#/konu/${id}"><b>${esc(K[id].ad)}</b></a><span>${arw(m)}</span></li>`).join("")}</ul></section>`; }
     if (yer === "tedebbur" && D.tedebbur) return `<section class="kd-tedebbur" id="kd-tedebbur"><h2>Tedebbür</h2>
       ${D.tedebbur.map(([q, yon]) => `<div class="yp-soru"><p>${arw(q)}</p><details><summary>Düşünme yönü</summary><p>${arw(yon)}</p></details></div>`).join("")}</section>`;
     return "";
@@ -786,7 +798,7 @@
     const list = window.KONULAR, i = list.findIndex((k) => k.id === id), k = list[i];
     if (!k) return konular();
     const key = "konu:" + k.id, E = (window.KONU_EK || {})[k.id] || {}, D = (window.KONU_DERIN || {})[k.id];
-    const ic = [["kd-ayet", "Âyetler"], D && D.kok && ["kd-kok", "Kelime"], ["kd-boyut", "Boyutlar"], D && D.seyir && ["kd-seyir", "Seyir"], D && D.yakin && ["kd-yakin", "Yakın okuma"], D && D.tedebbur && ["kd-tedebbur", "Tedebbür"]].filter(Boolean);
+    const ic = [["kd-ayet", "Âyetler"], D && D.kok && ["kd-kok", "Kelime"], ["kd-boyut", "Boyutlar"], D && D.seyir && ["kd-seyir", "Seyir"], D && D.yakin && ["kd-yakin", "Yakın okuma"], D && D.munakasa && ["kd-mun", "Tartışma"], D && D.metin && ["kd-metin", "Klasik sayfa"], D && D.bugun && ["kd-bugun", "Bugün"], D && D.tedebbur && ["kd-tedebbur", "Tedebbür"], D && D.baglar && ["kd-bag", "Bağlar"]].filter(Boolean);
     const html = `
       <a class="back" href="#/konular">← Konular</a>
       ${yolBandi(key)}
@@ -804,10 +816,14 @@
         ${E.sozler ? `<h2>Âlimlerden</h2>${E.sozler.map((x) => { const a = AL()[x.alim]; return `<blockquote class="alim-not"><p>${esc(x.metin)}</p>${a ? `<footer>— <a href="#/alim/${a.id}">${esc(a.ad)}</a></footer>` : ""}</blockquote>`; }).join("")}` : ""}
         ${konuDerinHtml(D, "seyir")}
         ${konuDerinHtml(D, "yakin")}
+        ${konuDerinHtml(D, "mun")}
+        ${konuDerinHtml(D, "metin")}
+        ${konuDerinHtml(D, "bugun")}
         ${E.uygulama ? `<div class="ornek-kutu"><small>Bu hafta</small><p>${esc(E.uygulama)}</p></div>` : ""}
       </article>
       <section class="okuma tefekkur"><h2>Tefekkür</h2><p>${esc(k.tefekkur)}</p></section>
       ${konuDerinHtml(D, "tedebbur")}
+      ${konuDerinHtml(D, "bag")}
       ${k.ilgili && k.ilgili.length ? `<section><h3>Bağlantılar</h3>${refChips(k.ilgili)}</section>` : ""}
       ${defterKutusu(key, "konu", k.ad, `#/konu/${k.id}`)}
       <div class="sayfa-alt">${onayKutusu(key)}</div>

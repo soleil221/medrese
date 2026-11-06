@@ -856,3 +856,14 @@ body.menu-acik { overflow: hidden; }
 .kd-incelik { padding-left: 22px; }
 .kd-incelik li { margin: 10px 0; }
 .kd-tedebbur { max-width: 760px; }
+.kd-mun h3 { margin: .3em 0 .6em; }
+.kd-taraf { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; margin: 10px 0; }
+.kd-taraf b { font-family: var(--sans, inherit); }
+.kd-taraf p { margin: 4px 0 0; }
+.kd-sonuc { background: var(--klasik-soft); border-radius: 10px; padding: 10px 14px; }
+.kd-sonuc small { display: block; color: var(--muted); font-family: var(--sans, inherit); text-transform: uppercase; letter-spacing: .04em; font-size: .75rem; }
+.kd-bugun { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px 18px 10px; margin: 18px 0; }
+.kd-bag ul { list-style: none; padding: 0; max-width: 760px; }
+.kd-bag li { display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.kd-bag li span { color: var(--muted); font-family: var(--serif); }
+.alan-bas small { font-weight: 400; text-transform: none; letter-spacing: 0; margin-left: 6px; }
