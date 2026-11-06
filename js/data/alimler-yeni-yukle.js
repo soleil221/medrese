@@ -81,6 +81,25 @@
   ekle("Fıkıh usulü ve kaideler", ["ebuyala", "ibnakil", "sadrusseria", "ibndakik", "mahalli", "ibnkutluboga", "hadimi", "hallaf", "karaman", "kemali", "ibnbeyyah", "reysuni", "alicuma"]);
   if (!E.find((x) => x.ad === "Kıraat ve Kur'an metni")) E.push({ ad: "Kıraat ve Kur'an metni", alt: "Kur'an'ın nasıl okunduğu ve nasıl yazıldığı", ids: ["ubeyy", "zeyd", "ebudderda", "ebumusa", "ibnmesud", "asim", "kisai", "ebuubeyd", "ibnmucahid", "satibikari", "ibnulcezeri", "azami", "altikulac"] });
 
+  // Altıncı tur: zincirleri günümüze bağlama (yalnızca mensubiyeti açık olanlar)
+  ekle("Hanefî fıkıh geleneği", ["mustafasabri", "zerka"]);
+  ekle("Mâlikî fıkıh geleneği", ["halilishak", "senusi", "lekani", "reysuni", "hamzayusuf"]);
+  ekle("Hanbelî gelenek", ["sadi", "elbani", "ibnbaz", "ibnuseymin"]);
+  ekle("Kelâm: Mu'tezile ve Eş'ariyye", ["senusi", "lekani", "ibnasur", "buti", "alicuma", "hamzayusuf"]);
+  ekle("Kelâm: Mâtürîdiyye", ["beyazizade", "hadimi", "kevseri", "bilmen", "takiosmani"]);
+  ekle("Tefsir geleneği", ["sadi", "samerrai"]);
+  ekle("Tasavvuf geleneği", ["kotku", "ahmedettayyib", "alicuma"]);
+  ekle("Dil ve belâgat", ["ibnasur", "samerrai"]);
+  ekle("Tarih, siyer ve ilimler tarihi", ["nedvi"]);
+  ekle("Kıraat ve Kur'an metni", ["huseyni"]);
+  const altYeni = { "Mâlikî fıkıh geleneği": "Medine amelinden Mağrib, Endülüs ve günümüze", "Kelâm: Mâtürîdiyye": "Semerkant'tan Osmanlı medresesine ve günümüze", "Tasavvuf geleneği": "Zühdden tarikatlara ve günümüze", "Kelâm: Mu'tezile ve Eş'ariyye": "Akıl ve nakil arasında; Eş'arî kolu günümüze kadar", "Dil ve belâgat": "Kur'an'ı anlamanın aletleri; Halîl'den çağdaş Kur'an belâgatına" };
+  E.forEach((e) => { if (altYeni[e.ad]) e.alt = altYeni[e.ad]; });
+  const yeniZincir = (ad, alt, ids) => { if (!E.find((x) => x.ad === ad)) E.push({ ad, alt, ids }); };
+  yeniZincir("Osmanlı'dan Türkiye'ye", "Bursa ve İstanbul medreselerinden Cumhuriyet dönemine", ["fenari", "hacibayram", "aksemseddin", "mollagurani", "hocazade", "alikuscu", "mollahusrev", "kemalpasazade", "ebussuud", "birgivi", "taskoprizade", "halebi", "merkezefendi", "hudayi", "kadizade", "katipcelebi", "beyazizade", "niyazimisri", "bursevi", "hadimi", "ibrahimhakki", "gelenbevi", "cevdetpasa", "gumushanevi", "izmirli", "babanzade", "elmalili", "kevseri", "mustafasabri", "saidnursi", "bilmen", "kotku", "topaloglu", "karaman", "altikulac", "gormez"]);
+  yeniZincir("Hint alt kıtası", "Lahor ve Delhi'den Deoband, Leknev ve Karaçi'ye", ["hucviri", "aliyyulmuttaki", "abdulhakdihlevi", "rabbani", "dihlevi", "sahabdulaziz", "leknevi", "tanevi", "ikbal", "mevdudi", "hamidullah", "fazlurrahman", "nedvi", "azami", "takiosmani"]);
+  yeniZincir("Ezher geleneği", "Kahire'nin bin yıllık medresesi", ["zekeriyyaensari", "lekani", "derdir", "bacuri", "abduh", "huseyni", "hallaf", "diraz", "seltut", "muhammedgazzali", "sarravi", "seyyidsabik", "karadavi", "ahmedettayyib", "alicuma"]);
+  yeniZincir("Nakşibendiyye ve Hâlidî kolu", "Buhara'dan Serhend'e, Bağdat'tan İstanbul'a", ["nakisbend", "mollacami", "rabbani", "mevlanahalid", "gumushanevi", "kotku"]);
+
   // Her zinciri vefat asrına, asır içinde vefat yılına göre sırala (hayatta olanlar en sonda)
   const yil = Object.fromEntries(window.ALIMLER.map((a) => [a.id, a.y]));
   const vs = Object.fromEntries(window.ALIMLER.map((a) => [a.id, a.olum === "Hayatta" ? 9000 + (parseInt(a.dogum) || 0) : parseInt(String(a.olum).replace(/^[^0-9]*/, "")) || 0]));
