@@ -876,3 +876,11 @@ body.menu-acik { overflow: hidden; }
 .akart.hayatta { border-style: dashed; }
 .al-ortak { display: inline-block; font-size: .72rem; letter-spacing: .03em; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 8px; margin-right: 4px; vertical-align: 1px; }
 .al-bagli { color: var(--muted); font-style: italic; font-size: .9rem; }
+.rh-hatalar { display: grid; gap: 10px; }
+.rh-hata { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--surface); }
+.rh-hata p { margin: 0; }
+.rh-hata p + p { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+.rh-hata span { display: block; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.rh-yanlis { color: var(--muted); }
+.rh-sorular { padding-left: 1.2em; }
+.rh-sorular li { margin: 6px 0; }

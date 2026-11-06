@@ -897,7 +897,8 @@
     const sira = REHBER_GRUP.flatMap((g) => g[1]), yer = (x) => { const k = sira.indexOf(x.id); return k < 0 ? 999 : k; };
     const list = [...window.REHBERLER].sort((x, y) => yer(x) - yer(y)), i = list.findIndex((r) => r.id === id), r = list[i];
     if (!r) return rehberler();
-    const key = "rehber:" + r.id, SSS = (window.REHBER_SSS || {})[r.id] || [];
+    const key = "rehber:" + r.id, D = (window.REHBER_DERIN || {})[r.id] || {}, SSS = [...((window.REHBER_SSS || {})[r.id] || []), ...(D.sss || [])];
+    const AA = AL(), T = D.tedebbur, M = D.metin, H = D.hatalar || [];
     const html = `
       <a class="back" href="#/rehberler">← Hayatın içinden</a>
       ${yolBandi(key)}
@@ -905,9 +906,13 @@
         <h1>${esc(r.baslik)}</h1>
         <p class="soru">${esc(r.alt)}</p>
         <p class="lead">${esc(r.giris)}</p>
-        <nav class="bolum-nav">${r.bolumler.map((b, j) => `<a href="#rb${j}">${esc(b.baslik)}</a>`).join("")}${SSS.length ? `<a href="#rsss">İnce sorular</a>` : ""}<a href="#rdua">Dualar</a></nav>
+        <nav class="bolum-nav">${r.bolumler.map((b, j) => `<a href="#rb${j}">${esc(b.baslik)}</a>`).join("")}${H.length ? `<a href="#rhata">Yanlış bilinenler</a>` : ""}${M ? `<a href="#rmetin">Klasik metinden</a>` : ""}${SSS.length ? `<a href="#rsss">İnce sorular</a>` : ""}${T ? `<a href="#rted">Tedebbür</a>` : ""}<a href="#rdua">Dualar</a></nav>
         ${r.bolumler.map((b, j) => `<h2 id="rb${j}">${esc(b.baslik)}</h2>${b.html}`).join("")}
+        ${H.length ? `<h2 id="rhata">Yanlış bilinenler</h2><div class="rh-hatalar">${H.map(([y, d]) => `<div class="rh-hata"><p class="rh-yanlis"><span>Yaygın kanaat</span>${esc(y)}</p><p class="rh-dogru"><span>Doğrusu</span>${esc(d)}</p></div>`).join("")}</div>` : ""}
+        ${M ? `<h2 id="rmetin">Klasik metinden</h2><blockquote class="alim-not rh-metin"><p>${esc(M.metin)}</p><footer>— ${AA[M.alim] ? `<a href="#/alim/${M.alim}">${esc(AA[M.alim].ad)}</a>` : esc(M.alim)} <small class="muted">· ${esc(M.eser)}</small></footer></blockquote>` : ""}
         ${SSS.length ? `<h2 id="rsss">İnce sorular</h2><div class="sss">${SSS.map((x) => `<details><summary>${esc(x.s)}</summary><p>${esc(x.c)}</p></details>`).join("")}</div>` : ""}
+        ${T ? `<h2 id="rted">Tedebbür</h2><div class="nas"><div class="nas-ar" lang="ar">${T.ar}</div><p>${esc(T.tr)}</p><small class="muted">${esc(T.ref)} · Diyanet Vakfı meali</small></div>
+          <ol class="rh-sorular">${T.sorular.map((q) => `<li>${esc(q)}</li>`).join("")}</ol>` : ""}
         <h2 id="rdua">Dualar</h2>
         ${r.dualar.map(([ar, tr, kaynak]) => `<div class="nas"><div class="nas-ar" lang="ar">${ar}</div><p>${esc(tr)}</p><small class="muted">${esc(kaynak)}</small></div>`).join("")}
         ${r.ilgili && r.ilgili.length ? `<h2>Bağlantılar</h2>${refChips(r.ilgili)}` : ""}
