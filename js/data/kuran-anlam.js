@@ -25,13 +25,13 @@ window.SURE_ANLAM = [
     tefekkur: "“Yalnız sana kulluk eder, yalnız senden yardım dileriz.” Bu cümleyi namazda söylerken, gün içinde yardımı ve onayı kimlerde aradığımı düşünüyor muyum?",
     meseleler: ["fatiha"],
     ayetler: [
-      { n: 1, ar: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيمِ", tr: "Rahmân ve Rahîm olan Allah'ın adıyla." },
-      { n: 2, ar: "الْحَمْدُ لِلّٰهِ رَبِّ الْعَالَمِينَ", tr: "Hamd, âlemlerin Rabbi Allah'a mahsustur." },
-      { n: 3, ar: "الرَّحْمٰنِ الرَّحِيمِ", tr: "O, Rahmân'dır, Rahîm'dir." },
-      { n: 4, ar: "مَالِكِ يَوْمِ الدِّينِ", tr: "Din (hesap) gününün sahibidir." },
-      { n: 5, ar: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", tr: "Yalnız sana kulluk eder, yalnız senden yardım dileriz." },
-      { n: 6, ar: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", tr: "Bizi dosdoğru yola ilet." },
-      { n: 7, ar: "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ", tr: "Kendilerine nimet verdiklerinin yoluna; gazaba uğrayanların ve sapmışların yoluna değil." }
+      { n: 1, ar: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيمِ", tr: "Rahman (ve) rahim (olan) Allah'ın adıyla." },
+      { n: 2, ar: "الْحَمْدُ لِلّٰهِ رَبِّ الْعَالَمِينَ", tr: "Hamd (övme ve övülme), alemlerin Rabbi Allah'a mahsustur." },
+      { n: 3, ar: "الرَّحْمٰنِ الرَّحِيمِ", tr: "O, rahmandır ve rahimdir." },
+      { n: 4, ar: "مَالِكِ يَوْمِ الدِّينِ", tr: "Ceza gününün malikidir." },
+      { n: 5, ar: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", tr: "(Rabbimiz!) Ancak sana kulluk ederiz ve yalnız senden medet umarız." },
+      { n: 6, ar: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", tr: "Bize doğru yolu göster." },
+      { n: 7, ar: "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ", tr: "Kendilerine lütuf ve ikramda bulunduğun kimselerin yolunu; gazaba uğramışların ve sapmışların yolunu değil!" }
     ]
   },
   {
@@ -55,17 +55,17 @@ window.SURE_ANLAM = [
     tefekkur: "Hayatımda “terk edildim” diye hissettiğim dönemlerin ardından gelen genişlikleri hatırlıyor muyum? Bana verilen nimetlere karşılık, kimin yetimine ve muhtacına bakıyorum?",
     meseleler: [],
     ayetler: [
-      { n: 1, ar: "وَالضُّحَى", tr: "Kuşluk vaktine andolsun," },
-      { n: 2, ar: "وَاللَّيْلِ إِذَا سَجَى", tr: "Ve sükûnete erdiğinde geceye ki," },
+      { n: 1, ar: "وَالضُّحَى", tr: "Andolsun kuşluk vaktine" },
+      { n: 2, ar: "وَاللَّيْلِ إِذَا سَجَى", tr: "Ve sükuna erdiğinde geceye ki," },
       { n: 3, ar: "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَى", tr: "Rabbin seni bırakmadı ve sana darılmadı." },
-      { n: 4, ar: "وَلَلْآخِرَةُ خَيْرٌ لَكَ مِنَ الْأُولَى", tr: "Elbette (senin için) sonrası öncekinden daha hayırlıdır." },
-      { n: 5, ar: "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَى", tr: "Rabbin sana verecek, sen de razı olacaksın." },
-      { n: 6, ar: "أَلَمْ يَجِدْكَ يَتِيمًا فَآوَى", tr: "O seni yetim bulup barındırmadı mı?" },
-      { n: 7, ar: "وَوَجَدَكَ ضَالًّا فَهَدَى", tr: "Seni yol arar bulup doğru yola iletmedi mi?" },
-      { n: 8, ar: "وَوَجَدَكَ عَائِلًا فَأَغْنَى", tr: "Seni muhtaç bulup zengin etmedi mi?" },
-      { n: 9, ar: "فَأَمَّا الْيَتِيمَ فَلَا تَقْهَرْ", tr: "Öyleyse yetimi ezme," },
-      { n: 10, ar: "وَأَمَّا السَّائِلَ فَلَا تَنْهَرْ", tr: "İsteyeni azarlama," },
-      { n: 11, ar: "وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ", tr: "Rabbinin nimetini de anlat." }
+      { n: 4, ar: "وَلَلْآخِرَةُ خَيْرٌ لَكَ مِنَ الْأُولَى", tr: "Gerçekten senin için ahiret dünyadan daha hayırlıdır." },
+      { n: 5, ar: "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَى", tr: "Pek yakında Rabbin sana verecek de hoşnut olacaksın." },
+      { n: 6, ar: "أَلَمْ يَجِدْكَ يَتِيمًا فَآوَى", tr: "O, seni yetim bulup barındırmadı mı?" },
+      { n: 7, ar: "وَوَجَدَكَ ضَالًّا فَهَدَى", tr: "Şaşırmış bulup da yol göstermedi mi?" },
+      { n: 8, ar: "وَوَجَدَكَ عَائِلًا فَأَغْنَى", tr: "Seni fakir bulup zengin etmedi mi?" },
+      { n: 9, ar: "فَأَمَّا الْيَتِيمَ فَلَا تَقْهَرْ", tr: "Öyleyse yetimi sakın ezme." },
+      { n: 10, ar: "وَأَمَّا السَّائِلَ فَلَا تَنْهَرْ", tr: "El açıp isteyeni de sakın azarlama." },
+      { n: 11, ar: "وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ", tr: "Ve Rabbinin nimetini minnet ve şükranla an." }
     ]
   },
   {
@@ -89,14 +89,14 @@ window.SURE_ANLAM = [
     tefekkur: "Şu an yaşadığım zorluğun “içinde” saklı olan kolaylık ne olabilir? Bir işi bitirdiğimde boşluğu neyle dolduruyorum?",
     meseleler: [],
     ayetler: [
-      { n: 1, ar: "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ", tr: "Senin göğsünü açmadık mı?" },
-      { n: 2, ar: "وَوَضَعْنَا عَنْكَ وِزْرَكَ", tr: "Yükünü üzerinden kaldırmadık mı?" },
-      { n: 3, ar: "الَّذِي أَنْقَضَ ظَهْرَكَ", tr: "O, belini büken yükü." },
-      { n: 4, ar: "وَرَفَعْنَا لَكَ ذِكْرَكَ", tr: "Senin şanını yüceltmedik mi?" },
-      { n: 5, ar: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", tr: "Elbette zorlukla beraber bir kolaylık vardır." },
-      { n: 6, ar: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", tr: "Evet, zorlukla beraber bir kolaylık vardır." },
-      { n: 7, ar: "فَإِذَا فَرَغْتَ فَانْصَبْ", tr: "Bir işi bitirince öbürüne koyul." },
-      { n: 8, ar: "وَإِلَى رَبِّكَ فَارْغَبْ", tr: "Ve yalnız Rabbine yönel." }
+      { n: 1, ar: "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ", tr: "Biz senin göğsünü açıp genişletmedik mi?" },
+      { n: 2, ar: "وَوَضَعْنَا عَنْكَ وِزْرَكَ", tr: "Yükünü senden alıp atmadık mı?" },
+      { n: 3, ar: "الَّذِي أَنْقَضَ ظَهْرَكَ", tr: "O senin belini büken yükü." },
+      { n: 4, ar: "وَرَفَعْنَا لَكَ ذِكْرَكَ", tr: "Senin şanını ve ününü yüceltmedik mi?" },
+      { n: 5, ar: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", tr: "Elbette zorluğun yanında bir kolaylık vardır." },
+      { n: 6, ar: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", tr: "Gerçekten, zorlukla beraber bir kolaylık daha vardır." },
+      { n: 7, ar: "فَإِذَا فَرَغْتَ فَانْصَبْ", tr: "Boş kaldın mı hemen (başka) işe koyul," },
+      { n: 8, ar: "وَإِلَى رَبِّكَ فَارْغَبْ", tr: "Yalnız Rabbine yönel." }
     ]
   },
   {
@@ -119,14 +119,14 @@ window.SURE_ANLAM = [
     tefekkur: "Hayatımda neyi “çoğaltma” yarışındayım? Bugün bana verilen sıradan nimetlerden (bir bardak su, sağlık, vakit) hesap verseydim ne derdim?",
     meseleler: [],
     ayetler: [
-      { n: 1, ar: "أَلْهَاكُمُ التَّكَاثُرُ", tr: "Çokluk yarışı sizi oyaladı," },
-      { n: 2, ar: "حَتَّى زُرْتُمُ الْمَقَابِرَ", tr: "Ta ki kabirleri ziyaret edinceye kadar." },
-      { n: 3, ar: "كَلَّا سَوْفَ تَعْلَمُونَ", tr: "Hayır! Yakında bileceksiniz." },
-      { n: 4, ar: "ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ", tr: "Yine hayır! Yakında bileceksiniz." },
-      { n: 5, ar: "كَلَّا لَوْ تَعْلَمُونَ عِلْمَ الْيَقِينِ", tr: "Hayır! Kesin bir bilgiyle bilseydiniz," },
-      { n: 6, ar: "لَتَرَوُنَّ الْجَحِيمَ", tr: "Cehennemi mutlaka görürdünüz." },
-      { n: 7, ar: "ثُمَّ لَتَرَوُنَّهَا عَيْنَ الْيَقِينِ", tr: "Sonra onu kesin bir gözle göreceksiniz." },
-      { n: 8, ar: "ثُمَّ لَتُسْأَلُنَّ يَوْمَئِذٍ عَنِ النَّعِيمِ", tr: "Sonra o gün nimetlerden mutlaka sorguya çekileceksiniz." }
+      { n: 1, ar: "أَلْهَاكُمُ التَّكَاثُرُ", tr: "Çokluk kuruntusu sizi o derece oyaladı ki," },
+      { n: 2, ar: "حَتَّى زُرْتُمُ الْمَقَابِرَ", tr: "Nihayet kabirleri ziyaret ettiniz." },
+      { n: 3, ar: "كَلَّا سَوْفَ تَعْلَمُونَ", tr: "Hayır! Yakında bileceksiniz!" },
+      { n: 4, ar: "ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ", tr: "Elbette yakında bileceksiniz!" },
+      { n: 5, ar: "كَلَّا لَوْ تَعْلَمُونَ عِلْمَ الْيَقِينِ", tr: "Gerçek öyle değil! Kesin bilgi ile bilmiş olsaydınız," },
+      { n: 6, ar: "لَتَرَوُنَّ الْجَحِيمَ", tr: "Mutlaka cehennem ateşini görürdünüz." },
+      { n: 7, ar: "ثُمَّ لَتَرَوُنَّهَا عَيْنَ الْيَقِينِ", tr: "Sonra ahirette onu çıplak gözle göreceksiniz." },
+      { n: 8, ar: "ثُمَّ لَتُسْأَلُنَّ يَوْمَئِذٍ عَنِ النَّعِيمِ", tr: "Nihayet o gün (dünyada yararlandığınız) nimetlerden elbette ve elbette hesaba çekileceksiniz." }
     ]
   },
   {
@@ -207,12 +207,12 @@ window.SURE_ANLAM = [
     meseleler: ["cem"],
     ayetler: [
       { n: 1, ar: "أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ", tr: "Dini yalanlayanı gördün mü?" },
-      { n: 2, ar: "فَذٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ", tr: "İşte o, yetimi itip kakandır," },
-      { n: 3, ar: "وَلَا يَحُضُّ عَلَى طَعَامِ الْمِسْكِينِ", tr: "Ve yoksulu doyurmaya teşvik etmeyendir." },
+      { n: 2, ar: "فَذٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ", tr: "İşte o, yetimi itip kakar;" },
+      { n: 3, ar: "وَلَا يَحُضُّ عَلَى طَعَامِ الْمِسْكِينِ", tr: "Yoksulu doyurmaya teşvik etmez;" },
       { n: 4, ar: "فَوَيْلٌ لِلْمُصَلِّينَ", tr: "Yazıklar olsun o namaz kılanlara ki," },
-      { n: 5, ar: "الَّذِينَ هُمْ عَنْ صَلَاتِهِمْ سَاهُونَ", tr: "Onlar namazlarından gafildirler," },
-      { n: 6, ar: "الَّذِينَ هُمْ يُرَاءُونَ", tr: "Onlar gösteriş yaparlar," },
-      { n: 7, ar: "وَيَمْنَعُونَ الْمَاعُونَ", tr: "Ve en küçük yardımı bile esirgerler." }
+      { n: 5, ar: "الَّذِينَ هُمْ عَنْ صَلَاتِهِمْ سَاهُونَ", tr: "Onlar namazlarını ciddiye almazlar." },
+      { n: 6, ar: "الَّذِينَ هُمْ يُرَاءُونَ", tr: "Onlar gösteriş yapanlardır," },
+      { n: 7, ar: "وَيَمْنَعُونَ الْمَاعُونَ", tr: "Ve hayra da mani olurlar." }
     ]
   },
   {
@@ -253,12 +253,12 @@ window.SURE_ANLAM = [
     tefekkur: "Hayatımda “bir yıl senin dediğin, bir yıl benim dediğim” diye pazarlık ettiğim inanç ve değerler var mı?",
     meseleler: [],
     ayetler: [
-      { n: 1, ar: "قُلْ يَا أَيُّهَا الْكَافِرُونَ", tr: "De ki: Ey kâfirler!" },
-      { n: 2, ar: "لَا أَعْبُدُ مَا تَعْبُدُونَ", tr: "Ben sizin taptıklarınıza tapmam." },
-      { n: 3, ar: "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ", tr: "Siz de benim ibadet ettiğime ibadet edecek değilsiniz." },
-      { n: 4, ar: "وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ", tr: "Ben de sizin taptıklarınıza tapacak değilim." },
-      { n: 5, ar: "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ", tr: "Siz de benim ibadet ettiğime ibadet edecek değilsiniz." },
-      { n: 6, ar: "لَكُمْ دِينُكُمْ وَلِيَ دِينِ", tr: "Sizin dininiz size, benim dinim bana." }
+      { n: 1, ar: "قُلْ يَا أَيُّهَا الْكَافِرُونَ", tr: "Ey Muhammed! De ki: \"Ey kafirler!" },
+      { n: 2, ar: "لَا أَعْبُدُ مَا تَعْبُدُونَ", tr: "\"Ben sizin taptıklarınıza tapmam.\"" },
+      { n: 3, ar: "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ", tr: "\"Benim taptıgıma da sizler tapmazsınız.\"" },
+      { n: 4, ar: "وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ", tr: "\"Ben de sizin taptığınıza tapacak dağilim.\"" },
+      { n: 5, ar: "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ", tr: "\"Benim taptığıma da sizler tapmıyorsunuz.\"" },
+      { n: 6, ar: "لَكُمْ دِينُكُمْ وَلِيَ دِينِ", tr: "\"Sizin dininiz size, benim dinim banadır.\"" }
     ]
   },
   {

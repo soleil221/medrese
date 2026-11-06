@@ -277,22 +277,23 @@
     const L = LST().find((l) => l[0] === +no);
     if (!L) return kuran();
     const s = SURE(no), n = L[0], key = "sure:" + n, AL_ = AL(), M = MS(), list = LST(), i = n - 1;
+    // Âyet ve meal her surede aynı kaynaktan gelir (Diyanet Vakfı meali); yerel veri yalnızca yüklenemezse yedek olarak kullanılır.
     const yerel = s ? sureAyetleri(s) : [];
-    let ayetler = yerel, durum = "";
-    if (!yerel.length) {
-      const c = metinCache[n];
-      if (Array.isArray(c)) ayetler = c;
-      else durum = c === null ? "hata" : "yukleniyor";
-    }
+    let ayetler = [], durum = "";
+    const c = metinCache[n];
+    if (Array.isArray(c)) ayetler = c;
+    else if (c === null && yerel.length) ayetler = yerel;
+    else durum = c === null ? "hata" : "yukleniyor";
     const tahlilVar = !!(window.TAHLIL || {})[n];
     const ayetHtml = durum === "yukleniyor" ? `<p class="muted yukleniyor">Âyetler yükleniyor…</p>`
       : durum === "hata" ? `<p class="notice">Âyetler şu anda yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.</p>`
       : `<ol class="ayet-liste">${ayetler.map((a) => `<li>
           <div class="al-ar" lang="ar">${a.ar} <span class="ayet-no">${a.n}</span></div>
-          <div class="al-tr ${sureState.gizliMeal ? "hid" : ""}">${esc(a.tr)}</div>
+          ${a.ortak && !a.tr ? `<div class="al-tr al-bagli ${sureState.gizliMeal ? "hid" : ""}">Bu âyetin meali, ${a.ortak[0]}. âyetle birlikte yukarıda verilmiştir.</div>`
+            : `<div class="al-tr ${sureState.gizliMeal ? "hid" : ""}">${a.ortak ? `<span class="al-ortak">${a.ortak[0]}–${a.ortak[1]}. âyetler</span> ` : ""}${esc(a.tr)}</div>`}
           <div class="al-arac"><button class="ghost sm" data-ayet="${a.n}" aria-label="${a.n}. âyeti dinle">▶</button><small data-amsg="${a.n}"></small></div>
         </li>`).join("")}</ol>
-        ${!yerel.length ? `<p class="kaynak-not muted">Meal: Diyanet İşleri Başkanlığı. Metin ve meal kaynağı: Tanzil ve Kur'an Ansiklopedisi (quranenc.com).</p>` : ""}`;
+        <p class="kaynak-not muted">Meal: Türkiye Diyanet Vakfı Meali (Tanzil). Arapça metin: Kur'an Ansiklopedisi (quranenc.com). Diyanet'in iki âyeti tek cümlede çevirdiği yerlerde meal, âyet aralığıyla birlikte bir kez verilmiştir.</p>`;
     const html = `
       <a class="back" href="#/kuran">← Kur'an</a>
       ${yolBandi(key)}
