@@ -197,58 +197,345 @@ window.YOL_EK = {
     sentez: "Bu yolda incelediğin çağdaş meselelerden birini seç (faiz, organ nakli, kripto, sigorta veya ötanazi). Meseleyi şu dört soruyla analiz et: Hangi klasik kavrama bağlanıyor? Hükmün illeti ne? Bu illet bugün değişti mi? Hangi makâsıd değeri belirleyici? Sonunda kendi değerlendirmeni yaz." },
 
   "kuran-konulari": {
-    buyukResim: "Bu yol, Kur'an'ı sure sure değil, kavram kavram okumak için hazırlandı. Her konuda Kur'an'ın farklı surelerde aynı kavrama nasıl döndüğünü, onu nasıl derinleştirdiğini ve bir kıssayla nasıl somutlaştırdığını göreceksin. Yolun sırası bilinçli olarak seçildi: Önce insanın iç dünyası (kalp, ilim, takva, rahmet, tevbe), sonra hayatın karşısındaki tavrı (şükür, sabır, tevekkül, rızık), sonra toplumdaki sorumluluğu (adalet, emanet, imtihan, dua, anne-baba) ve en sonda hepsinin anlamını veren âhiret. Her konuda kendine bir soru sor: Bu kavram benim hayatımda nerede?",
-    hedefler: ["Kur'an'ın ana kavramlarını âyetler, kıssalar ve hadislerle birlikte kavrayabilmek.", "Kavramlar arasındaki bağları (sabır-şükür, tevbe-rahmet, takva-kalp) görebilmek.", "Kur'an'ı tedebbür ederek okumanın bir yöntemini edinebilmek.", "Her kavramın gündelik hayattaki karşılığını bulabilmek."],
-    sure: "15 gün; her gün bir konu", onbilgi: "Gerekmez.",
-    etaplar: [["İç dünya", 0, 4, "Kalp, ilim, takva, rahmet ve tevbe arasında bir zincir kur: Hangisi hangisine yol açıyor?"], ["Hayatın karşısında", 5, 8, "Şükür ve sabır, müminin iki kanadı olarak anılır. Tevekkül ve rızık anlayışı bu iki kanadı nasıl destekler?"], ["Toplum ve sorumluluk", 9, 13, "Adalet ve emanet toplumsal, imtihan ve dua bireysel, anne-baba hakkı ise ailevî bir sorumluluk. Bu beş kavramı birleştiren ortak bir ilke var mı?"], ["Son", 14, 14, "Âhiret inancı, bu yolda gördüğün diğer on dört kavramın her birine ne anlam katıyor?"]],
-    adim: {
-      0: { amac: "Kur'an'da kalbin anlama ve yönelme merkezi olduğunu kavramak.", odak: "Kur'an neden “akletmeyi” kalbe nispet eder?",
-        not: "Kur'an insanın iç dünyası için tek bir kelime kullanmaz: sadr (göğüs), kalb, fuâd ve lübb. Hakîm et-Tirmizî, Beyânü'l-fark adlı eserinde bunları iç içe dört katman olarak açıklar: Sadr, İslâm'ın; kalb, imanın; fuâd, marifetin; lübb ise tevhidin yeridir. Her katman bir öncekinin içindedir, tıpkı bir meyvenin kabuğu, eti ve çekirdeği gibi. Bu sınıflandırma, Kur'an'ın bu kelimeleri hangi bağlamlarda kullandığına dikkatle bakmaya davet eder: “Göğsünü açmadık mı” (İnşirâh 1), “Kalbin gördüğünü fuâd yalanlamadı” (Necm 11), “Ancak lübb sahipleri öğüt alır” (Bakara 269).",
-        tedebbur: [["Kalbin “dönen” bir şey olması, imanın korunması hakkında ne söylüyor?", "İmanın bir kez kazanılıp bırakılacak bir şey değil, sürekli bakım isteyen bir hâl olduğunu düşün."], ["Hac 46'da gözlerin değil kalplerin kör olduğu söyleniyor. Kalp körlüğünün belirtileri nelerdir?", "Hakikati gördüğü hâlde kabul etmemeyi, uyarıları duyduğu hâlde etkilenmemeyi düşün."]] },
-      1: { amac: "İlmin haşyet ve sorumlulukla bağını görmek.", odak: "Kur'an'a göre ilim insana ne kazandırmalı?",
-        not: "Buhârî, Sahîh'inin ilim bölümünde bir babı “İlim, söz ve amelden öncedir” diye adlandırır ve buna delil olarak şu âyeti gösterir: “Bil ki Allah'tan başka ilah yoktur; günahın için bağışlanma dile” (Muhammed 19). Âyette önce bilmek, sonra amel (istiğfar) emredilir. Buhârî'nin bu tercihi, ilmin amele yön veren bir pusula olduğunu, ama amelden kopuk bir bilginin de eksik kaldığını gösterir.",
-        tedebbur: [["Tefekkür, tezekkür ve tedebbür arasındaki farkı kendi Kur'an okumanda nasıl gözlemleyebilirsin?", "Bir âyet okurken kâinatı düşünmeyi, bildiğini hatırlamayı ve âyetin senin için sonucunu sormayı ayırt et."], ["Muhammed 24'te tedebbür etmemek neden “kalpteki kilitler”le ilişkilendiriliyor?", "Anlamın, akıldan önce kalbin açıklığına bağlı olduğunu düşün."]] },
-      2: { amac: "Takvanın derecelerini ve kalple ilişkisini öğrenmek.", odak: "“Hakkıyla takva” ile “gücünüz yettiğince takva” nasıl bağdaşır?",
-        not: "Takva kelimesi “korunmak, kendini sakınmak” anlamındaki vikāye kökünden gelir. İbn Recep el-Hanbelî, takvayı “kulun, Allah'ın gazabı ve azabı ile kendisi arasına bir kalkan koyması” olarak tanımlar; bu kalkan da emirleri yerine getirmek ve yasaklardan kaçınmaktır. Bu kök anlam, takvanın bir korku hâli olmaktan önce bir korunma tedbiri olduğunu gösterir: İnsan sevdiği bir şeyi kaybetmemek için nasıl özen gösteriyorsa, takva da Allah ile ilişkisini kaybetmemek için gösterilen özendir.",
-        tedebbur: [["Takvanın bir “bilgi kaynağı” olması ne demektir? Günahın düşünceyi bulandırdığı bir an yaşadın mı?", "Kalbi meşgul eden bir şeyin, doğru karar vermeyi nasıl zorlaştırdığını düşün."], ["“Gücünüz yettiğince” kaydı takvayı gevşetiyor mu, yoksa onu gerçekçi mi kılıyor?", "Allah'ın insana gücünden fazlasını yüklemediğini, ama gücünün tamamını istediğini düşün."]] },
-      3: { amac: "Rahmetin ilâhî bir ilke olduğunu ve insan merhametinin kaynağını görmek.", odak: "Rahmân ile Rahîm arasında fark var mı?",
-        not: "Tâif'te taşlanıp kanlar içinde kalan Hz. Peygamber'e dağlar meleği gelmiş ve “Dilersen şu iki dağı onların üzerine kapatayım” demişti. Hz. Peygamber şöyle cevap verdi: “Hayır, umarım Allah onların soyundan, yalnız O'na ibadet eden ve O'na hiçbir şeyi ortak koşmayan kimseler çıkarır” (Buhârî, Müslim). Bu olay, rahmetin yalnızca sevenlere değil, incitenlere karşı da gösterilebildiğini ve rahmetin gözünün bugüne değil, geleceğe baktığını gösterir.",
-        tedebbur: [["Rahmetin liderliğin temeli olması, senin aile veya iş hayatındaki sorumluluklarına nasıl uygulanabilir?", "Sertliğin insanları nasıl uzaklaştırdığını ve yumuşaklığın nasıl birleştirdiğini düşün."], ["Allah'ın rahmetinin gazabını geçmesi, Allah'a bakışını ve kendi günahlarına bakışını nasıl etkiliyor?", "Ümitsizliğin de bir tür yanlış Allah tasavvuru olduğunu düşün."]] },
-      4: { amac: "Tevbenin şartlarını ve ümit kapısını öğrenmek.", odak: "Hangi günahlar tevbe ile affedilir?",
-        not: "Gazâlî, İhyâ'nın tevbe bölümünde tevbeyi üç halkalı bir zincir olarak açıklar: ilim, hâl ve amel. Önce günahın ne kadar zararlı olduğunu ve insanı Allah'tan nasıl uzaklaştırdığını bilmek (ilim) gerekir. Bu bilgi kalpte bir yanma ve pişmanlık (hâl) doğurur. Bu pişmanlık da günahı bırakmaya ve bir daha yapmamaya kararlı olmaya (amel) yöneltir. Gazâlî'ye göre ilim olmadan pişmanlık, pişmanlık olmadan da gerçek bir değişim olmaz.",
-        tedebbur: [["Tevbenin bir “zaman” meselesi olması, onu ertelemek hakkında ne söylüyor?", "Ertelenen tevbenin bir kumar olduğunu, çünkü ölümün vaktinin bilinmediğini düşün."], ["Allah'ın kulunun tevbesine sevinmesi hadisi, tevbeyi bir korku eylemi olmaktan çıkarıp neye dönüştürüyor?", "Kaybolan bir yolcunun devesini bulduğundaki sevinci düşün."]] },
-      5: { amac: "Şükrün bir amel olduğunu kavramak.", odak: "Şükür sadece dille mi yapılır?",
-        not: "İbnü'l-Kayyim, Medâricü's-sâlikîn'de şükrün beş temel üzerine kurulduğunu söyler: Şükredenin, şükredilene boyun eğmesi; onu sevmesi; nimetini itiraf etmesi; onunla O'nu övmesi; ve o nimeti O'nun hoşlanmadığı bir yerde kullanmaması. Bu tanım, şükrü bir “teşekkür sözü” olmaktan çıkarıp bir ilişki biçimine dönüştürür: Şükür, nimeti verenle kurulan saygı ve sevgi ilişkisinin adıdır.",
-        tedebbur: [["Bir nimeti “imtihan” olarak görmek, ona sahip olma şeklini nasıl değiştirir?", "Nimeti bir hak olarak görmek ile bir emanet olarak görmek arasındaki farkı düşün."], ["Cüneyd'in tanımına göre, sahip olduğun bir nimeti şu an nasıl kullanıyorsun?", "Sağlık, vakit veya bir yetenek gibi bir nimeti seç ve onu nerede kullandığını düşün."]] },
-      6: { amac: "Sabrın üç alanını ve aktif bir direnç olduğunu görmek.", odak: "Sabrın en zor alanı hangisidir?",
-        not: "Klasik âlimler arasında “Şükreden zengin mi, yoksa sabreden fakir mi daha üstündür?” sorusu uzun uzun tartışılmıştır. İbnü'l-Kayyim, Uddetü's-sâbirîn'de bu tartışmayı ayrıntılı olarak ele alır ve hocası İbn Teymiyye'nin görüşünü benimser: Hangisinin takvası daha fazlaysa o daha üstündür. Zenginlik ve fakirlik, her biri kendi ödevini getiren iki ayrı imtihandır; üstünlük durumun kendisinde değil, o durumda nasıl yaşandığındadır.",
-        tedebbur: [["Allah'a şikâyet etmek neden sabra aykırı değildir?", "Şikâyetin muhatabının, şikâyetin anlamını nasıl değiştirdiğini düşün."], ["Sabrın “aktif bir direnç” olması ne demektir? Sabrı edilgen bir bekleyişten ayıran nedir?", "Âl-i İmrân 200'deki “sabredin, sabırda yarışın, nöbette kalın” emrini düşün."]] },
-      7: { amac: "Tevekkülün sebeplere sarılmakla birlikte olduğunu öğrenmek.", odak: "Tevekkül ile tembellik (tevâkül) arasındaki fark nedir?",
-        not: "Hz. Ömer, veba bulunan Şam'a girmekten vazgeçince Ebû Ubeyde ona “Allah'ın kaderinden mi kaçıyorsun?” diye sordu. Ömer şöyle cevap verdi: “Evet, Allah'ın kaderinden yine Allah'ın kaderine kaçıyoruz. Bir vadin olsa, biri verimli diğeri çorak iki yamacı bulunsa, verimli yamaçta otlatırsan Allah'ın kaderiyle, çorak yamaçta otlatırsan yine Allah'ın kaderiyle otlatmış olmaz mısın?” (Buhârî, Müslim). Sebeplere sarılmak kaderin dışına çıkmak değil, kaderin içinde doğru seçimi yapmaktır.",
-        tedebbur: [["Ömer'in iki yamaç benzetmesi, tevekkül ile sebeplere sarılma arasındaki ilişkiyi nasıl açıklıyor?", "Her iki seçimin de kader dahilinde olduğunu, ama birinin akla ve sorumluluğa uygun olduğunu düşün."], ["Kaygılandığın bir işte senin elindeki ile elinde olmayanı ayırabiliyor musun?", "Elindeki sebepleri yerine getirip sonucu Allah'a bırakmanın huzurunu düşün."]] },
-      8: { amac: "Rızkın kaynağını ve imtihan boyutunu kavramak.", odak: "Rızkın bolluğu sevginin, darlığı gazabın işareti midir?",
-        not: "Hz. Ömer'in rivayet ettiğine göre Hz. Peygamber şöyle buyurmuştur: “Eğer Allah'a hakkıyla tevekkül etseydiniz, kuşları rızıklandırdığı gibi sizi de rızıklandırırdı: Sabah aç çıkarlar, akşam tok dönerler” (Tirmizî, İbn Mâce). Âlimler bu hadisteki inceliğe dikkat çeker: Kuşlar yuvalarında oturup beklemez; sabah çıkar ve rızkın peşine düşerler. Tevekkül, sebeplere sarılmayı bırakmak değil, sebeplere sarılırken kalbin güvenini Allah'a bağlamaktır.",
-        tedebbur: [["“Rızık Allah'tandır, yolu ise kulun seçimidir” anlayışı, kazanç yoluna dair sorumluluğu nasıl artırır?", "Rızkın garanti edilmiş olmasının, haram yola sapmak için hiçbir gerekçe bırakmadığını düşün."], ["Kārûn'un “Bu bana bilgim sayesinde verildi” sözü, bugün başarıyı nasıl yorumladığımıza dair ne söylüyor?", "Başarıyı tamamen kendine nispet etmenin kibir ve nankörlüğe nasıl yol açtığını düşün."]] },
-      9: { amac: "Adaletin peygamberlerin gönderiliş amacı olduğunu görmek.", odak: "Düşmana karşı adalet neden takvaya daha yakındır?",
-        not: "Nisâ 105-113. âyetlerin iniş sebebi olarak şu olay nakledilir: Medine'de Tu'me b. Übeyrik adlı bir Müslüman bir zırh çalmış, suçu bir Yahudinin üzerine atmıştı. Yakınları da Hz. Peygamber'in yanında onu savunmuştu. İnen âyetler, Yahudiyi aklayıp asıl suçluyu ortaya çıkardı ve Peygamber'e “hainlerin savunucusu olma” uyarısında bulundu (Tirmizî, Taberî). Kur'an'ın bir Yahudiyi bir Müslümana karşı savunması, adaletin kimlik üstü bir ilke olduğunun en çarpıcı örneklerinden biridir.",
-        tedebbur: [["Adaletin dinî kimlikten önce gelmesi ne demektir? Bu fikir hangi tehlikeleri önler?", "Bir topluluğun kendi mensuplarının zulmünü görmezden gelmesinin sonuçlarını düşün."], ["Mâide 8'deki “bir topluluğa olan öfkeniz sizi adaletsizliğe sürüklemesin” uyarısını kendi hayatından bir örnekle düşün.", "Sevmediğin birinin haklı olduğu bir durumu hatırla."]] },
-      10: { amac: "İnsanın yüklendiği emanetin anlamını ve liyakat ilkesini öğrenmek.", odak: "Emanet neyi kapsar?",
-        not: "İbn Teymiyye, es-Siyâsetü'ş-şer'iyye adlı eserini iki âyet üzerine kurar: “Allah size emanetleri ehline vermenizi ve insanlar arasında hükmettiğinizde adaletle hükmetmenizi emreder” (Nisâ 58) ve ardından gelen yöneticilere itaat âyeti (Nisâ 59). Ona göre devlet yönetiminin özü, görevleri ehline vermek (liyakat) ve adaletle hükmetmektir. Bir göreve ehil olanı bırakıp akrabayı veya yakını atamak, emanete ihanettir.",
-        tedebbur: [["Liyakat ilkesinin bir “emanet” meselesi olarak görülmesi, onu sadece bir verimlilik ilkesi olmaktan çıkarıp neye dönüştürüyor?", "Liyakatsizliğin bir dinî sorumluluk ve ihanet olarak görülmesinin anlamını düşün."], ["Senin hayatında “ehline vermen” gereken emanetler neler?", "Bir görev, bir sır veya bir karar yetkisini düşün."]] },
-      11: { amac: "Hayatı bir imtihan olarak okumayı öğrenmek.", odak: "Nimet de bir imtihan olabilir mi?",
-        not: "Mülk 2'de ölüm ve hayatın, “hanginizin daha güzel amel yapacağını” sınamak için yaratıldığı bildirilir. Fudayl b. İyâz bu âyetteki “daha güzel amel”i “en ihlaslı ve en doğru olan” diye açıklar: “Amel ihlaslı olur da doğru olmazsa kabul edilmez; doğru olur da ihlaslı olmazsa yine kabul edilmez. İhlaslı olan, Allah için yapılandır; doğru olan da sünnete uygun olandır.” Dikkat edilirse âyet “daha çok amel” değil, “daha güzel amel” der: İmtihanın ölçüsü nicelik değil, niteliktir.",
-        tedebbur: [["Hızır kıssası, anlayamadığın bir acı karşısında nasıl bir tavır önerir?", "Mûsâ'nın sabredemeyişini ve sonunda hikmeti öğrenişini düşün."], ["Hayatındaki en büyük nimetle nasıl bir imtihandan geçiyorsun?", "Nimetin seni Allah'a mı yaklaştırdığını, yoksa O'ndan mı uzaklaştırdığını düşün."]] },
-      12: { amac: "Duanın kulluğun özü olduğunu kavramak.", odak: "Her şey takdir edilmişse dua neyi değiştirir?",
-        not: "Kur'an'daki duaların büyük çoğunluğu “Rabbenâ” veya “Rabbi” (Rabbimiz, Rabbim) hitabıyla başlar. Âdem ile Havvâ'nın tevbesi (A'râf 23), İbrâhim'in duaları ve Bakara suresinin sonundaki dua bunun örnekleridir. “Rab” ismi, terbiye eden, yetiştiren ve ihtiyaçları gözeten anlamına gelir. Dua eden kul, böylece Allah'a, kendisini yaratıp büyüten ve her ihtiyacını bilen Rabbi olarak yönelir. Bu hitap, duanın bir talep listesinden önce bir yakınlık ve aidiyet ifadesi olduğunu gösterir.",
-        tedebbur: [["Gazâlî'nin açıklaması, duanın kaderle ilişkisini nasıl bir çelişki olmaktan çıkarıyor?", "Hem hastalığın hem de ilacın takdir edilmiş olmasını düşün."], ["Duaların daha çok bir ihtiyaç listesi mi, yoksa bir yakınlık arayışı mı?", "Furkān 77'deki “Duanız olmasa Rabbim size ne diye değer versin” âyetini düşün."]] },
-      13: { amac: "Anne baba hakkının yerini ve sınırını öğrenmek.", odak: "Anne babaya itaatin sınırı nedir?",
-        not: "Hz. Peygamber, Hz. Ömer'e Yemen'den Üveys el-Karanî adında birinin geleceğini, onun annesine çok iyilik eden biri olduğunu ve ondan kendisi için bağışlanma dilemesini istemesini söylemişti (Müslim). Üveys, annesine bakmak için Hz. Peygamber'i ziyaret edememiş, ama bu iyiliği sebebiyle övgüye mazhar olmuştur. Bu kıssa, anne babaya hizmetin, en büyük manevi fırsatlardan birini bile öne geçebilecek bir ibadet olduğunu gösterir.",
-        tedebbur: [["İtaat ile saygı arasındaki fark nedir? Hz. İbrâhim kıssası bu farkı nasıl gösteriyor?", "İbrâhim'in babasının inancına uymamasını, ama ona karşı edebini korumasını düşün."], ["Anne baban vefat etmişse veya hayattaysa, onlara bu hafta yapabileceğin somut bir iyilik ne?", "Bir dua, bir ziyaret, bir dostlarını arama veya bir sadaka düşün."]] },
-      14: { amac: "Bütün temaları âhiret bilinciyle birleştirmek.", odak: "Kur'an âhireti hangi aklî delillerle temellendirir?",
-        not: "Hz. Peygamber, Abdullah b. Ömer'in omzundan tutarak “Dünyada bir garip veya bir yolcu gibi ol” buyurmuştur. İbn Ömer de şöyle derdi: “Akşama erişince sabahı bekleme, sabaha erişince akşamı bekleme. Sağlığından hastalığın için, hayatından ölümün için pay al” (Buhârî). Garip, yaşadığı yere ait olmadığını bilir; yolcu ise bir menzilden geçtiğini. Âhiret inancı, dünyayı reddetmeyi değil, ona bir yolcunun gözüyle bakmayı öğretir.",
-        tedebbur: [["Allah'ın isimlerinden hareketle âhireti düşünmek, âhiret inancını nasıl bir akıl yürütme hâline getirir?", "Hakîm, Rahîm ve Adl isimlerinin her birinin âhireti nasıl gerektirdiğini düşün."], ["Âhiret bilinci, bu yolda gördüğün diğer kavramlara (sabır, şükür, adalet, emanet) nasıl bir anlam katıyor?", "Âhiret olmasaydı sabrın, adaletin veya emanetin anlamının nasıl değişeceğini düşün."]] }
+    "buyukResim": "Bu yol, Kur'an'ı sure sure değil, kavram kavram okumak için hazırlandı. Her konuda Kur'an'ın farklı surelerde aynı kavrama nasıl döndüğünü, onu nasıl derinleştirdiğini ve bir kıssayla nasıl somutlaştırdığını göreceksin. Yolun sırası bilinçli olarak seçildi: Önce insanın iç dünyası (kalp, ilim, hikmet, takva, zikir, rahmet, tevbe), sonra hayatın karşısındaki tavrı (şükür, sabır, tevekkül, rızık), sonra insanlar arasındaki sorumluluğu (adalet, emanet, doğruluk, kardeşlik, infak, imtihan, dua, anne-baba) ve en sonda hepsinin anlamını veren âhiret. Her konu sayfasında kelimenin kökü, Kur'an'daki seyri, bir âyetin yakından okunması ve âlimlerin tartışması da seni bekliyor. Her konuda kendine bir soru sor: Bu kavram benim hayatımda nerede?",
+    "hedefler": [
+      "Kur'an'ın ana kavramlarını âyetler, kıssalar ve hadislerle birlikte kavrayabilmek.",
+      "Kavramlar arasındaki bağları (sabır-şükür, tevbe-rahmet, takva-kalp) görebilmek.",
+      "Kur'an'ı tedebbür ederek okumanın bir yöntemini edinebilmek.",
+      "Her kavramın gündelik hayattaki karşılığını bulabilmek."
+    ],
+    "sure": "20 gün; her gün bir konu",
+    "onbilgi": "Gerekmez.",
+    "etaplar": [
+      [
+        "İç dünya",
+        0,
+        6,
+        "Kalp, ilim, hikmet, takva, zikir, rahmet ve tevbe arasında bir zincir kur: Hangisi hangisine yol açıyor? Zikir bu zincirin neresinde duruyor?"
+      ],
+      [
+        "Hayatın karşısında",
+        7,
+        10,
+        "Şükür ve sabır, müminin iki kanadı olarak anılır. Tevekkül ve rızık anlayışı bu iki kanadı nasıl destekler?"
+      ],
+      [
+        "İnsanlar arasında",
+        11,
+        18,
+        "Adalet, emanet, doğruluk, kardeşlik ve infak toplumsal; imtihan ve dua bireysel; anne baba hakkı ise ailevî bir sorumluluk. Bu sekiz kavramı birleştiren ortak bir ilke var mı?"
+      ],
+      [
+        "Son",
+        19,
+        19,
+        "Âhiret inancı, bu yolda gördüğün diğer on dokuz kavramın her birine ne anlam katıyor?"
+      ]
+    ],
+    "adim": {
+      "0": {
+        "amac": "Kur'an'da kalbin anlama ve yönelme merkezi olduğunu kavramak.",
+        "odak": "Kur'an neden “akletmeyi” kalbe nispet eder?",
+        "not": "Kur'an insanın iç dünyası için tek bir kelime kullanmaz: sadr (göğüs), kalb, fuâd ve lübb. Hakîm et-Tirmizî, Beyânü'l-fark adlı eserinde bunları iç içe dört katman olarak açıklar: Sadr, İslâm'ın; kalb, imanın; fuâd, marifetin; lübb ise tevhidin yeridir. Her katman bir öncekinin içindedir, tıpkı bir meyvenin kabuğu, eti ve çekirdeği gibi. Bu sınıflandırma, Kur'an'ın bu kelimeleri hangi bağlamlarda kullandığına dikkatle bakmaya davet eder: “Göğsünü açmadık mı” (İnşirâh 1), “Kalbin gördüğünü fuâd yalanlamadı” (Necm 11), “Ancak lübb sahipleri öğüt alır” (Bakara 269).",
+        "tedebbur": [
+          [
+            "Kalbin “dönen” bir şey olması, imanın korunması hakkında ne söylüyor?",
+            "İmanın bir kez kazanılıp bırakılacak bir şey değil, sürekli bakım isteyen bir hâl olduğunu düşün."
+          ],
+          [
+            "Hac 46'da gözlerin değil kalplerin kör olduğu söyleniyor. Kalp körlüğünün belirtileri nelerdir?",
+            "Hakikati gördüğü hâlde kabul etmemeyi, uyarıları duyduğu hâlde etkilenmemeyi düşün."
+          ]
+        ]
+      },
+      "1": {
+        "amac": "İlmin haşyet ve sorumlulukla bağını görmek.",
+        "odak": "Kur'an'a göre ilim insana ne kazandırmalı?",
+        "not": "Buhârî, Sahîh'inin ilim bölümünde bir babı “İlim, söz ve amelden öncedir” diye adlandırır ve buna delil olarak şu âyeti gösterir: “Bil ki Allah'tan başka ilah yoktur; günahın için bağışlanma dile” (Muhammed 19). Âyette önce bilmek, sonra amel (istiğfar) emredilir. Buhârî'nin bu tercihi, ilmin amele yön veren bir pusula olduğunu, ama amelden kopuk bir bilginin de eksik kaldığını gösterir.",
+        "tedebbur": [
+          [
+            "Tefekkür, tezekkür ve tedebbür arasındaki farkı kendi Kur'an okumanda nasıl gözlemleyebilirsin?",
+            "Bir âyet okurken kâinatı düşünmeyi, bildiğini hatırlamayı ve âyetin senin için sonucunu sormayı ayırt et."
+          ],
+          [
+            "Muhammed 24'te tedebbür etmemek neden “kalpteki kilitler”le ilişkilendiriliyor?",
+            "Anlamın, akıldan önce kalbin açıklığına bağlı olduğunu düşün."
+          ]
+        ]
+      },
+      "2": {
+        "amac": "Hikmetin ilim ile davranışın birleşmesi olduğunu kavramak.",
+        "odak": "Doğru bir şeyi doğru şekilde söylemek ne demektir?",
+        "not": "Bir bedevi Mescid-i Nebevî'nin bir köşesine bevletmeye başlayınca sahabe onu engellemek için üzerine yürüdü. Hz. Peygamber “Onu bırakın, işini kesmeyin; bevlinin üzerine bir kova su dökün. Siz kolaylaştırıcı olarak gönderildiniz, zorlaştırıcı olarak değil” buyurdu. Sonra bedeviyi yanına çağırıp mescitlerin bu tür şeyler için değil, Allah'ı anmak, namaz kılmak ve Kur'an okumak için olduğunu yumuşak bir dille anlattı (Buhârî, Müslim). Sahabenin tepkisi haklı bir öfkeydi; Hz. Peygamber'in tavrı ise hikmetti: Hem daha büyük bir zararı önledi hem de adamı kazanarak öğretti.",
+        "tedebbur": [
+          [
+            "Sahabenin haklı öfkesi ile Hz. Peygamber'in tavrı arasındaki fark, “doğru olmak” ile “hikmetli olmak” arasındaki farkı nasıl gösteriyor?",
+            "Haklı olduğun bir durumda tepkinin, karşındakini düzeltmek yerine onu nasıl uzaklaştırabileceğini düşün."
+          ],
+          [
+            "Hz. Peygamber'in önce zararı durdurup sonra öğretmesi, birine bir hatasını gösterirken nasıl bir sıra önerir?",
+            "Bir hatayı düzeltmenin zamanını ve yerini seçmenin önemini düşün."
+          ]
+        ]
+      },
+      "3": {
+        "amac": "Takvanın derecelerini ve kalple ilişkisini öğrenmek.",
+        "odak": "“Hakkıyla takva” ile “gücünüz yettiğince takva” nasıl bağdaşır?",
+        "not": "Takva kelimesi “korunmak, kendini sakınmak” anlamındaki vikāye kökünden gelir. İbn Recep el-Hanbelî, takvayı “kulun, Allah'ın gazabı ve azabı ile kendisi arasına bir kalkan koyması” olarak tanımlar; bu kalkan da emirleri yerine getirmek ve yasaklardan kaçınmaktır. Bu kök anlam, takvanın bir korku hâli olmaktan önce bir korunma tedbiri olduğunu gösterir: İnsan sevdiği bir şeyi kaybetmemek için nasıl özen gösteriyorsa, takva da Allah ile ilişkisini kaybetmemek için gösterilen özendir.",
+        "tedebbur": [
+          [
+            "Takvanın bir “bilgi kaynağı” olması ne demektir? Günahın düşünceyi bulandırdığı bir an yaşadın mı?",
+            "Kalbi meşgul eden bir şeyin, doğru karar vermeyi nasıl zorlaştırdığını düşün."
+          ],
+          [
+            "“Gücünüz yettiğince” kaydı takvayı gevşetiyor mu, yoksa onu gerçekçi mi kılıyor?",
+            "Allah'ın insana gücünden fazlasını yüklemediğini, ama gücünün tamamını istediğini düşün."
+          ]
+        ]
+      },
+      "4": {
+        "amac": "Zikrin bütün bir hayata yayılan bir bilinç olduğunu görmek.",
+        "odak": "Zikir, belirli vakitlerde yapılan bir ibadet mi, yoksa her ana yayılan bir hâl mi?",
+        "not": "Hz. Âişe, Hz. Peygamber'in “her hâlinde Allah'ı zikrettiğini” söyler (Müslim). Âlimler bu rivayetten, zikrin abdest, mekân veya vakit şartına bağlı olmadığını, insanın her durumda Allah'ı anabileceğini çıkarır. Hz. Peygamber Ebû Mûsâ el-Eş'arî'ye de şöyle buyurmuştur: “Sana cennet hazinelerinden bir hazineyi haber vereyim mi? Lâ havle ve lâ kuvvete illâ billâh” (Buhârî, Müslim). Bu söz, insanın her işinde gücün ve kuvvetin yalnızca Allah'tan geldiğini hatırlamasıdır; kısa bir cümleyle bütün bir tevekkülü ifade eden bir zikirdir.",
+        "tedebbur": [
+          [
+            "“Lâ havle ve lâ kuvvete illâ billâh” cümlesini, şu an zorlandığın bir işi düşünerek söyle. Bu cümle o işe bakışını nasıl değiştiriyor?",
+            "Bir işi kendi gücünle yapmaya çalışmak ile o gücün kaynağını hatırlamak arasındaki farkı düşün."
+          ],
+          [
+            "Hz. Peygamber'in “her hâlinde” zikretmesi, senin gününde zikirden boş kalan anların hangileri olduğunu sormana nasıl yol açıyor?",
+            "Yolda, sırada beklerken veya bir işe başlarken geçen anları düşün."
+          ]
+        ]
+      },
+      "5": {
+        "amac": "Rahmetin ilâhî bir ilke olduğunu ve insan merhametinin kaynağını görmek.",
+        "odak": "Rahmân ile Rahîm arasında fark var mı?",
+        "not": "Tâif'te taşlanıp kanlar içinde kalan Hz. Peygamber'e dağlar meleği gelmiş ve “Dilersen şu iki dağı onların üzerine kapatayım” demişti. Hz. Peygamber şöyle cevap verdi: “Hayır, umarım Allah onların soyundan, yalnız O'na ibadet eden ve O'na hiçbir şeyi ortak koşmayan kimseler çıkarır” (Buhârî, Müslim). Bu olay, rahmetin yalnızca sevenlere değil, incitenlere karşı da gösterilebildiğini ve rahmetin gözünün bugüne değil, geleceğe baktığını gösterir.",
+        "tedebbur": [
+          [
+            "Rahmetin liderliğin temeli olması, senin aile veya iş hayatındaki sorumluluklarına nasıl uygulanabilir?",
+            "Sertliğin insanları nasıl uzaklaştırdığını ve yumuşaklığın nasıl birleştirdiğini düşün."
+          ],
+          [
+            "Allah'ın rahmetinin gazabını geçmesi, Allah'a bakışını ve kendi günahlarına bakışını nasıl etkiliyor?",
+            "Ümitsizliğin de bir tür yanlış Allah tasavvuru olduğunu düşün."
+          ]
+        ]
+      },
+      "6": {
+        "amac": "Tevbenin şartlarını ve ümit kapısını öğrenmek.",
+        "odak": "Hangi günahlar tevbe ile affedilir?",
+        "not": "Gazâlî, İhyâ'nın tevbe bölümünde tevbeyi üç halkalı bir zincir olarak açıklar: ilim, hâl ve amel. Önce günahın ne kadar zararlı olduğunu ve insanı Allah'tan nasıl uzaklaştırdığını bilmek (ilim) gerekir. Bu bilgi kalpte bir yanma ve pişmanlık (hâl) doğurur. Bu pişmanlık da günahı bırakmaya ve bir daha yapmamaya kararlı olmaya (amel) yöneltir. Gazâlî'ye göre ilim olmadan pişmanlık, pişmanlık olmadan da gerçek bir değişim olmaz.",
+        "tedebbur": [
+          [
+            "Tevbenin bir “zaman” meselesi olması, onu ertelemek hakkında ne söylüyor?",
+            "Ertelenen tevbenin bir kumar olduğunu, çünkü ölümün vaktinin bilinmediğini düşün."
+          ],
+          [
+            "Allah'ın kulunun tevbesine sevinmesi hadisi, tevbeyi bir korku eylemi olmaktan çıkarıp neye dönüştürüyor?",
+            "Kaybolan bir yolcunun devesini bulduğundaki sevinci düşün."
+          ]
+        ]
+      },
+      "7": {
+        "amac": "Şükrün bir amel olduğunu kavramak.",
+        "odak": "Şükür sadece dille mi yapılır?",
+        "not": "İbnü'l-Kayyim, Medâricü's-sâlikîn'de şükrün beş temel üzerine kurulduğunu söyler: Şükredenin, şükredilene boyun eğmesi; onu sevmesi; nimetini itiraf etmesi; onunla O'nu övmesi; ve o nimeti O'nun hoşlanmadığı bir yerde kullanmaması. Bu tanım, şükrü bir “teşekkür sözü” olmaktan çıkarıp bir ilişki biçimine dönüştürür: Şükür, nimeti verenle kurulan saygı ve sevgi ilişkisinin adıdır.",
+        "tedebbur": [
+          [
+            "Bir nimeti “imtihan” olarak görmek, ona sahip olma şeklini nasıl değiştirir?",
+            "Nimeti bir hak olarak görmek ile bir emanet olarak görmek arasındaki farkı düşün."
+          ],
+          [
+            "Cüneyd'in tanımına göre, sahip olduğun bir nimeti şu an nasıl kullanıyorsun?",
+            "Sağlık, vakit veya bir yetenek gibi bir nimeti seç ve onu nerede kullandığını düşün."
+          ]
+        ]
+      },
+      "8": {
+        "amac": "Sabrın üç alanını ve aktif bir direnç olduğunu görmek.",
+        "odak": "Sabrın en zor alanı hangisidir?",
+        "not": "Klasik âlimler arasında “Şükreden zengin mi, yoksa sabreden fakir mi daha üstündür?” sorusu uzun uzun tartışılmıştır. İbnü'l-Kayyim, Uddetü's-sâbirîn'de bu tartışmayı ayrıntılı olarak ele alır ve hocası İbn Teymiyye'nin görüşünü benimser: Hangisinin takvası daha fazlaysa o daha üstündür. Zenginlik ve fakirlik, her biri kendi ödevini getiren iki ayrı imtihandır; üstünlük durumun kendisinde değil, o durumda nasıl yaşandığındadır.",
+        "tedebbur": [
+          [
+            "Allah'a şikâyet etmek neden sabra aykırı değildir?",
+            "Şikâyetin muhatabının, şikâyetin anlamını nasıl değiştirdiğini düşün."
+          ],
+          [
+            "Sabrın “aktif bir direnç” olması ne demektir? Sabrı edilgen bir bekleyişten ayıran nedir?",
+            "Âl-i İmrân 200'deki “sabredin, sabırda yarışın, nöbette kalın” emrini düşün."
+          ]
+        ]
+      },
+      "9": {
+        "amac": "Tevekkülün sebeplere sarılmakla birlikte olduğunu öğrenmek.",
+        "odak": "Tevekkül ile tembellik (tevâkül) arasındaki fark nedir?",
+        "not": "Hz. Ömer, veba bulunan Şam'a girmekten vazgeçince Ebû Ubeyde ona “Allah'ın kaderinden mi kaçıyorsun?” diye sordu. Ömer şöyle cevap verdi: “Evet, Allah'ın kaderinden yine Allah'ın kaderine kaçıyoruz. Bir vadin olsa, biri verimli diğeri çorak iki yamacı bulunsa, verimli yamaçta otlatırsan Allah'ın kaderiyle, çorak yamaçta otlatırsan yine Allah'ın kaderiyle otlatmış olmaz mısın?” (Buhârî, Müslim). Sebeplere sarılmak kaderin dışına çıkmak değil, kaderin içinde doğru seçimi yapmaktır.",
+        "tedebbur": [
+          [
+            "Ömer'in iki yamaç benzetmesi, tevekkül ile sebeplere sarılma arasındaki ilişkiyi nasıl açıklıyor?",
+            "Her iki seçimin de kader dahilinde olduğunu, ama birinin akla ve sorumluluğa uygun olduğunu düşün."
+          ],
+          [
+            "Kaygılandığın bir işte senin elindeki ile elinde olmayanı ayırabiliyor musun?",
+            "Elindeki sebepleri yerine getirip sonucu Allah'a bırakmanın huzurunu düşün."
+          ]
+        ]
+      },
+      "10": {
+        "amac": "Rızkın kaynağını ve imtihan boyutunu kavramak.",
+        "odak": "Rızkın bolluğu sevginin, darlığı gazabın işareti midir?",
+        "not": "Hz. Ömer'in rivayet ettiğine göre Hz. Peygamber şöyle buyurmuştur: “Eğer Allah'a hakkıyla tevekkül etseydiniz, kuşları rızıklandırdığı gibi sizi de rızıklandırırdı: Sabah aç çıkarlar, akşam tok dönerler” (Tirmizî, İbn Mâce). Âlimler bu hadisteki inceliğe dikkat çeker: Kuşlar yuvalarında oturup beklemez; sabah çıkar ve rızkın peşine düşerler. Tevekkül, sebeplere sarılmayı bırakmak değil, sebeplere sarılırken kalbin güvenini Allah'a bağlamaktır.",
+        "tedebbur": [
+          [
+            "“Rızık Allah'tandır, yolu ise kulun seçimidir” anlayışı, kazanç yoluna dair sorumluluğu nasıl artırır?",
+            "Rızkın garanti edilmiş olmasının, haram yola sapmak için hiçbir gerekçe bırakmadığını düşün."
+          ],
+          [
+            "Kārûn'un “Bu bana bilgim sayesinde verildi” sözü, bugün başarıyı nasıl yorumladığımıza dair ne söylüyor?",
+            "Başarıyı tamamen kendine nispet etmenin kibir ve nankörlüğe nasıl yol açtığını düşün."
+          ]
+        ]
+      },
+      "11": {
+        "amac": "Adaletin peygamberlerin gönderiliş amacı olduğunu görmek.",
+        "odak": "Düşmana karşı adalet neden takvaya daha yakındır?",
+        "not": "Nisâ 105-113. âyetlerin iniş sebebi olarak şu olay nakledilir: Medine'de Tu'me b. Übeyrik adlı bir Müslüman bir zırh çalmış, suçu bir Yahudinin üzerine atmıştı. Yakınları da Hz. Peygamber'in yanında onu savunmuştu. İnen âyetler, Yahudiyi aklayıp asıl suçluyu ortaya çıkardı ve Peygamber'e “hainlerin savunucusu olma” uyarısında bulundu (Tirmizî, Taberî). Kur'an'ın bir Yahudiyi bir Müslümana karşı savunması, adaletin kimlik üstü bir ilke olduğunun en çarpıcı örneklerinden biridir.",
+        "tedebbur": [
+          [
+            "Adaletin dinî kimlikten önce gelmesi ne demektir? Bu fikir hangi tehlikeleri önler?",
+            "Bir topluluğun kendi mensuplarının zulmünü görmezden gelmesinin sonuçlarını düşün."
+          ],
+          [
+            "Mâide 8'deki “bir topluluğa olan öfkeniz sizi adaletsizliğe sürüklemesin” uyarısını kendi hayatından bir örnekle düşün.",
+            "Sevmediğin birinin haklı olduğu bir durumu hatırla."
+          ]
+        ]
+      },
+      "12": {
+        "amac": "İnsanın yüklendiği emanetin anlamını ve liyakat ilkesini öğrenmek.",
+        "odak": "Emanet neyi kapsar?",
+        "not": "İbn Teymiyye, es-Siyâsetü'ş-şer'iyye adlı eserini iki âyet üzerine kurar: “Allah size emanetleri ehline vermenizi ve insanlar arasında hükmettiğinizde adaletle hükmetmenizi emreder” (Nisâ 58) ve ardından gelen yöneticilere itaat âyeti (Nisâ 59). Ona göre devlet yönetiminin özü, görevleri ehline vermek (liyakat) ve adaletle hükmetmektir. Bir göreve ehil olanı bırakıp akrabayı veya yakını atamak, emanete ihanettir.",
+        "tedebbur": [
+          [
+            "Liyakat ilkesinin bir “emanet” meselesi olarak görülmesi, onu sadece bir verimlilik ilkesi olmaktan çıkarıp neye dönüştürüyor?",
+            "Liyakatsizliğin bir dinî sorumluluk ve ihanet olarak görülmesinin anlamını düşün."
+          ],
+          [
+            "Senin hayatında “ehline vermen” gereken emanetler neler?",
+            "Bir görev, bir sır veya bir karar yetkisini düşün."
+          ]
+        ]
+      },
+      "13": {
+        "amac": "Doğruluğun en küçük ilişkilerde bile gözetilmesi gerektiğini görmek.",
+        "odak": "Küçük bir yalan da yalan mıdır?",
+        "not": "Abdullah b. Âmir anlatıyor: Hz. Peygamber evimizdeyken annem beni “Gel, sana bir şey vereceğim” diye çağırdı. Hz. Peygamber anneme sordu: “Ona ne vermek istiyordun?” Annem “Hurma vermek istiyordum” dedi. Hz. Peygamber şöyle buyurdu: “Eğer ona bir şey vermeseydin, sana bir yalan yazılırdı” (Ebû Dâvûd). Bu olay, doğruluğun yalnızca büyük meselelerde değil, bir çocuğu çağırmak gibi en küçük ve masum görünen ilişkilerde bile gözetilmesi gerektiğini gösterir. Çocuklar doğruluğu, büyüklerinin bu küçük sözlerinden öğrenir.",
+        "tedebbur": [
+          [
+            "Bir çocuğu çağırmak için söylenen küçük bir sözün “yalan” olarak yazılabilmesi, gündelik konuşmalarında hangi alışkanlıklarını sorgulamaya yol açıyor?",
+            "Birini oyalamak veya ikna etmek için söylediğin küçük, “önemsiz” sözleri düşün."
+          ],
+          [
+            "Çocukların doğruluğu büyüklerinin küçük sözlerinden öğrenmesi, bir eğitimci veya ebeveyn olarak sana nasıl bir sorumluluk yüklüyor?",
+            "Çocuklara verdiğin sözleri tutup tutmadığını düşün."
+          ]
+        ]
+      },
+      "14": {
+        "amac": "Kardeşliğin küslük karşısında nasıl korunacağını öğrenmek.",
+        "odak": "Bir kardeşle aranız bozulduğunda ilk adımı kim atmalı?",
+        "not": "Hz. Peygamber şöyle buyurmuştur: “Bir Müslümanın, din kardeşine üç günden fazla küs durması helal değildir. Karşılaştıklarında biri yüzünü bir yana, diğeri öbür yana çevirir. İkisinin en hayırlısı, önce selam verendir” (Buhârî, Müslim). Hadis, insanın kırıldığında bir süre uzak durmasını doğal kabul eder ve ona üç günlük bir süre tanır; ama bu sürenin uzamasını yasaklar. Üstünlüğü de haklı olana değil, önce selam verene, yani barış için ilk adımı atana verir.",
+        "tedebbur": [
+          [
+            "Hadisin üstünlüğü “haklı olana” değil “önce selam verene” vermesi, bir anlaşmazlıktaki önceliklerini nasıl değiştirebilir?",
+            "Haklı olduğunu kanıtlamak ile ilişkiyi onarmak arasındaki tercihini düşün."
+          ],
+          [
+            "Şu an küs olduğun veya mesafeli durduğun biri var mı? Ona atabileceğin ilk adım ne olabilir?",
+            "Bir selamın, bir mesajın veya kısa bir ziyaretin, uzun bir küslüğü nasıl bitirebileceğini düşün."
+          ]
+        ]
+      },
+      "15": {
+        "amac": "İnfakın en değerli zamanını ve hâlini kavramak.",
+        "odak": "Ne zaman verilen sadaka daha değerlidir?",
+        "not": "Bir adam Hz. Peygamber'e en faziletli sadakanın hangisi olduğunu sordu. Hz. Peygamber şöyle buyurdu: “Sağlıklıyken, mala düşkünken, fakirlikten korkup zenginlik umarken verdiğin sadakadır. Can boğaza gelinceye kadar bekleyip de ‘Şuna şu kadar, buna bu kadar’ deme; o zaman mal zaten başkasının olmuştur” (Buhârî, Müslim). Hadis, infakın değerini verilen miktardan çok, verenin o mala ne kadar ihtiyaç duyduğuna ve ondan ne kadar zorlanarak ayrıldığına bağlar. Ölüm yaklaştığında yapılan bağış da değerlidir; ama mal artık elden çıkmak üzereyken vermek, ona hâlâ ihtiyaç duyarken vermekle aynı değildir.",
+        "tedebbur": [
+          [
+            "“Fakirlikten korkarken” vermek neden daha değerlidir? Bu hadis senin infak etme zamanlamanı nasıl etkiliyor?",
+            "Bir şeyi “ileride daha çok olunca veririm” diye ertelediğin anları düşün."
+          ],
+          [
+            "Malın “artık başkasının olduğu” bir anda vermek ile ona hâlâ ihtiyaç duyarken vermek arasındaki farkı kendi hayatında nasıl görürsün?",
+            "Vasiyet etmeyi düşündüğün bir iyiliği bugünden yapmanın mümkün olup olmadığını düşün."
+          ]
+        ]
+      },
+      "16": {
+        "amac": "Hayatı bir imtihan olarak okumayı öğrenmek.",
+        "odak": "Nimet de bir imtihan olabilir mi?",
+        "not": "Mülk 2'de ölüm ve hayatın, “hanginizin daha güzel amel yapacağını” sınamak için yaratıldığı bildirilir. Fudayl b. İyâz bu âyetteki “daha güzel amel”i “en ihlaslı ve en doğru olan” diye açıklar: “Amel ihlaslı olur da doğru olmazsa kabul edilmez; doğru olur da ihlaslı olmazsa yine kabul edilmez. İhlaslı olan, Allah için yapılandır; doğru olan da sünnete uygun olandır.” Dikkat edilirse âyet “daha çok amel” değil, “daha güzel amel” der: İmtihanın ölçüsü nicelik değil, niteliktir.",
+        "tedebbur": [
+          [
+            "Hızır kıssası, anlayamadığın bir acı karşısında nasıl bir tavır önerir?",
+            "Mûsâ'nın sabredemeyişini ve sonunda hikmeti öğrenişini düşün."
+          ],
+          [
+            "Hayatındaki en büyük nimetle nasıl bir imtihandan geçiyorsun?",
+            "Nimetin seni Allah'a mı yaklaştırdığını, yoksa O'ndan mı uzaklaştırdığını düşün."
+          ]
+        ]
+      },
+      "17": {
+        "amac": "Duanın kulluğun özü olduğunu kavramak.",
+        "odak": "Her şey takdir edilmişse dua neyi değiştirir?",
+        "not": "Kur'an'daki duaların büyük çoğunluğu “Rabbenâ” veya “Rabbi” (Rabbimiz, Rabbim) hitabıyla başlar. Âdem ile Havvâ'nın tevbesi (A'râf 23), İbrâhim'in duaları ve Bakara suresinin sonundaki dua bunun örnekleridir. “Rab” ismi, terbiye eden, yetiştiren ve ihtiyaçları gözeten anlamına gelir. Dua eden kul, böylece Allah'a, kendisini yaratıp büyüten ve her ihtiyacını bilen Rabbi olarak yönelir. Bu hitap, duanın bir talep listesinden önce bir yakınlık ve aidiyet ifadesi olduğunu gösterir.",
+        "tedebbur": [
+          [
+            "Gazâlî'nin açıklaması, duanın kaderle ilişkisini nasıl bir çelişki olmaktan çıkarıyor?",
+            "Hem hastalığın hem de ilacın takdir edilmiş olmasını düşün."
+          ],
+          [
+            "Duaların daha çok bir ihtiyaç listesi mi, yoksa bir yakınlık arayışı mı?",
+            "Furkān 77'deki “Duanız olmasa Rabbim size ne diye değer versin” âyetini düşün."
+          ]
+        ]
+      },
+      "18": {
+        "amac": "Anne baba hakkının yerini ve sınırını öğrenmek.",
+        "odak": "Anne babaya itaatin sınırı nedir?",
+        "not": "Hz. Peygamber, Hz. Ömer'e Yemen'den Üveys el-Karanî adında birinin geleceğini, onun annesine çok iyilik eden biri olduğunu ve ondan kendisi için bağışlanma dilemesini istemesini söylemişti (Müslim). Üveys, annesine bakmak için Hz. Peygamber'i ziyaret edememiş, ama bu iyiliği sebebiyle övgüye mazhar olmuştur. Bu kıssa, anne babaya hizmetin, en büyük manevi fırsatlardan birini bile öne geçebilecek bir ibadet olduğunu gösterir.",
+        "tedebbur": [
+          [
+            "İtaat ile saygı arasındaki fark nedir? Hz. İbrâhim kıssası bu farkı nasıl gösteriyor?",
+            "İbrâhim'in babasının inancına uymamasını, ama ona karşı edebini korumasını düşün."
+          ],
+          [
+            "Anne baban vefat etmişse veya hayattaysa, onlara bu hafta yapabileceğin somut bir iyilik ne?",
+            "Bir dua, bir ziyaret, bir dostlarını arama veya bir sadaka düşün."
+          ]
+        ]
+      },
+      "19": {
+        "amac": "Bütün temaları âhiret bilinciyle birleştirmek.",
+        "odak": "Kur'an âhireti hangi aklî delillerle temellendirir?",
+        "not": "Hz. Peygamber, Abdullah b. Ömer'in omzundan tutarak “Dünyada bir garip veya bir yolcu gibi ol” buyurmuştur. İbn Ömer de şöyle derdi: “Akşama erişince sabahı bekleme, sabaha erişince akşamı bekleme. Sağlığından hastalığın için, hayatından ölümün için pay al” (Buhârî). Garip, yaşadığı yere ait olmadığını bilir; yolcu ise bir menzilden geçtiğini. Âhiret inancı, dünyayı reddetmeyi değil, ona bir yolcunun gözüyle bakmayı öğretir.",
+        "tedebbur": [
+          [
+            "Allah'ın isimlerinden hareketle âhireti düşünmek, âhiret inancını nasıl bir akıl yürütme hâline getirir?",
+            "Hakîm, Rahîm ve Adl isimlerinin her birinin âhireti nasıl gerektirdiğini düşün."
+          ],
+          [
+            "Âhiret bilinci, bu yolda gördüğün diğer kavramlara (sabır, şükür, adalet, emanet) nasıl bir anlam katıyor?",
+            "Âhiret olmasaydı sabrın, adaletin veya emanetin anlamının nasıl değişeceğini düşün."
+          ]
+        ]
+      }
     },
-    sentez: "On beş konudan birbirine bağlı üçünü seç (örneğin sabır, şükür ve imtihan). Her biri için bir âyet ve bir kıssa yaz, sonra bu üç kavramın birbirini nasıl tamamladığını kendi hayatından bir örnekle anlat." },
+    "sentez": "Yirmi konudan birbirine bağlı üçünü seç (örneğin sabır, şükür ve imtihan). Her biri için bir âyet ve bir kıssa yaz, sonra bu üç kavramın birbirini nasıl tamamladığını kendi hayatından bir örnekle anlat."
+  },
 
   aile: {
     buyukResim: "Bu yol, aile hukukunu bir kurallar listesi olarak değil, mezheplerin aileyi ve kadının, erkeğin ve çocuğun haklarını nasıl düşündüğünü anlamak için hazırlandı. Önce nikâhın kuruluşunu (şartlar, velî, denklik), sonra evlilikteki hakları ve örfün rolünü, en sonda da ayrılık, şahitlik ve mezhepler arası tercih meselelerini görüyorsun. Yol boyunca bir soruyu aklında tut: Bu hükümlerin amacı kimi, neye karşı korumak?",

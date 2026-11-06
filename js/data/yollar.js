@@ -86,7 +86,9 @@ window.YOLLAR = [
     adimlar: [
       { t: "konu", id: "kalp", not: "Anlamanın ve yönelmenin merkezi" },
       { t: "konu", id: "ilim", not: "Oku: akıl, ilim ve tefekkür" },
+      { t: "konu", id: "hikmet", not: "Bilgiyi doğru yerde kullanmak" },
       { t: "konu", id: "takva", not: "Kendini korumak" },
+      { t: "konu", id: "zikir", not: "Allah'ı anmak ve gafletten uyanmak" },
       { t: "konu", id: "rahmet", not: "Rahmet gazabı geçmiştir" },
       { t: "konu", id: "tevbe", not: "Dönüşün kapısı" },
       { t: "konu", id: "sukur", not: "Nimeti tanımak" },
@@ -95,12 +97,15 @@ window.YOLLAR = [
       { t: "konu", id: "rizik", not: "Rızık ve imtihan" },
       { t: "konu", id: "adalet", not: "Peygamberlerin gönderiliş amacı" },
       { t: "konu", id: "emanet", not: "İnsanın yüklendiği yük" },
+      { t: "konu", id: "sidk", not: "Sözde, niyette ve amelde doğruluk" },
+      { t: "konu", id: "uhuvvet", not: "Müminler kardeştir" },
+      { t: "konu", id: "infak", not: "Sevdiğinden vermek" },
       { t: "konu", id: "imtihan", not: "İyilikle ve kötülükle" },
       { t: "konu", id: "dua", not: "Kulluğun özü" },
       { t: "konu", id: "anababa", not: "Allah'tan sonra en büyük hak" },
       { t: "konu", id: "ahiret", not: "Zerre kadar" }
     ],
-    soru: "Bu konulardan hangisi senin hayatında en eksik kalan? O konunun âyetlerinden birini bu hafta ezberleyip üzerinde düşünmeye ne dersin?"
+    soru: "Bu konulardan hangisi senin hayatında en eksik kalan? O konunun âyetlerinden birini bu hafta her gün okuyup üzerinde düşünmeye ne dersin?"
   },
   {
     id: "aile", baslik: "Aile Hayatı ve Fıkıh", alt: "Nikâhtan nafakaya, mezheplerin aile hukuku",
