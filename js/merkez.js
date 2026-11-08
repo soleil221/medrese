@@ -24,12 +24,14 @@
     if (t === "konu") { const k = KN()[id]; return k && { t: "Konu", baslik: k.ad, href: `#/konu/${id}` }; }
     if (t === "rehber") { const r = RH()[id]; return r && { t: "Rehber", baslik: r.baslik, href: `#/rehber/${id}` }; }
     if (t === "hadis") { const h = HD()[id]; return h && { t: "Hadis", baslik: h.baslik, href: `#/hadis/${id}` }; }
+    if (t === "metin") { const m = (window.METINLER || []).find((x) => x.id === id); return m && { t: "Metin", baslik: m.title, href: `#/metin/${id}` }; }
     return null;
   }
   const refChips = (refs) => {
     const l = (refs || []).map(refBilgi).filter(Boolean);
     return l.length ? `<div class="chips">${l.map((r) => `<a class="achip" href="${r.href}"><small>${r.t}</small> <b>${esc(r.baslik)}</b></a>`).join("")}</div>` : "";
   };
+  window.RefChips = refChips;
   // Verilen ref'e atıf yapan kavram, konu, rehber ve sözler
   function atiflar(ref) {
     const out = [];
@@ -37,7 +39,15 @@
     (window.KONULAR || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("konu:" + k.id));
     (window.REHBERLER || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("rehber:" + k.id));
     (window.HADISLER || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("hadis:" + k.id));
-    return out;
+    const aid = ref.startsWith("alim:") ? ref.slice(5) : null;
+    Object.entries(window.HADIS_DERIN || {}).forEach(([hid, d]) => {
+      if ((d.bag || []).includes(ref) || (aid && (d.serh || []).some((x) => x[0] === aid))) out.push("hadis:" + hid);
+    });
+    Object.entries(window.METIN_SERH || {}).forEach(([mid, d]) => {
+      const g = d.giris || {}, satirlar = Object.values(d.satir || {});
+      if ((d.bag || []).includes(ref) || (aid && (g.muellif === aid || (g.serhler || []).some((x) => x[0] === aid) || satirlar.some((x) => (x.okuma || []).some((o) => o[0] === aid))))) out.push("metin:" + mid);
+    });
+    return [...new Set(out)];
   }
   const arw = (t) => esc(t).replace(/([؀-ۿ][؀-ۿً-ْٰ ]*[؀-ۿً-ْٰ]|[؀-ۿ])/g, '<span lang="ar">$&</span>');
 
@@ -592,7 +602,7 @@
           ${surelerde.length ? `<h2>Tefsir notları</h2><ul class="gorus-list">${surelerde.map(({ s, n }) => `<li><a href="#/sure/${s.no}"><b>${esc(s.ad)} Sûresi</b></a><p>${arw(n.metin)}</p></li>`).join("")}</ul>` : ""}
         </section>` : ""}
 
-        ${atif.length ? `<h2>Geçtiği kavram ve konular</h2>${refChips(atif)}` : ""}
+        ${atif.length ? `<h2>Geçtiği sayfalar</h2>${refChips(atif)}` : ""}
         ${cagdas.length ? `<h2>Aynı asrın âlimleri</h2><div class="chips">${cagdas.map((b) => alimChip(b.id)).join("")}</div>` : ""}
       </article>
       ${defterKutusu(key, "alim", a.ad, `#/alim/${a.id}`)}
@@ -751,22 +761,31 @@
     const list = window.HADISLER || [], i = list.findIndex((h) => h.id === id), h = list[i];
     if (!h) return hadisler();
     const key = "hadis:" + h.id, bab = (window.HADIS_BAB || []).find((b) => b.id === h.bab) || {}, geri = atiflar(key).filter((r) => r !== key);
+    const D = (window.HADIS_DERIN || {})[h.id], A = AL(), kim = (x) => A[x] ? `<a href="#/alim/${x}">${esc(A[x].ad)}</a>` : esc(x);
+    const bag = [...(h.ilgili || []), ...((D && D.bag) || []).filter((r) => !(h.ilgili || []).includes(r))];
+    const ic = D ? [["hd-metin", "Metin"], D.kelime && ["hd-kelime", "Kelimeler"], ["hd-aciklama", "Açıklama"], D.serh && ["hd-serh", "Şârihler"], D.mesele && ["hd-mesele", "Meseleler"], D.soru && ["hd-tedebbur", "Tedebbür"]].filter(Boolean) : [];
     const html = `
       <a class="back" href="#/hadisler">← Hadisler</a>
       ${yolBandi(key)}
       <article class="okuma hadis-sayfa">
         <small class="tag klasik">${esc(bab.ad || "")}</small>
         <h1>${esc(h.baslik)}</h1>
-        <div class="nas hadis-nas"><div class="nas-ar" lang="ar">${h.ar}</div><p>${esc(h.tr)}</p>
+        ${ic.length ? `<nav class="kd-ic">${ic.map(([x, t]) => `<a href="javascript:void 0" data-kd="${x}">${t}</a>`).join("")}</nav>` : ""}
+        <div class="nas hadis-nas" id="hd-metin"><div class="nas-ar" lang="ar">${h.ar}</div><p>${esc(h.tr)}</p>
           <small class="muted">Râvi: ${esc(h.ravi)} · ${esc(h.kaynak)} · ${esc(h.derece)}</small></div>
-        <h2>Açıklama</h2><p>${arw(h.aciklama)}</p>
-        ${h.ilgili && h.ilgili.length ? `<h2>Bağlantılar</h2>${refChips(h.ilgili)}` : ""}
+        ${D && D.kelime ? `<section id="hd-kelime"><h2>Kelimeler</h2><dl class="kd-komsu hd-kelime">${D.kelime.map(([a, t]) => `<dt lang="ar">${a}</dt><dd>${arw(t)}</dd>`).join("")}</dl></section>` : ""}
+        <section id="hd-aciklama"><h2>Açıklama</h2><p>${arw(h.aciklama)}</p></section>
+        ${D && D.serh ? `<section id="hd-serh"><h2>Şârihler ne der?</h2>${D.serh.map(([a, eser, m]) => `<div class="kd-taraf"><b>${kim(a)}</b>${eser ? ` <small class="muted">${esc(eser)}</small>` : ""}<p>${arw(m)}</p></div>`).join("")}</section>` : ""}
+        ${D && D.mesele ? `<section id="hd-mesele"><h2>Meseleler ve farklı okumalar</h2><dl class="kd-komsu">${D.mesele.map(([t, m]) => `<dt>${esc(t)}</dt><dd>${arw(m)}</dd>`).join("")}</dl></section>` : ""}
+        ${D && D.soru ? `<section class="kd-tedebbur" id="hd-tedebbur"><h2>Tedebbür</h2>${D.soru.map(([q, yon]) => `<div class="yp-soru"><p>${arw(q)}</p><details><summary>Düşünme yönü</summary><p>${arw(yon)}</p></details></div>`).join("")}</section>` : ""}
+        ${bag.length ? `<h2>Bağlantılar</h2>${refChips(bag)}` : ""}
         ${geri.length ? `<h2>Bu hadise başvuranlar</h2>${refChips(geri)}` : ""}
       </article>
       ${defterKutusu(key, "hadis", h.baslik, `#/hadis/${h.id}`)}
       <div class="sayfa-alt">${onayKutusu(key)}</div>
       ${pager(list, i, (x) => `#/hadis/${x.id}`, (x) => x.baslik)}`;
-    return { html, bind: sayfaBind(key, h.baslik, `#/hadis/${h.id}`) };
+    const temel = sayfaBind(key, h.baslik, `#/hadis/${h.id}`);
+    return { html, bind: () => { temel(); document.querySelectorAll("[data-kd]").forEach((a) => a.onclick = () => { const x = document.getElementById(a.dataset.kd); if (x) x.scrollIntoView({ behavior: "smooth", block: "start" }); }); } };
   }
 
   // ───────── Kavramlar ─────────

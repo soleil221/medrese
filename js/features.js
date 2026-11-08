@@ -615,7 +615,8 @@
   }
 
   // ═════════════ METİNLER ═════════════
-  const metinState = { hideTr: false, hideHarake: false };
+  const metinState = { hideTr: false, hideHarake: false, serh: false };
+  const alimLink = (x) => { const a = (window.ALIMLER || []).find((b) => b.id === x); return a ? `<a href="#/alim/${x}">${U().esc(a.ad)}</a>` : U().esc(x); };
   const HARAKE = /[ً-ْٰ]/g;
 
   const METIN_GRUP = [
@@ -653,22 +654,35 @@
       const Sf = window.Sarf;
       rows = Sf.emsile(Sf.analyze(t.uretilen.kok), Sf.BABS[t.uretilen.bab - 1]).map((x) => ({ ar: x.ar, tr: `<b>${x.ad}</b>${x.tr ? " — " + x.tr : ""}` }));
     } else {
+      const SR = ((window.METIN_SERH || {})[t.id] || {}).satir || {};
       rows = t.satirlar.map((r, i) => ({
         head: r.baslik ? `<b>${i + 1}. ${esc(r.baslik)}</b>${r.ravi ? ` <small class="muted">${esc(r.ravi)}${r.kaynak ? " · " + esc(r.kaynak) : ""}</small>` : ""}${r.ozet ? ` <span class="tag">özet</span>` : ""}${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}` : `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}`,
         ar: r.ar, tr: esc(r.tr),
-        kelimeler: r.kelimeler
+        kelimeler: r.kelimeler || (SR[r.no] && SR[r.no].kelime && SR[r.no].kelime.map(([w, a]) => [w, null, a])),
+        serh: SR[r.no]
       }));
     }
     const keys = t.satirlar ? t.satirlar.map((r) => `metin/${t.id}/${r.no}`) : [];
     const inDeck = keys.filter((k) => S.card(k)).length;
 
+    const MS = (window.METIN_SERH || {})[t.id], G = MS && MS.giris;
+    const serhHtml = (x) => `<details class="serh"${st.serh ? " open" : ""}><summary>Şerh</summary>
+      ${x.not ? `<p>${arWrap(x.not)}</p>` : ""}
+      ${x.okuma ? `<dl class="kd-komsu">${x.okuma.map(([k, m]) => `<dt>${alimLink(k)}</dt><dd>${arWrap(m)}</dd>`).join("")}</dl>` : ""}
+      ${x.soru ? `<div class="yp-soru"><p>${arWrap(x.soru[0])}</p><details><summary>Düşünme yönü</summary><p>${arWrap(x.soru[1])}</p></details></div>` : ""}</details>`;
     const html = `
       <a class="back" href="#/metinler">← Metinler</a>
       <h1>${esc(t.title)}</h1>
       <p class="muted intro">${esc(t.aciklama)}</p>
+      ${G ? `<details class="metin-giris"><summary>Metin, müellif ve şerhleri</summary>
+        ${(G.paragraf || []).map((p) => `<p>${arWrap(p)}</p>`).join("")}
+        ${G.serhler ? `<h3>Başlıca şerhler</h3><ul>${G.serhler.map(([k, eser, n]) => `<li><b>${alimLink(k)}</b>${eser ? `, <i>${esc(eser)}</i>` : ""}${n ? ` — ${arWrap(n)}` : ""}</li>`).join("")}</ul>` : ""}
+        ${G.okuma ? `<h3>Nasıl okunmalı?</h3>${G.okuma.map((p) => `<p>${arWrap(p)}</p>`).join("")}` : ""}
+        ${MS.bag && window.RefChips ? `<h3>Bağlantılar</h3>${window.RefChips(MS.bag)}` : ""}</details>` : ""}
       <div class="btns metin-tools">
         <label class="check"><input type="checkbox" id="hideTr" ${st.hideTr ? "checked" : ""}> Tercümeyi gizle</label>
         <label class="check"><input type="checkbox" id="hideHr" ${st.hideHarake ? "checked" : ""}> Harekeleri gizle</label>
+        ${MS && MS.satir ? `<label class="check"><input type="checkbox" id="serhAc" ${st.serh ? "checked" : ""}> Şerhleri açık göster</label>` : ""}
         ${keys.length ? (inDeck < keys.length ? `<button class="sm" id="addm">${t.tur === "Hadis" ? "Hadisleri" : "Bölümleri"} tekrar listeme ekle</button>` : `<small class="muted">✓ Tümü tekrar listende</small>`) : ""}
       </div>
       <div class="metin">${rows.map((r) => `
@@ -680,11 +694,14 @@
             const link = kok && bab ? `#/cekim/${kok}/${bab}` : "";
             return `<${link ? `a href="${link}"` : "span"} class="kchip"><b lang="ar">${w}</b> <small>${arWrap(aciklama)}</small>${link ? " ↗" : ""}</${link ? "a" : "span"}>`;
           }).join("")}</div>` : ""}
+          ${r.serh ? serhHtml(r.serh) : ""}
         </div>`).join("")}</div>`;
 
     const bind = () => {
       document.getElementById("hideTr").onchange = (e) => { st.hideTr = e.target.checked; U().render(); };
       document.getElementById("hideHr").onchange = (e) => { st.hideHarake = e.target.checked; U().render(); };
+      const sa = document.getElementById("serhAc");
+      if (sa) sa.onchange = (e) => { st.serh = e.target.checked; document.querySelectorAll("details.serh").forEach((d) => d.open = st.serh); };
       document.querySelectorAll(".mtr.hid").forEach((el) => el.onclick = () => el.classList.remove("hid"));
       const addm = document.getElementById("addm");
       if (addm) addm.onclick = () => { S.addCards(keys); U().render(); };
