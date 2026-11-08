@@ -747,7 +747,9 @@
   function kavram(id) {
     const list = window.KAVRAMLAR, i = list.findIndex((k) => k.id === id), k = list[i];
     if (!k) return kavramlar();
-    const key = "kavram:" + k.id, geri = atiflar(key).filter((r) => r !== key), E = (window.KAVRAM_EK || {})[k.id] || {};
+    const key = "kavram:" + k.id, geri = atiflar(key).filter((r) => r !== key), E = (window.KAVRAM_EK || {})[k.id] || {}, D = (window.KAVRAM_DERIN || {})[k.id];
+    const ma = D && D.metin && AL()[D.metin.alim];
+    const ic = D ? [D.tanimlar && ["kv-tanim", "Tanımlar"], k.nuans && ["kv-nuans", "İncelikler"], D.seyir && ["kv-seyir", "Seyir"], E.ornek && ["kv-ornek", "Uygulamada"], D.metin && ["kv-metin", "Klasik sayfa"], D.fark && ["kv-fark", "Farklar"], D.sorular && ["kv-tedebbur", "Tedebbür"]].filter(Boolean) : [];
     const html = `
       <a class="back" href="#/kavramlar">← Kavramlar</a>
       ${yolBandi(key)}
@@ -755,8 +757,15 @@
         <small class="tag klasik">${esc(k.grup)}</small>
         <header class="alim-bas"><h1>${esc(k.ad)}</h1><div class="alim-ar" lang="ar">${k.ar}</div></header>
         <p class="lead">${k.tanim}</p>
-        ${k.nuans ? `<h2>Ekoller ve incelikler</h2><p>${k.nuans}</p>` : ""}
-        ${E.ornek ? `<h2>Uygulamada</h2><div class="ornek-kutu"><p>${E.ornek}</p></div>` : ""}
+        ${ic.length ? `<nav class="kd-ic">${ic.map(([h, t]) => `<a href="javascript:void 0" data-kd="${h}">${t}</a>`).join("")}</nav>` : ""}
+        ${D && D.tanimlar ? `<section id="kv-tanim"><h2>Tanımlar</h2>${D.tanimlar.map(([t, m]) => `<div class="kd-taraf"><b>${esc(t)}</b><p>${arw(m)}</p></div>`).join("")}</section>` : ""}
+        ${k.nuans ? `<h2 id="kv-nuans">Ekoller ve incelikler</h2><p>${k.nuans}</p>` : ""}
+        ${D && D.seyir ? `<section id="kv-seyir"><h2>Kavramın seyri</h2><ol class="kd-seyir">${D.seyir.map(([d, m]) => `<li><b>${esc(d)}</b><p>${arw(m)}</p></li>`).join("")}</ol></section>` : ""}
+        ${E.ornek ? `<h2 id="kv-ornek">Uygulamada</h2><div class="ornek-kutu"><p>${E.ornek}</p></div>` : ""}
+        ${D && D.metin ? `<section class="kd-metin" id="kv-metin"><h2>Klasik bir sayfadan</h2>
+          <blockquote class="alim-not"><p>${arw(D.metin.metin)}</p><footer>— ${ma ? `<a href="#/alim/${ma.id}">${esc(ma.ad)}</a>` : esc(D.metin.ad || "")}, <i>${esc(D.metin.eser)}</i></footer></blockquote></section>` : ""}
+        ${D && D.fark ? `<section id="kv-fark"><h2>Karıştırılmaması gerekenler</h2><dl class="kd-komsu">${D.fark.map(([t, m]) => `<dt>${esc(t)}</dt><dd>${arw(m)}</dd>`).join("")}</dl></section>` : ""}
+        ${D && D.sorular ? `<section class="kd-tedebbur" id="kv-tedebbur"><h2>Tedebbür</h2>${D.sorular.map(([q, yon]) => `<div class="yp-soru"><p>${arw(q)}</p><details><summary>Düşünme yönü</summary><p>${arw(yon)}</p></details></div>`).join("")}</section>` : ""}
         ${E.kaynak ? `<h2>Klasik kaynaklar</h2><ul class="kaynak">${E.kaynak.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
         ${k.ilgili && k.ilgili.length ? `<h2>Bağlantılar</h2>${refChips(k.ilgili)}` : ""}
         ${geri.length ? `<h2>Bu kavrama başvuranlar</h2>${refChips(geri)}` : ""}
@@ -764,7 +773,8 @@
       ${defterKutusu(key, "kavram", k.ad, `#/kavram/${k.id}`)}
       <div class="sayfa-alt">${onayKutusu(key)}</div>
       ${pager(list, i, (x) => `#/kavram/${x.id}`, (x) => x.ad)}`;
-    return { html, bind: sayfaBind(key, k.ad, `#/kavram/${k.id}`) };
+    const temel = sayfaBind(key, k.ad, `#/kavram/${k.id}`);
+    return { html, bind: () => { temel(); document.querySelectorAll("[data-kd]").forEach((a) => a.onclick = () => { const h = document.getElementById(a.dataset.kd); if (h) h.scrollIntoView({ behavior: "smooth", block: "start" }); }); } };
   }
 
   // ───────── Kur'an konuları ─────────

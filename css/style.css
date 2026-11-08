@@ -795,6 +795,7 @@ body.menu-acik { overflow: hidden; }
 .ah-sayac span { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
 .ah-sayac b { color: var(--klasik); }
 .alim section { scroll-margin-top: 80px; }
+[id^="kv-"], [id^="kd-"] { scroll-margin-top: 80px; }
 .gorus-kart { list-style: none; counter-reset: g; padding: 0; display: grid; gap: 10px; }
 .gorus-kart li { counter-increment: g; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 12px 48px; }
 .gorus-kart li::before { content: counter(g); position: absolute; left: 14px; top: 12px; width: 24px; height: 24px; border-radius: 50%; background: var(--klasik-soft); color: var(--klasik); display: grid; place-items: center; font: 600 .8rem system-ui, sans-serif; }
