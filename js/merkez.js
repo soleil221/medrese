@@ -14,6 +14,7 @@
   const KV = () => Object.fromEntries((window.KAVRAMLAR || []).map((k) => [k.id, k]));
   const KN = () => Object.fromEntries((window.KONULAR || []).map((k) => [k.id, k]));
   const RH = () => Object.fromEntries((window.REHBERLER || []).map((k) => [k.id, k]));
+  const HD = () => Object.fromEntries((window.HADISLER || []).map((k) => [k.id, k]));
   function refBilgi(ref) {
     const i = ref.indexOf(":"), t = ref.slice(0, i), id = ref.slice(i + 1);
     if (t === "mesele") { const m = id === "ihtilaf" ? window.IHTILAF : MS()[id]; return m && { t: "Mesele", baslik: m.baslik, href: `#/mesele/${id}` }; }
@@ -22,6 +23,7 @@
     if (t === "kavram") { const k = KV()[id]; return k && { t: "Kavram", baslik: k.ad, href: `#/kavram/${id}` }; }
     if (t === "konu") { const k = KN()[id]; return k && { t: "Konu", baslik: k.ad, href: `#/konu/${id}` }; }
     if (t === "rehber") { const r = RH()[id]; return r && { t: "Rehber", baslik: r.baslik, href: `#/rehber/${id}` }; }
+    if (t === "hadis") { const h = HD()[id]; return h && { t: "Hadis", baslik: h.baslik, href: `#/hadis/${id}` }; }
     return null;
   }
   const refChips = (refs) => {
@@ -34,6 +36,7 @@
     (window.KAVRAMLAR || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("kavram:" + k.id));
     (window.KONULAR || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("konu:" + k.id));
     (window.REHBERLER || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("rehber:" + k.id));
+    (window.HADISLER || []).forEach((k) => (k.ilgili || []).includes(ref) && out.push("hadis:" + k.id));
     return out;
   }
   const arw = (t) => esc(t).replace(/([؀-ۿ][؀-ۿً-ْٰ ]*[؀-ۿً-ْٰ]|[؀-ۿ])/g, '<span lang="ar">$&</span>');
@@ -662,7 +665,7 @@
   // ───────── İlim defteri ─────────
   const defterState = { tip: "hepsi", q: "" };
   function defter() {
-    const tipler = { hepsi: "Tümü", mesele: "Meseleler", sure: "Sureler", konu: "Konular", kavram: "Kavramlar", rehber: "Rehberler", alim: "Âlimler", yazi: "Yazılar", yol: "Yollar", serbest: "Serbest notlar" };
+    const tipler = { hepsi: "Tümü", mesele: "Meseleler", sure: "Sureler", konu: "Konular", kavram: "Kavramlar", rehber: "Rehberler", hadis: "Hadisler", alim: "Âlimler", yazi: "Yazılar", yol: "Yollar", serbest: "Serbest notlar" };
     const q = defterState.q.toLocaleLowerCase("tr");
     const list = S.state.defter.filter((d) => (defterState.tip === "hepsi" || d.tip === defterState.tip) && (!q || [d.baslik, d.not].join(" ").toLocaleLowerCase("tr").includes(q)));
     const html = `
@@ -728,6 +731,42 @@
   function aramaBind(id, state) {
     const i = document.getElementById(id);
     i.oninput = () => { state.q = i.value; const p = i.selectionStart; U().render(); const n = document.getElementById(id); n.focus(); n.setSelectionRange(p, p); };
+  }
+
+  // ───────── Hadisler ─────────
+  const hadisArama = { q: "" };
+  function hadisler() {
+    const q = hadisArama.q.toLocaleLowerCase("tr");
+    const list = (window.HADISLER || []).filter((h) => !q || [h.baslik, h.tr, h.ravi, h.kaynak, h.aciklama].join(" ").toLocaleLowerCase("tr").includes(q));
+    const html = `
+      <h1>Hadisler</h1>
+      <p class="muted intro">Konulara göre seçilmiş hadisler; Arapça metin, Türkçe karşılık, kaynak ve derece ile. Nevevî'nin <a href="#/metin/kirk-hadis">Kırk Hadis</a>'i ve Tirmizî'nin <a href="#/metin/semail">eş-Şemâil</a>'inden seçmeler ayrıca okuma metinleri arasındadır.</p>
+      <input id="hara" class="search" type="search" placeholder="Hadis ara…" value="${esc(hadisArama.q)}">
+      ${(window.HADIS_BAB || []).map((b) => { const l = list.filter((h) => h.bab === b.id); return l.length ? `<section><h2 class="alan-bas">${esc(b.ad)} <small class="muted">${esc(b.alt)}</small></h2><div class="mgrid">${l.map((h) => `<a class="mkart" href="#/hadis/${h.id}">
+        <small class="muted">${esc(h.kaynak)}${S.onayli("hadis:" + h.id) ? ' · <span class="ok">✓</span>' : ""}</small>
+        <b>${esc(h.baslik)}</b><p>${esc(ilkCumle(h.tr))}</p></a>`).join("")}</div></section>` : ""; }).join("") || `<p class="empty">Sonuç yok.</p>`}`;
+    return { html, bind: () => aramaBind("hara", hadisArama) };
+  }
+  function hadis(id) {
+    const list = window.HADISLER || [], i = list.findIndex((h) => h.id === id), h = list[i];
+    if (!h) return hadisler();
+    const key = "hadis:" + h.id, bab = (window.HADIS_BAB || []).find((b) => b.id === h.bab) || {}, geri = atiflar(key).filter((r) => r !== key);
+    const html = `
+      <a class="back" href="#/hadisler">← Hadisler</a>
+      ${yolBandi(key)}
+      <article class="okuma hadis-sayfa">
+        <small class="tag klasik">${esc(bab.ad || "")}</small>
+        <h1>${esc(h.baslik)}</h1>
+        <div class="nas hadis-nas"><div class="nas-ar" lang="ar">${h.ar}</div><p>${esc(h.tr)}</p>
+          <small class="muted">Râvi: ${esc(h.ravi)} · ${esc(h.kaynak)} · ${esc(h.derece)}</small></div>
+        <h2>Açıklama</h2><p>${arw(h.aciklama)}</p>
+        ${h.ilgili && h.ilgili.length ? `<h2>Bağlantılar</h2>${refChips(h.ilgili)}` : ""}
+        ${geri.length ? `<h2>Bu hadise başvuranlar</h2>${refChips(geri)}` : ""}
+      </article>
+      ${defterKutusu(key, "hadis", h.baslik, `#/hadis/${h.id}`)}
+      <div class="sayfa-alt">${onayKutusu(key)}</div>
+      ${pager(list, i, (x) => `#/hadis/${x.id}`, (x) => x.baslik)}`;
+    return { html, bind: sayfaBind(key, h.baslik, `#/hadis/${h.id}`) };
   }
 
   // ───────── Kavramlar ─────────
@@ -943,5 +982,5 @@
     return { html, bind };
   }
 
-  Object.assign(window.Views, { yolKatmani, anaSayfa, kuran, sure, meseleler, mesele, alimler, alim, yollar, yol, defter, derinles, kavramlar, kavram, konular, konu, sozler, rehberler, rehber, ekoller });
+  Object.assign(window.Views, { yolKatmani, anaSayfa, kuran, sure, meseleler, mesele, alimler, alim, yollar, yol, defter, derinles, kavramlar, kavram, konular, konu, sozler, rehberler, rehber, ekoller, hadisler, hadis });
 })();

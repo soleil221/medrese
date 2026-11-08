@@ -618,19 +618,28 @@
   const metinState = { hideTr: false, hideHarake: false };
   const HARAKE = /[ً-ْٰ]/g;
 
+  const METIN_GRUP = [
+    ["Kur'an", ["Tefsir"]], ["Akaid", ["Akaid"]], ["Hadis ve Şemâil", ["Hadis", "Şemâil"]],
+    ["Tasavvuf ve Ahlâk", ["Tasavvuf", "Ahlâk"]], ["Dil", ["Sarf", "Nahiv"]],
+  ];
   function metinler() {
     const esc = U().esc;
-    const html = `
-      <h1>Metinler</h1>
-      <div class="cards">${window.METINLER.map((t) => `<a class="ccard" href="#/metin/${t.id}">
+    const kart = (t) => `<a class="ccard" href="#/metin/${t.id}">
         <div class="cc-top"><small>${esc(t.tur)}</small></div>
         <div class="cc-title"><b>${esc(t.title)}</b></div>
         <p>${esc(t.aciklama)}</p>
-        <div class="cc-foot"><small>${t.satirlar ? t.satirlar.length + (t.tur === "Hadis" ? " hadis" : " bölüm") : "Sarf"}</small></div></a>`).join("")}
-        <a class="ccard" href="#/tahlil"><div class="cc-top"><small>Tefsir</small></div>
+        <div class="cc-foot"><small>${t.satirlar ? t.satirlar.length + " " + (t.birim || (t.tur === "Hadis" ? "hadis" : "bölüm")) : "Sarf"}</small></div></a>`;
+    const tahlil = `<a class="ccard" href="#/tahlil"><div class="cc-top"><small>Tefsir</small></div>
           <div class="cc-title"><b>Amme Cüzü Tahlili</b><span lang="ar">جزء عمّ</span></div>
           <p>Kısa surelerin kelime kelime i'râbı, sarfı ve belâgat notları; âyetleri kârîden dinleme.</p>
-          <div class="cc-foot"><small>${Object.keys(window.TAHLIL || {}).length} / 37 sure hazır</small></div></a></div>`;
+          <div class="cc-foot"><small>${Object.keys(window.TAHLIL || {}).length} / 37 sure hazır</small></div></a>`;
+    const bilinen = METIN_GRUP.flatMap(([, t]) => t);
+    const gruplar = METIN_GRUP.map(([ad, turler]) => [ad, window.METINLER.filter((t) => turler.includes(t.tur)).map(kart).join("") + (ad === "Kur'an" ? tahlil : "")]);
+    const diger = window.METINLER.filter((t) => !bilinen.includes(t.tur)).map(kart).join("");
+    if (diger) gruplar.push(["Diğer", diger]);
+    const html = `
+      <h1>Metinler</h1>
+      ${gruplar.filter(([, h]) => h).map(([ad, h]) => `<section><h2 class="alan-bas">${esc(ad)}</h2><div class="cards">${h}</div></section>`).join("")}`;
     return { html };
   }
 
@@ -645,7 +654,7 @@
       rows = Sf.emsile(Sf.analyze(t.uretilen.kok), Sf.BABS[t.uretilen.bab - 1]).map((x) => ({ ar: x.ar, tr: `<b>${x.ad}</b>${x.tr ? " — " + x.tr : ""}` }));
     } else {
       rows = t.satirlar.map((r, i) => ({
-        head: r.baslik ? `<b>${i + 1}. ${esc(r.baslik)}</b>${r.ozet ? ` <span class="tag">özet</span>` : ""}${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}` : `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}`,
+        head: r.baslik ? `<b>${i + 1}. ${esc(r.baslik)}</b>${r.ravi ? ` <small class="muted">${esc(r.ravi)}${r.kaynak ? " · " + esc(r.kaynak) : ""}</small>` : ""}${r.ozet ? ` <span class="tag">özet</span>` : ""}${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}` : `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}`,
         ar: r.ar, tr: esc(r.tr),
         kelimeler: r.kelimeler
       }));
@@ -660,7 +669,7 @@
       <div class="btns metin-tools">
         <label class="check"><input type="checkbox" id="hideTr" ${st.hideTr ? "checked" : ""}> Tercümeyi gizle</label>
         <label class="check"><input type="checkbox" id="hideHr" ${st.hideHarake ? "checked" : ""}> Harekeleri gizle</label>
-        ${keys.length ? (inDeck < keys.length ? `<button class="sm" id="addm">Hadisleri tekrar listeme ekle</button>` : `<small class="muted">✓ Tümü tekrar listende</small>`) : ""}
+        ${keys.length ? (inDeck < keys.length ? `<button class="sm" id="addm">${t.tur === "Hadis" ? "Hadisleri" : "Bölümleri"} tekrar listeme ekle</button>` : `<small class="muted">✓ Tümü tekrar listende</small>`) : ""}
       </div>
       <div class="metin">${rows.map((r) => `
         <div class="mrow">

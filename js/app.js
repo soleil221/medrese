@@ -205,9 +205,9 @@
         <div>
           ${window.Views.lessonsBlock(c)}
           ${c.id === "k-sarf" ? `<p class="btns"><a class="btn alt" href="#/cekim">Sarf atölyesi →</a><a class="btn ghost" href="#/metin/emsile">Emsile metni →</a></p>` : ""}
-          ${c.id === "k-hadis" || c.id === "k-nahiv" ? `<p class="btns"><a class="btn alt" href="#/metin/kirk-hadis">Kırk Hadis →</a></p>` : ""}
-          ${c.id === "k-tasavvuf" ? `<p class="btns"><a class="btn alt" href="#/metin/eyyuhel-veled">Eyyühe'l-Veled metni →</a></p>` : ""}
-          ${c.id === "k-kelam" || c.id === "k-akaid1" ? `<p class="btns"><a class="btn alt" href="#/metin/akaid-nesefi">el-Akāidü'n-Nesefiyye metni →</a></p>` : ""}
+          ${c.id === "k-hadis" || c.id === "k-nahiv" ? `<p class="btns"><a class="btn alt" href="#/metin/kirk-hadis">Kırk Hadis →</a>${c.id === "k-hadis" ? `<a class="btn ghost" href="#/hadisler">Konulara göre hadisler →</a>` : ""}</p>` : ""}
+          ${c.id === "k-tasavvuf" ? `<p class="btns"><a class="btn alt" href="#/metin/eyyuhel-veled">Eyyühe'l-Veled metni →</a><a class="btn ghost" href="#/metin/hikem">Hikem seçmeleri →</a></p>` : ""}
+          ${c.id === "k-kelam" || c.id === "k-akaid1" ? `<p class="btns"><a class="btn alt" href="#/metin/akaid-nesefi">el-Akāidü'n-Nesefiyye metni →</a><a class="btn ghost" href="#/metin/tahavi">Tahâvî Akîdesi →</a></p>` : ""}
           ${c.id === "k-tefsir" || c.id === "m-tefsirusul" ? `<p class="btns"><a class="btn alt" href="#/tahlil">Amme cüzü tahlili →</a></p>` : ""}
           <h2>Metinler ve kaynaklar <small class="muted">${pct(p)}</small></h2>
           ${bar(p, c.track)}
@@ -310,10 +310,10 @@
 
     const NAV = { ana: "ana", panel: "ana", kuran: "kuran", sure: "kuran", tahlil: "kuran", meseleler: "meseleler", mesele: "meseleler",
       alimler: "alimler", alim: "alimler", yollar: "yollar", yol: "yollar", defter: "defter",
-      konular: "kuran", konu: "kuran", ekoller: "alimler", sozler: "meseleler", kavramlar: "kavramlar", kavram: "kavramlar", rehberler: "rehberler", rehber: "rehberler" };
+      konular: "kuran", konu: "kuran", ekoller: "alimler", sozler: "meseleler", kavramlar: "kavramlar", kavram: "kavramlar", rehberler: "rehberler", rehber: "rehberler", hadisler: "hadisler", hadis: "hadisler" };
     const navKey = NAV[route] || "";
     document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === navKey));
-    const grp = { panel: "ana", sure: "kuran", konu: "konular", mesele: "meseleler", alim: "alimler", kavram: "kavramlar", rehber: "rehberler", yol: "yollar", ders: "mufredat", sinav: "mufredat", metin: "metinler" }[route] || route;
+    const grp = { panel: "ana", sure: "kuran", konu: "konular", mesele: "meseleler", alim: "alimler", kavram: "kavramlar", rehber: "rehberler", hadis: "hadisler", yol: "yollar", ders: "mufredat", sinav: "mufredat", metin: "metinler" }[route] || route;
     document.querySelectorAll(".cekmece [data-r]").forEach((a) => a.classList.toggle("on", a.dataset.r === grp));
 
     const V = window.Views;
@@ -345,6 +345,8 @@
       route === "sozler" ? V.sozler() :
       route === "rehberler" ? V.rehberler() :
       route === "rehber" ? V.rehber(parts[1]) :
+      route === "hadisler" ? V.hadisler() :
+      route === "hadis" ? V.hadis(parts[1]) :
       route === "ekoller" ? V.ekoller() : null;
     if (special) {
       app.innerHTML = special.html;
