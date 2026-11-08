@@ -884,3 +884,8 @@ body.menu-acik { overflow: hidden; }
 .rh-yanlis { color: var(--muted); }
 .rh-sorular { padding-left: 1.2em; }
 .rh-sorular li { margin: 6px 0; }
+.m-uygulama { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 14px 16px; }
+.m-uygulama p { margin: 0; }
+.m-uygulama p + p { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.m-uygulama span { display: block; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+.mu-durum { font-style: italic; }

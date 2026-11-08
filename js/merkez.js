@@ -392,7 +392,7 @@
         <h1>${esc(m.baslik)}</h1>
         <p class="soru">${esc(m.soru)}</p>
         <p class="lead">${esc(m.ozet)}</p>
-        <nav class="bolum-nav"><a href="#nas">Naslar</a><a href="#gorus">Görüşler</a>${D ? `<a href="#munakasa">Tartışma</a>` : ""}<a href="#kok">İhtilafın kökü</a>${D ? `<a href="#seyir">Seyir</a><a href="#tercih">Tercihler</a>` : ""}<a href="#bugun">Bugün</a><a href="#durum">Özet tablo</a>${D ? `<a href="#sorular">Sorular</a>` : ""}<a href="#kaynak">Kaynaklar</a></nav>
+        <nav class="bolum-nav"><a href="#nas">Naslar</a><a href="#gorus">Görüşler</a>${D ? `<a href="#munakasa">Tartışma</a>` : ""}<a href="#kok">İhtilafın kökü</a>${D ? `<a href="#seyir">Seyir</a><a href="#tercih">Tercihler</a>` : ""}${D && D.metin ? `<a href="#mmetin">Klasik metinden</a>` : ""}${D && D.uygulama ? `<a href="#muygulama">Uygulamada</a>` : ""}<a href="#bugun">Bugün</a><a href="#durum">Özet tablo</a>${D ? `<a href="#sorular">Sorular</a>` : ""}<a href="#kaynak">Kaynaklar</a></nav>
 
         <h2 id="nas">Âyetler</h2>
         ${m.ayetler.map(([ref, ar, tr]) => `<div class="nas"><div class="nas-ar" lang="ar">${ar}</div><p>${esc(tr)}</p><small class="muted">${esc(ref)}</small></div>`).join("")}
@@ -425,6 +425,10 @@
 
         <h2 id="tercih">Muhakkiklerin tercihleri</h2>
         <div class="tercihler">${D.tercih.map((x) => { const a = AL()[x.alim]; return `<blockquote class="alim-not"><p>${esc(x.metin)}</p>${a ? `<footer>— <a href="#/alim/${a.id}">${esc(a.ad)}</a></footer>` : ""}</blockquote>`; }).join("")}</div>` : ""}
+
+        ${D && D.metin ? `<h2 id="mmetin">Klasik metinden</h2><blockquote class="alim-not rh-metin"><p>${esc(D.metin.metin)}</p><footer>— ${AL()[D.metin.alim] ? `<a href="#/alim/${D.metin.alim}">${esc(AL()[D.metin.alim].ad)}</a>` : esc(D.metin.alim)} <small class="muted">· ${esc(D.metin.eser)}</small></footer></blockquote>` : ""}
+
+        ${D && D.uygulama ? `<h2 id="muygulama">Uygulamada</h2><div class="m-uygulama"><p class="mu-durum"><span>Örnek durum</span>${esc(D.uygulama.durum)}</p><p class="mu-cevap"><span>İhtilaf burada neyi değiştirir?</span>${esc(D.uygulama.cevap)}</p></div>` : ""}
 
         <h2 id="bugun">Bugün</h2>
         <div>${m.cagdas}</div>
