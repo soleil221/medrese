@@ -616,6 +616,13 @@
 
   // ═════════════ METİNLER ═════════════
   const metinState = { hideTr: false, hideHarake: false, serh: false };
+  // Satırın kendi kelime listesi (sarf) ile şerhteki kelimeleri (anlam) tekrarsız birleştirir
+  const kelimeBirlestir = (mevcut, ek) => {
+    const sade = (w) => w.replace(HARAKE, "");
+    const l = [...(mevcut || [])], var_ = new Set(l.map((k) => sade(k[0])));
+    (ek || []).forEach(([w, a]) => { if (!var_.has(sade(w))) l.push([w, null, a]); });
+    return l.length ? l : null;
+  };
   const alimLink = (x) => { const a = (window.ALIMLER || []).find((b) => b.id === x); return a ? `<a href="#/alim/${x}">${U().esc(a.ad)}</a>` : U().esc(x); };
   const HARAKE = /[ً-ْٰ]/g;
 
@@ -658,7 +665,7 @@
       rows = t.satirlar.map((r, i) => ({
         head: r.baslik ? `<b>${i + 1}. ${esc(r.baslik)}</b>${r.ravi ? ` <small class="muted">${esc(r.ravi)}${r.kaynak ? " · " + esc(r.kaynak) : ""}</small>` : ""}${r.ozet ? ` <span class="tag">özet</span>` : ""}${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}` : `<b>${r.no}. hadis</b> <small class="muted">Râvi: ${esc(r.ravi)} · ${esc(r.kaynak)}</small>${r.not ? `<div class="tip tiny">${esc(r.not)}</div>` : ""}`,
         ar: r.ar, tr: esc(r.tr),
-        kelimeler: r.kelimeler || (SR[r.no] && SR[r.no].kelime && SR[r.no].kelime.map(([w, a]) => [w, null, a])),
+        kelimeler: kelimeBirlestir(r.kelimeler, SR[r.no] && SR[r.no].kelime),
         serh: SR[r.no]
       }));
     }
