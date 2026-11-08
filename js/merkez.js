@@ -353,7 +353,9 @@
   function meseleler() {
     const q = meseleArama.q.toLocaleLowerCase("tr");
     const ms = window.MESELELER.filter((m) => !q || [m.baslik, m.soru, m.ozet, m.alan].join(" ").toLocaleLowerCase("tr").includes(q));
-    const alanlar = [...new Set(ms.map((m) => m.alan))];
+    const ALAN_SIRA = ["Fıkıh · İbadet", "Fıkıh · Aile", "Fıkıh · Aile ve Yargı", "Fıkıh · Muâmelât", "Fıkıh · Gündelik Hayat", "Fıkıh · Çağdaş Meseleler", "Fıkıh · Siyaset ve Yönetim", "Fıkıh · Ceza Hukuku", "Akaid"];
+    const sira = (a) => { const k = ALAN_SIRA.indexOf(a); return k < 0 ? 99 : k; };
+    const alanlar = [...new Set(ms.map((m) => m.alan))].sort((x, y) => sira(x) - sira(y));
     const html = `
       <h1>Meseleler</h1>
       <a class="ihtilaf-kart" href="#/mesele/ihtilaf"><b>${esc(window.IHTILAF.baslik)}</b><span>Âlimler aynı delillerden neden farklı sonuçlara varır?</span></a>
